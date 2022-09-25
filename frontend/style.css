@@ -1,0 +1,18 @@
+.block {
+    display:inline-block;
+    width: 200px;
+    height: 40px;
+    margin-left: 50px;
+}
+.name {
+    text-align: center;
+    font-size: 1.5em;
+}
+.button {
+    margin-left: 200px;
+    color: white;
+    background:rgb(47, 47, 194);
+    /*margin-left: auto;
+    margin-right: auto;
+    display: block;*/
+}
