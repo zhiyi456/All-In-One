@@ -263,7 +263,7 @@ def view_course_skills(Course_ID):
     return jsonify(
         {
             "code": 404,
-            "message": "Course ID is not found."
+            "message": "Course ID is not found. Please double check."
         }
     ), 404
 
