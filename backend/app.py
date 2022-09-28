@@ -21,6 +21,10 @@ class Role(db.Model):
     role_id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(20), nullable=False)
 
+    def __init__(self, role_id, role_name):
+        self.role_id = role_id
+        self.role_name = role_name
+
     def json(self):
         dto = {
             'role_id': self.role_id,
@@ -38,6 +42,14 @@ class Staff(db.Model):
     dept = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(32), nullable=False)
     role = db.Column(db.String(32), nullable=False)
+
+    def __init__(self, staff_id, staff_fname, staff_lname, dept, email, role):
+        self.staff_id = staff_id
+        self.staff_fname = staff_fname
+        self.staff_lname = staff_lname
+        self.dept = dept
+        self.email = email
+        self.role = role
 
     def json(self):
         dto = {
@@ -60,6 +72,14 @@ class Course(db.Model):
     course_type = db.Column(db.String(32), nullable=False)
     course_category = db.Column(db.String(32), nullable=False)
 
+    def __init__(self, course_id, course_name, course_desc, course_status, course_type, course_category):
+        self.course_id = course_id
+        self.course_name = course_name
+        self.course_desc = course_desc
+        self.course_status = course_status
+        self.course_type = course_type
+        self.course_category = course_category
+
     def json(self):
         dto = {
             'course_id': self.course_id,
@@ -80,6 +100,13 @@ class Registration(db.Model):
     completion_status = db.Column(db.String(32), nullable=False)
     course_id = db.Column(db.String(32), nullable=False)
     staff_id = db.Column(db.String(32), nullable=False)
+
+    def __init__(self, reg_id, reg_status, completion_status, course_id, staff_id):
+        self.reg_id = reg_id
+        self.reg_status = reg_status
+        self.completion_status = completion_status
+        self.course_id = course_id
+        self.staff_id = staff_id
     
     def json(self):
         dto = {
@@ -104,6 +131,7 @@ class Positions(db.Model):
  
     def json(self):
         return {"Position_ID": self.Position_ID, "Position_Name": self.Position_Name}
+
 
 class Skill(db.Model):
     __tablename__ = 'Skill'
@@ -131,6 +159,7 @@ class Skill_Set(db.Model):
 
     def json(self):
         return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_ID": self.Position_ID}
+
 
 class Skill_Rewarded(db.Model):
     __tablename__ = 'Skill_Rewarded'
@@ -178,7 +207,7 @@ def role_get_all():
             {
                 "code": 200,
                 "data": {
-                    "roles": [Role.json() for role in role_list]
+                    "roles": [role.json() for role in role_list]
                 }
             }
         )
@@ -197,7 +226,7 @@ def staff_get_all():
             {
                 "code": 200,
                 "data": {
-                    "staffs": [Staff.json() for staff in staff_list]
+                    "staffs": [staff.json() for staff in staff_list]
                 }
             }
         )
@@ -216,7 +245,7 @@ def course_get_all():
             {
                 "code": 200,
                 "data": {
-                    "courses": [Course.json() for course in course_list]
+                    "courses": [course.json() for course in course_list]
                 }
             }
         )
@@ -236,7 +265,7 @@ def registration_get_all():
             {
                 "code": 200,
                 "data": {
-                    "registrations": [Registration.json() for registration in registration_list]
+                    "registrations": [registration.json() for registration in registration_list]
                 }
             }
         )
@@ -256,7 +285,7 @@ def view_course_skills(Course_ID):
             {
                 "code": 200,
                 "data": {
-                    "Skill_Rewarded": [Skill_Rewarded.json() for skill_rewarded in skill_rewarded_list]
+                    "Skill_Rewarded": [skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
                 }
             }
         )
