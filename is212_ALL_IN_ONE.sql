@@ -60,7 +60,7 @@ CREATE TABLE `Registration` (
 
 -- save skills required by positions and positions which require which skills
 CREATE TABLE `Skill_Set` (
-  `Skill_Set_ID` int PRIMARY KEY,
+  `Skill_Set_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Skill_Name` varchar(50),
   `Position_ID` int,
   FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
@@ -69,7 +69,7 @@ CREATE TABLE `Skill_Set` (
 
 -- save skills rewarded by a course and save courses which give which skill
 CREATE TABLE `Skill_Rewarded` (
-  `Skill_Rewarded_ID` int PRIMARY KEY,
+  `Skill_Rewarded_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Skill_Name` varchar(50),
   `Course_ID` varchar(20),
   FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
@@ -78,31 +78,19 @@ CREATE TABLE `Skill_Rewarded` (
 
 -- save which positions aspired by staff and save which staff aspire to be which positions
 CREATE TABLE `Learning_Journey` (
-  `Learning_Journey_ID` int PRIMARY KEY,
+  `Learning_Journey_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Position_ID` int,
   `Staff_ID` int,
   FOREIGN KEY (`Position_ID`) REFERENCES Positions(`Position_ID`),
   FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
--- Dumping data for table `patient`
---
-
--- INSERT INTO `patient` (`id`, `contact_num`, `ewallet_balance`) VALUES
--- (6, '+65 8888 8888', 88),
--- (7, '+65 8888 8888', 100),
--- (8, '+65 8888 8888', 500),
--- (9, '+65 8888 8888', 10),
--- (10, '+65 8888 8888', 30),
--- (11, '+65 8888 8888', 388);
-
+------------------------------------------------------------------------------------- DUMMY DATA STARTS HERE
+ 
 INSERT INTO `Role` (`Role_ID`, `Role_Name`) VALUES
 (1, 'Staff'),
 (2, 'Admin'),
 (3, 'Manager');
-
 
 INSERT INTO `Positions` (`Position_ID`, `Position_Name`) VALUES
 (1, 'Data Analyst'),
@@ -112,14 +100,24 @@ INSERT INTO `Positions` (`Position_ID`, `Position_Name`) VALUES
 INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('Python'),
 ('R'),
-('Tabluea'),
+('Tableau'),
 ('Interpersonal Skills'),
 ('Public Speaking');
 
-INSERT INTO `Skill_Set` (`Skill_Set_ID`, `Skill_Name`, `Position_ID`) VALUES
-(1, 'Python',1),
-(2, 'R',1),
-(3, 'Tabluea',1),
-(4, 'Interpersonal Skills',3),
-(5, 'Public Speaking',2);
+INSERT INTO Course (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
+('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),
+('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General');
 
+INSERT INTO `Skill_Set` (`Skill_Name`, `Position_ID`) VALUES
+('Python', 1),
+('R', 1),
+('Tableau', 1),
+('Interpersonal Skills', 3),
+('Public Speaking', 2);
+
+INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
+('Python', 'course1'),
+('R', 'course1'),
+('Tableau', 'course1'),
+('Interpersonal Skills', 'course2'),
+('Public Speaking', 'course2');

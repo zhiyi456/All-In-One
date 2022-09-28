@@ -8,6 +8,7 @@ app = Flask(__name__)
 # Remember to add/remove the app config with your php password
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/is212_all_in_one'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
@@ -92,7 +93,7 @@ class Registration(db.Model):
         return dto
 
 class Positions(db.Model):
-    __tablename__ = 'positions'
+    __tablename__ = 'Positions'
 
     Position_ID = db.Column(db.Integer, primary_key=True)
     Position_Name = db.Column(db.String(50))
@@ -105,7 +106,7 @@ class Positions(db.Model):
         return {"Position_ID": self.Position_ID, "Position_Name": self.Position_Name}
 
 class Skill(db.Model):
-    __tablename__ = 'skill'
+    __tablename__ = 'Skill'
 
     Skill_Name = db.Column(db.String(50), primary_key=True)
 
@@ -117,11 +118,11 @@ class Skill(db.Model):
         return {"Skill_Name": self.Skill_Name}
 
 class Skill_Set(db.Model):
-    __tablename__ = 'skill_set'
+    __tablename__ = 'Skill_Set'
 
     Skill_Set_ID = db.Column(db.Integer, primary_key=True)
-    Skill_Name = db.Column(db.String(50), db.ForeignKey('skill.Skill_Name'))
-    Position_ID = db.Column(db.Integer, db.ForeignKey('positions.Position_ID'))
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'))
+    Position_ID = db.Column(db.Integer, db.ForeignKey('Positions.Position_ID'))
 
     def __init__(self, Skill_Set_ID, Skill_Name, Position_ID):
         self.Skill_Set_ID = Skill_Set_ID
@@ -131,7 +132,20 @@ class Skill_Set(db.Model):
     def json(self):
         return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_ID": self.Position_ID}
 
+class Skill_Rewarded(db.Model):
+    __tablename__ = 'Skill_Rewarded'
 
+    Skill_Rewarded_ID = db.Column(db.Integer, primary_key=True)
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'))
+    Course_ID = db.Column(db.String(20), db.ForeignKey('Course.Cosition_ID'))
+
+    def __init__(self, Skill_Rewarded_ID, Skill_Name, Course_ID):
+        self.Skill_Rewarded_ID = Skill_Rewarded_ID
+        self.Skill_Name = Skill_Name
+        self.Course_ID = Course_ID
+
+    def json(self):
+        return {"Skill_Rewarded_ID": self.Skill_Rewarded_ID, "Skill_Name": self.Skill_Name, "Course_ID": self.Course_ID}
 
 
 @app.route("/skill_set")
@@ -230,6 +244,26 @@ def registration_get_all():
         {
             "code": 404,
             "message": "There are no registrations."
+        }
+    ), 404
+
+# Read Course Skills
+@app.route("/view_course_skills/<Course_ID>")
+def view_course_skills(Course_ID):
+    skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID = Course_ID)
+    if len(skill_rewarded_list):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "Skill_Rewarded": [Skill_Rewarded.json() for skill_rewarded in skill_rewarded_list]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Course ID is not found."
         }
     ), 404
 
