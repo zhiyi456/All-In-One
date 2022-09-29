@@ -22,7 +22,7 @@ def create(app,db):
                 {
                     "code": 200,
                     "data": {
-                        "Skill_Rewarded": [position.json() for position in position_list]
+                        "Positions": [position.json() for position in position_list]
                     }
                 }
             )

@@ -16,7 +16,7 @@ def create(app,db):
         def json(self):
             return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_ID": self.Position_ID}
         
-        @app.route("/skill_set")
+        @app.route("/skill_set") #get all skill sets
         def get_all():
             skill_set = Skill_Set.query.all()
             if len(skill_set):
@@ -32,4 +32,23 @@ def create(app,db):
                 return jsonify({
                     "message": "Skill set not found."
                 }), 404
+        
+        @app.route("/skill_set/<Position_ID>") #get skills by position_ID
+        def get_skills_by_position(Position_ID):
+            skill_set_list = Skill_Set.query.filter_by(Position_ID = Position_ID)
+            if skill_set_list:
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "Skill_Set": [skill_set.json() for skill_set in skill_set_list]
+                        }
+                    }
+                )
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "Position ID is not found. Please double check."
+                }
+            ), 404
     
