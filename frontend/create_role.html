@@ -15,33 +15,34 @@
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
 		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		  	<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav justify-content-end">
-				<li class="nav-item active">
-					<a class="nav-link" href="#">Home</a>
-				</li>
-					<li class="nav-item dropdown text-right">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Browse
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">Courses</a>
-							<a class="dropdown-item" href="#">Roles</a>
-							<a class="dropdown-item" href="#">Skills</a>
-						</div>
-						<!-- <li class="nav-item ml-auto">
-							<a class="nav-link" href="#">User Type</a>
-						</li> -->
-					</li>
-			</ul>
+		<div class="navbar-nav">
+			<div class="nav-item active">
+				<a class="nav-link" href="#">Home</a>
+			</div>
+			<div class="navbar-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Browse
+				</a>
+				<div class="dropdown-menu" aria-labelledby="browseDropdown">
+					<a class="dropdown-item" href="#">Courses</a>
+					<a class="dropdown-item" href="#">Roles</a>
+					<a class="dropdown-item" href="#">Skills</a>
+				</div>
+			</div>
+			<div class="navbar-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					User Type
+				</a>
+				<div class="dropdown-menu" aria-labelledby="userDropdown">
+					<a class="dropdown-item" href="#">Learner</a>
+					<a class="dropdown-item" href="#">Human Resouces</a>
+				</div>
+			</div>
 		</div>
 		<div class="navbar-item ml-auto">
 			<a class="nav-link" href="#">Logout</a>
 		</div>
-	</nav>
+	  </nav>
     
     <!-- Page Content -->
     <div class="container mx-5 my-4">
@@ -63,7 +64,9 @@
 
                 <div class="form-group col-md-5" id="roleSkills">
                     <label for="roleSkills"><b>Skills Selected</b></label>
-                    Help idk how to implement the search bar :(
+
+                    <!-- Implement search bar here -->
+
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="sk1">
                         <label class="form-check-label" for="sk1">Example Skill 1</label>
