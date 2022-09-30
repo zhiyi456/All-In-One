@@ -85,7 +85,8 @@ CREATE TABLE `Learning_Journey` (
   FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-------------------------------------------------------------------------------------- DUMMY DATA STARTS HERE
+
+-- ------------------------------------ DUMMY DATA STARTS HERE -------------------------------------------------------------------------------
  
 INSERT INTO `Role` (`Role_ID`, `Role_Name`) VALUES
 (1, 'Staff'),

@@ -33,12 +33,31 @@ def create(app,db):
     @app.route("/course")
     def course_get_all():
         course_list = Course.query.all()
-        if len(course_list):
+        if course_list:
             return jsonify(
                 {
                     "code": 200,
                     "data": {
                         "courses": [course.json() for course in course_list]
+                    }
+                }
+            )
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There are no Courses."
+            }
+        ), 404
+
+    @app.route("/course_get_by_name/<name>")
+    def course_get_by_name(name):
+        course = Course.query.filter_by(course_name = name).first()
+        if course:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "courses": course.json()
                     }
                 }
             )
