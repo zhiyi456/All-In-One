@@ -19,22 +19,40 @@ def create(app, db):
         def json(self):
             return {"Skill_Rewarded_ID": self.Skill_Rewarded_ID, "Skill_Name": self.Skill_Name, "Course_ID": self.Course_ID}
 
-        @app.route("/view_course_skills/<Course_ID>")
-        def view_course_skills(Course_ID):
-            skill_rewarded_list = Skill_Rewarded.query.filter_by(
-                Course_ID=Course_ID)
-            if skill_rewarded_list:
-                return jsonify(
-                    {
-                        "code": 200,
-                        "data": {
-                            "Skill_Rewarded": [skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
-                        }
-                    }
-                )
+    @app.route("/view_course_skills/get_skill/<Course_ID>")
+    def view_course_skills(Course_ID):
+        skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=Course_ID)
+        if skill_rewarded_list:
             return jsonify(
                 {
-                    "code": 404,
-                    "message": "Course ID is not found. Please double check."
+                    "code": 200,
+                    "data": {
+                        "Skill_Rewarded": [skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
+                    }
                 }
-            ), 404
+            )
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Course ID is not found. Please double check."
+            }
+        ), 404
+
+    @app.route("/view_course_skills/get_course/<Skill_Name>")
+    def view_course_by_skills(Skill_Name):
+        course_id_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name)
+        if course_id_list:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "Course List": [course.json() for course in course_id_list]
+                    }
+                }
+            )
+        return jsonify(
+            {
+                "code": 404,
+                "message": "No course is associated with " + str(Skill_Name)
+            }
+        ), 404

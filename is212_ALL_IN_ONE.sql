@@ -105,7 +105,7 @@ INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('Interpersonal Skills'),
 ('Public Speaking');
 
-INSERT INTO Course (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
+INSERT INTO `Course` (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
 ('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),
 ('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General');
 
