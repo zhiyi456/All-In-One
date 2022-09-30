@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
 
     class Role(db.Model):
         tablename = 'Role'
@@ -20,7 +21,7 @@ def create(app,db):
 
             return dto
 
-    # Method 
+    # Method
     @app.route("/role")
     def role_get_all():
         role_list = Role.query.all()

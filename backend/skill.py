@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Skill(db.Model):
         __tablename__ = 'Skill'
 

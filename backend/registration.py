@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Registration(db.Model):
         tablename = 'Registration'
 

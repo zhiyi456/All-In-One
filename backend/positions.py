@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Positions(db.Model):
         __tablename__ = 'Positions'
 
@@ -32,4 +33,3 @@ def create(app,db):
                 "message": "Position is not found. Please double check."
             }
         ), 404
-

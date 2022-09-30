@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Course(db.Model):
         tablename = 'Course'
 
@@ -51,7 +52,7 @@ def create(app,db):
 
     @app.route("/course_get_by_name/<name>")
     def course_get_by_name(name):
-        course = Course.query.filter_by(course_name = name).first()
+        course = Course.query.filter_by(course_name=name).first()
         if course:
             return jsonify(
                 {

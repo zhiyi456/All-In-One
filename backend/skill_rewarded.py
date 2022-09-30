@@ -1,12 +1,15 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Skill_Rewarded(db.Model):
         __tablename__ = 'Skill_Rewarded'
 
         Skill_Rewarded_ID = db.Column(db.Integer, primary_key=True)
-        Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'))
-        Course_ID = db.Column(db.String(20), db.ForeignKey('Course.Cosition_ID'))
+        Skill_Name = db.Column(
+            db.String(50), db.ForeignKey('Skill.Skill_Name'))
+        Course_ID = db.Column(
+            db.String(20), db.ForeignKey('Course.Cosition_ID'))
 
         def __init__(self, Skill_Rewarded_ID, Skill_Name, Course_ID):
             self.Skill_Rewarded_ID = Skill_Rewarded_ID
@@ -18,7 +21,8 @@ def create(app,db):
 
         @app.route("/view_course_skills/<Course_ID>")
         def view_course_skills(Course_ID):
-            skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=Course_ID)
+            skill_rewarded_list = Skill_Rewarded.query.filter_by(
+                Course_ID=Course_ID)
             if skill_rewarded_list:
                 return jsonify(
                     {

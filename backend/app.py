@@ -2,7 +2,15 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
-import role, course, learning_journey, positions, registration, skill_set, skill, skill_rewarded, staff
+import role
+import course
+import learning_journey
+import positions
+import registration
+import skill_set
+import skill
+import skill_rewarded
+import staff
 
 app = Flask(__name__)
 
@@ -18,15 +26,15 @@ db = SQLAlchemy(app)
 CORS(app)
 
 if __name__ == '__main__':
-    role.create(app,db)
-    staff.create(app,db)
-    course.create(app,db)
-    positions.create(app,db)
-    registration.create(app,db)
-    skill.create(app,db)
-    skill_set.create(app,db)
-    skill_rewarded.create(app,db)
+    role.create(app, db)
+    staff.create(app, db)
+    course.create(app, db)
+    positions.create(app, db)
+    registration.create(app, db)
+    skill.create(app, db)
+    skill_set.create(app, db)
+    skill_rewarded.create(app, db)
     # learning_journey.create(app,db)
     db.create_all()
-    
+
     app.run(host='0.0.0.0', port=5000, debug=True)

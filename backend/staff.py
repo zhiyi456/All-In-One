@@ -1,6 +1,7 @@
 from flask import jsonify
 
-def create(app,db):
+
+def create(app, db):
     class Staff(db.Model):
         tablename = 'Staff'
 
@@ -48,4 +49,3 @@ def create(app,db):
                     "message": "There are no Staffs."
                 }
             ), 404
-        
