@@ -13,7 +13,7 @@
     <!-- Vue 2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10"></script>
     <!-- Axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
 
@@ -90,7 +90,7 @@
       <div class="container">
           <div class="row">
               <div class="col-6">
-                  <h3 class="mb-3">Courses </h3>
+                  <h3 class="mb-3">Roles </h3>
               </div>
               <div class="col-6 text-right">
                   <a class="btn btn-primary mb-3 mr-1" href="#carouselExampleIndicators2" role="button" data-slide="prev">
@@ -230,24 +230,13 @@
     </div>
 
     <script>
-
-        var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5000/role',
-        headers: { }
-        };
-
-
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!'
             },
             mounted: function(){
-                axios(config)
-                .then(function (response) {
-                console.log(JSON.stringify(response.data));
-                })
+                axios.get()
             }
             })
     </script>
