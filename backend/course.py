@@ -93,4 +93,3 @@ def create(app, db):
                 "message": str(course_id) + "id not found."
             }
         ), 404
-
