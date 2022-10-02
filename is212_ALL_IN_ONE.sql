@@ -20,7 +20,8 @@ CREATE TABLE `Role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Skill` (
-  `Skill_Name` varchar(50) PRIMARY KEY 
+  `Skill_ID` int PRIMARY KEY AUTO_INCREMENT,
+  `Skill_Name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Positions` (
@@ -61,28 +62,30 @@ CREATE TABLE `Registration` (
 -- save skills required by positions and positions which require which skills
 CREATE TABLE `Skill_Set` (
   `Skill_Set_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Skill_Name` varchar(50),
-  `Position_ID` int,
-  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
+  `Skill_ID` int NOT NULL,
+  `Position_ID` int NOT NULL,
+  FOREIGN KEY (`Skill_ID`) REFERENCES Skill(`Skill_ID`),
   FOREIGN KEY (`Position_ID`) REFERENCES Positions(`Position_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save skills rewarded by a course and save courses which give which skill
 CREATE TABLE `Skill_Rewarded` (
   `Skill_Rewarded_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Skill_Name` varchar(50),
-  `Course_ID` varchar(20),
-  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
+  `Skill_ID` int NOT NULL,
+  `Course_ID` varchar(20) NOT NULL,
+  FOREIGN KEY (`Skill_ID`) REFERENCES Skill(`Skill_ID`),
   FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save which positions aspired by staff and save which staff aspire to be which positions
 CREATE TABLE `Learning_Journey` (
   `Learning_Journey_ID` int PRIMARY KEY AUTO_INCREMENT,
-  `Position_ID` int,
-  `Staff_ID` int,
-  FOREIGN KEY (`Position_ID`) REFERENCES Positions(`Position_ID`),
-  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`)
+  `Staff_ID` int NOT NULL,
+  `Skill_Set_ID` int NOT NULL,
+  `Skill_Rewarded_ID` int  NOT NULL,
+  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`),
+  FOREIGN KEY (`Skill_Set_ID`) REFERENCES Skill_Set(`Skill_Set_ID`),
+  FOREIGN KEY (`Skill_Rewarded_ID`) REFERENCES Skill_Rewarded(`Skill_Rewarded_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -109,16 +112,16 @@ INSERT INTO `Course` (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`
 ('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),
 ('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General');
 
-INSERT INTO `Skill_Set` (`Skill_Name`, `Position_ID`) VALUES
-('Python', 1),
-('R', 1),
-('Tableau', 1),
-('Interpersonal Skills', 3),
-('Public Speaking', 2);
+INSERT INTO `Skill_Set` (`Skill_ID`, `Position_ID`) VALUES
+(1, 1),
+(1, 1),
+(3, 1),
+(4, 3),
+(5, 2);
 
-INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
-('Python', 'course1'),
-('R', 'course1'),
-('Tableau', 'course1'),
-('Interpersonal Skills', 'course2'),
-('Public Speaking', 'course2');
+INSERT INTO `Skill_Rewarded` (`Skill_ID`, `Course_ID`) VALUES
+(1, 'course1'),
+(2, 'course1'),
+(3, 'course1'),
+(4, 'course2'),
+(5, 'course2');
