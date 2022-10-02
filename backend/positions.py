@@ -33,3 +33,22 @@ def create(app, db):
                 "message": "Position is not found. Please double check."
             }
         ), 404
+
+    @app.route("/positions")
+    def position_get_all():
+        position_list = Positions.query.all()
+        if position_list:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "positions": [position.json() for position in position_list]
+                    }
+                }
+            )
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There are no Positions."
+            }
+        ), 404
