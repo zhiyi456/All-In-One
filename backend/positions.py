@@ -51,6 +51,25 @@ def create(app, db):
                 "message": "Position is not found. Please double check."
             }
         ), 404
+
+    @app.route("/get_position_by_ID/<Position_ID>")
+    def get_position_by_ID(Position_ID):
+        position_list = Positions.query.filter_by(Position_ID=Position_ID)
+        if position_list:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "Positions": [position.json() for position in position_list]
+                    }
+                }
+            )
+        return jsonify(
+            {
+                "code": 404,
+                "message": "Position is not found. Please double check."
+            }
+        ), 404
     
     @app.route("/create_new_position/<string:new_position>", methods=['POST'])
     def create_new_position(new_position):
