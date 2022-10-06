@@ -26,13 +26,54 @@ def create(app, db):
                     {
                         "code": 200,
                         "data": {
-                            "skills": [skill.json()['Skill_Name'] for skill in skill_list]
+                            "skills": [skill.json() for skill in skill_list]
                         }
                     }
                 )
             return jsonify(
                 {
                     "code": 404,
-                    "message": "There are no Courses."
+                    "message": "There are no Skills."
+                }
+            ), 404
+
+
+
+        # @app.route("/course/id/<string:course_id>", methods=['GET'])
+        # def course_get_by_course_id(course_id):
+        #     course = Course.query.filter_by(course_id = course_id).first()
+        #     if course:
+        #         return jsonify(
+        #             {
+        #                 "code": 200,
+        #                 "data": {
+        #                     "course": course.json()
+        #                 }
+        #             }
+        #         )
+        #     return jsonify(
+        #         {
+        #             "code": 404,
+        #             "message": str(course_id) + "id not found."
+        #         }
+        #     ), 404
+
+
+        @app.route("/skill/name/<string:name>", methods=['GET'])
+        def skill_get_by_name(name):
+            skill_data = Skill.query.filter_by(Skill_Name = name).first()
+            if skill_data:
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "skills": skill_data.json()
+                        }
+                    }
+                )
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": 'No skill named ' +str(name) 
                 }
             ), 404
