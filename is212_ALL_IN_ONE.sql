@@ -101,12 +101,12 @@ INSERT INTO `Positions` (`Position_ID`, `Position_Name`) VALUES
 (2, 'Human Resource'),
 (3, 'Head of Security');
 
-INSERT INTO `Skill` (`Skill_Name`) VALUES
-('Python'),
-('R'),
-('Tableau'),
-('Interpersonal Skills'),
-('Public Speaking');
+INSERT INTO `Skill` (`Skill_ID`,`Skill_Name`) VALUES
+(1,'Python'),
+(2,'R'),
+(3,'Tableau'),
+(4,'Interpersonal Skills'),
+(5,'Public Speaking');
 
 INSERT INTO `Course` (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
 ('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),

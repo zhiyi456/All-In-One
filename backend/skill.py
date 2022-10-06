@@ -14,3 +14,25 @@ def create(app, db):
 
         def json(self):
             return {"Skill_Name": self.Skill_Name, "Skill_ID": self.Skill_ID}
+
+
+
+
+        @app.route("/skills")
+        def skill_get_all():
+            skill_list = Skill.query.all()
+            if skill_list:
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "skills": [skill.json()['Skill_Name'] for skill in skill_list]
+                        }
+                    }
+                )
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "There are no Courses."
+                }
+            ), 404
