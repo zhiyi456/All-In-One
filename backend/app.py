@@ -34,7 +34,7 @@ if __name__ == '__main__':
     skill.create(app, db)
     skill_set.create(app, db)
     skill_rewarded.create(app, db)
-    # learning_journey.create(app,db)
+    learning_journey.create(app,db)
     db.create_all()
 
     app.run(host='0.0.0.0', port=5000, debug=True)
