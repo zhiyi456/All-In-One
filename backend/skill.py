@@ -15,6 +15,7 @@ def create(app, db):
         def json(self):
             return {"Skill_Name": self.Skill_Name, "Skill_ID": self.Skill_ID}
 
+<<<<<<< Updated upstream
 
 
 
@@ -75,5 +76,21 @@ def create(app, db):
                 {
                     "code": 404,
                     "message": 'No skill named ' +str(name) 
+=======
+    @app.route("/skill")  # get all skill
+    def skill_get_all():
+        skills = Skill.query.all()
+        if len(skills):
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "skill": [skill.json() for skill in skills]
+                    }
+>>>>>>> Stashed changes
                 }
-            ), 404
+            )
+        else:
+            return jsonify({
+                "message": "Skills not found."
+            }), 404

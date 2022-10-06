@@ -1,12 +1,9 @@
 from flask import jsonify
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from os import environ
-
+#from invokes import invoke_http, all_route
 
 
 def create(app, db):
+    #route_dict = all_route()
     class Course(db.Model):
         tablename = 'Course'
 
@@ -34,12 +31,14 @@ def create(app, db):
                 'course_type': self.course_type,
                 'course_category': self.course_category,
             }
-            return dto
+            return dto 
+    
 
-
+    #role_database = invoke_http(route_dict["role"] , method='GET')
     @app.route("/course")
     def course_get_all():
         course_list = Course.query.all()
+        
         if course_list:
             return jsonify(
                 {
@@ -55,6 +54,7 @@ def create(app, db):
                 "message": "There are no Courses."
             }
         ), 404
+
 
     @app.route("/course/name/<string:course_name>", methods=['GET'])
     def course_get_by_name(course_name):
@@ -76,7 +76,7 @@ def create(app, db):
         ), 404
 
     @app.route("/course/id/<string:course_id>", methods=['GET'])
-    def course_get_by_course_id(course_id):
+    def get_course_by_course_id(course_id):
         course = Course.query.filter_by(course_id = course_id).first()
         if course:
             return jsonify(
@@ -93,3 +93,4 @@ def create(app, db):
                 "message": str(course_id) + "id not found."
             }
         ), 404
+

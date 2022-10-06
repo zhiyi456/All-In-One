@@ -110,7 +110,8 @@ INSERT INTO `Skill` (`Skill_ID`,`Skill_Name`) VALUES
 
 INSERT INTO `Course` (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
 ('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),
-('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General');
+('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General'),
+('course3', 'Introduction to Programming', 'Benedict', 'Active', 'External', 'Technical');
 
 INSERT INTO `Skill_Set` (`Skill_ID`, `Position_ID`) VALUES
 (1, 1),
@@ -124,4 +125,5 @@ INSERT INTO `Skill_Rewarded` (`Skill_ID`, `Course_ID`) VALUES
 (2, 'course1'),
 (3, 'course1'),
 (4, 'course2'),
-(5, 'course2');
+(5, 'course2'),
+(1, 'course3');

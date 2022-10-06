@@ -1,8 +1,11 @@
 from flask import jsonify
 from invokes import invoke_http
+<<<<<<< Updated upstream
 
 
 
+=======
+>>>>>>> Stashed changes
 
 def create(app, db):
     class Skill_Rewarded(db.Model):
@@ -41,11 +44,26 @@ def create(app, db):
             }
         ), 404
 
+<<<<<<< Updated upstream
 
     @app.route("/view_course_skills/get_course/<id>")
     def view_course_by_skill_id(id):
         skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_ID=id)
         if skill_rewarded_list:
+=======
+    @app.route("/view_course_skills/get_course/<Skill_Name>")
+    def view_course_by_skillID(Skill_Name):
+        #get skill data
+        course_route = "http://127.0.0.1:5000/skill"
+        skills = invoke_http(course_route, method='GET')
+        for skill in skills['data']['skill']:
+            print(skill)
+            if (skill['Skill_Name'] == Skill_Name):
+                Skill_ID = skill['Skill_ID']
+
+        course_id_list = Skill_Rewarded.query.filter_by(Skill_ID=Skill_ID)
+        if course_id_list:
+>>>>>>> Stashed changes
             return jsonify(
                 {
                     "code": 200,
@@ -65,7 +83,11 @@ def create(app, db):
         return jsonify(
             {
                 "code": 404,
+<<<<<<< Updated upstream
                 "message": "No course is associated"
+=======
+                "message": "No course is associated with " + str(Skill_ID)
+>>>>>>> Stashed changes
             }
         ), 404
 
