@@ -51,22 +51,27 @@
     
     <!-- Page Content -->
     <div class="container mx-5 my-4" id="app">
-        <div class="form-row">
-            <h2>Create Role</h2>
-        </div><br/>
         <form>
-            <div class="form-group">
-                <label for="roleName"><b>Role Name</b></label>
-                <input type="type" class="form-control" id="roleName" placeholder="Enter role name">
-            </div>
+            <h2>Create Role</h2><br/>
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-2">
+                    <label for="roleID"><b>Role ID</b></label>
+                    <input type="number" min="1" class="form-control" id="roleID" placeholder="Enter role ID">
+                </div>
+                <div class="form-group col-md-10">
+                    <label for="roleName"><b>Role Name</b></label>
+                    <input type="text" class="form-control" id="roleName" placeholder="Enter role name">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <!-- <div class="form-group col-md-6">
                     <label for="roleDesc"><b>Role Description (Optional)</b></label>
                     <textarea class="form-control" id="roleDesc" placeholder="Describe the role here..."></textarea>
-                </div>
+                </div> -->
 
                 <div class="form-group col-md-6">
-                    <label for="roleSkills"><b>Skills Selected</b></label><br/>
+                    <label for="roleSkills"><b>Skills Required by Role</b></label><br/>
                     <!-- <input class="form-control" type="text" id="skillName" placeholder="Search for skills to add...">  -->
                     <div v-for="skill in skills[0]" id="selectedSkills">
                         <div class="form-group form-check">
@@ -82,7 +87,7 @@
             <div class="form-row text-right">
                 <div class="col-sm-12">
                     <button type="reset" class="btn customred">Cancel</button>
-                    <button type="submit" class="btn customblue">Create</button>
+                    <button type="submit" class="btn customblue" @click="createRole()">Create</button>
                 </div>
             </div>
 
@@ -95,10 +100,26 @@
                 el: '#app',
                 data: {
                     skills: [],
-
                 },
                 methods: {
                     createRole: function() {
+                        event.preventDefault();
+                        let temp = {
+                            'Position_ID': Number(document.getElementById('roleID').value),
+                            'Position_Name': document.getElementById('roleName').value,
+                        };
+                        // console.log(temp);
+                        axios.post('http://127.0.0.1:5000/create_new_position/' + document.getElementById('roleName').value, this.temp)
+                        .then(response => {
+                            alert('New role added!');
+                            this.roleName = '';
+                        })
+                        .catch(error => {
+                            // alert(error);
+                            // console.log(error)
+                        });
+                    },
+                    createRoleSkillAssociation: function() {
                         // POST method: to-do
                     }
                 },
@@ -111,11 +132,11 @@
                     })
                     .catch (error => {
                         // alert(error);
+                        // console.log(error)
                     });
                 }
             });
 
-        
     </script>
 
     <!-- Optional JavaScript -->
