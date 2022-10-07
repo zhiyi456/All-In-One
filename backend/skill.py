@@ -31,3 +31,22 @@ def create(app, db):
             return jsonify({
                 "message": "Skills not found."
             }), 404
+
+    @app.route("/skill/name/<string:name>", methods=['GET'])
+    def skill_get_by_name(name):
+        skill_data = Skill.query.filter_by(Skill_Name = name).first()
+        if skill_data:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "skills": skill_data.json()
+                    }
+                }
+            )
+        return jsonify (
+            {
+                "code": 404,
+                "message": 'No skill named ' + str(name) 
+            }
+        )
