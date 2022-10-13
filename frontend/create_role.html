@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Create Role</title>
+    <title>Create Position</title>
 
     <!-- Vue 2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js"></script>
@@ -52,42 +52,35 @@
     <!-- Page Content -->
     <div class="container mx-5 my-4" id="app">
         <form>
-            <h2>Create Role</h2><br/>
+            <h2>Create Position</h2><br/>
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <label for="roleID"><b>Role ID</b></label>
-                    <input type="number" min="1" class="form-control" id="roleID" placeholder="Enter role ID">
+                    <label for="positionID"><b>Position ID</b></label>
+                    <input type="number" min="1" class="form-control" id="position_ID" placeholder="Enter ID" v-model="position_ID">
                 </div>
                 <div class="form-group col-md-10">
-                    <label for="roleName"><b>Role Name</b></label>
-                    <input type="text" class="form-control" id="roleName" placeholder="Enter role name">
+                    <label for="positionName"><b>Position Name</b></label>
+                    <input type="text" class="form-control" id="position_name" placeholder="Enter position name" v-model="position_name">
                 </div>
             </div>
             
             <div class="form-row">
-                <!-- <div class="form-group col-md-6">
-                    <label for="roleDesc"><b>Role Description (Optional)</b></label>
-                    <textarea class="form-control" id="roleDesc" placeholder="Describe the role here..."></textarea>
-                </div> -->
-
                 <div class="form-group col-md-6">
-                    <label for="roleSkills"><b>Skills Required by Role</b></label><br/>
-                    <!-- <input class="form-control" type="text" id="skillName" placeholder="Search for skills to add...">  -->
-                    <div v-for="skill in skills[0]" id="selectedSkills">
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input">ID: {{skill.Skill_ID}} - {{skill.Skill_Name}}
-                        </div>
+                    <label><b>Skills Required by Position</b></label><br/>
+                    <div v-for="(skill,index) in skills[0]" v-bind:key="skill.Skill_ID">
+                        <label class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" v-model="required_skills" v-bind:id="index" v-bind:value="skill.Skill_ID">
+                            Skill ID: {{skill.Skill_ID}} - {{skill.Skill_Name}}
+
+                        </label>
                     </div>
-
                 </div>
-
             </div><br/>
-
 
             <div class="form-row text-right">
                 <div class="col-sm-12">
                     <button type="reset" class="btn customred">Cancel</button>
-                    <button type="submit" class="btn customblue" @click="createRole()">Create</button>
+                    <button type="submit" class="btn customblue" @click="createPosition()">Create</button>
                 </div>
             </div>
 
@@ -96,50 +89,93 @@
 
     <script>
 
+        var config1 = {
+            method: 'get',
+            url: 'http://127.0.0.1:5000/skill',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            }
+        };
+
+        var config2 = {
+            method: 'post',
+            url: 'http://127.0.0.1:5000/create_new_position/' + document.getElementById('position_name').value,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            }
+        }
+
+        var config3 = {
+            method: 'post',
+            url: 'http://127.0.0.1:5000/create_new_skillset/' + document.getElementById('position_ID').value,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            }
+        }
+
         var vm = new Vue({
-                el: '#app',
-                data: {
-                    skills: [],
-                },
-                methods: {
-                    createRole: function() {
-                        event.preventDefault();
-                        let temp = {
-                            'Position_ID': Number(document.getElementById('roleID').value),
-                            'Position_Name': document.getElementById('roleName').value,
-                        };
-                        // console.log(temp);
-                        axios.post('http://127.0.0.1:5000/create_new_position/' + document.getElementById('roleName').value, this.temp)
-                        .then(response => {
-                            alert('New role added!');
-                            this.roleName = '';
-                        })
-                        .catch(error => {
-                            // alert(error);
-                            // console.log(error)
-                        });
-                    },
-                    createRoleSkillAssociation: function() {
-                        // POST method: to-do
-                    }
-                },
-                mounted: function(){
-                    axios.get('http://127.0.0.1:5000/skill')
+            el: '#app',
+            data: {
+                skills: [],
+                required_skills: [],
+                position_ID: '',
+                position_name: '',
+            },
+            methods: {
+                createPosition: function() {
+                    event.preventDefault();
+                    let temp = {
+                        'Position_ID': Number(this.position_ID),
+                        'Position_Name': this.position_name,
+                    };
+                    //console.log(temp);
+                    axios(config2, this.temp)
                     .then(response => {
-                        console.log(response);
-                        vm.skills.splice(0, 0, response.data.data['skill']);
-                        console.log(skills);
+                        alert('New role added!');
+                        createSkillset();
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                },
+                createSkillset: function() {
+                    event.preventDefault();
+                    let final = [];
+                    for (skill of this.required_skills) {
+                        let temp1 = {
+                            'Skill_ID': Number(skill),
+                            'Position_ID': Number(this.position_ID)
+                        }
+                        final.push(temp1);
+                    }
+                    let jsondata = JSON.stringify(final);
+                    console.log(jsondata);
+                    axios(config3, jsondata)
+                    .then( function (response) {
+                        alert('New skillset(s) added!');
                     })
                     .catch (error => {
-                        // alert(error);
-                        // console.log(error)
+                        console.log(error);
                     });
                 }
-            });
+            },
+            mounted: function() {
+                axios(config1)
+                .then( function (response) {
+                    // console.log(response);
+                    vm.skills.splice(0, 0, response.data.data['skill']);
+                })
+                .catch ( error => {
+                    console.log(error)
+                });
+            }
+        });
 
     </script>
 
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

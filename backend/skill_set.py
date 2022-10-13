@@ -1,3 +1,4 @@
+from urllib import request
 from flask import jsonify
 
 # import positions
@@ -58,3 +59,32 @@ def create(app, db):
                     "message": "Position ID is not found. Please double check."
                 }
             ), 404
+
+        @app.route("/create_new_skillset/<int:new_position_id>", methods=['POST'])
+        def create_new_skillset(new_position_id):
+            data = request.get_json()
+            print(data)
+            skillset = Skill_Set(**data)
+            print(skillset)
+            try:
+                db.session.add(skillset)
+                db.session.commit()
+            except:
+                return jsonify(
+                    {
+                        "code": 500,
+                        "data": {
+                            "New_SkillSet": skillset
+                        },
+                        "message": "An error occurred while creating the skillset."
+                    }
+                ), 500
+
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": skillset.json()
+                }
+            ), 201
+
+
