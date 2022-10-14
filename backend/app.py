@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 # Remember to add/remove the app config with your php password
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get(
-    'dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/is212_all_in_one'
+    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/is212_all_in_one'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
@@ -37,4 +37,4 @@ if __name__ == '__main__':
     learning_journey.create(app,db)
     db.create_all()
 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run( port=5000, debug=True)

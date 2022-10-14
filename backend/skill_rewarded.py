@@ -38,59 +38,26 @@ def create(app, db):
             }
         ), 404
 
-    @app.route("/view_course_skills/get_course/<Skill_Name>")
-    def view_course_by_skillID(Skill_Name):
-        #get skill data
-        course_route = "http://127.0.0.1:5000/skill"
-        skills = invoke_http(course_route, method='GET')
-        for skill in skills['data']['skill']:
-            print(skill)
-            if (skill['Skill_Name'] == Skill_Name):
-                Skill_ID = skill['Skill_ID']
 
-        course_id_list = Skill_Rewarded.query.filter_by(Skill_ID=Skill_ID)
-        if course_id_list:
+
+
+    @app.route("/view_course_skills/get_course/<Skill_ID>")
+    def view_course_by_skill_id(Skill_ID):
+        skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_ID=Skill_ID)
+        if skill_rewarded_list:
             return jsonify(
-                {
-                    "code": 200,
-                    "data": {
-                        "Skill_Rewarded": [skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
-                    }
-                }
+                 {
+                     "code": 200,
+                     "data": {
+                         "Skill_Rewarded": [skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
+                     }
+                 }
             )
-        # course_id_list = Skill_Rewarded.query.filter_by(Skill_ID=id)
-        # if course_id_list:
-        #    # print('-------------I AM PRINTING SOMETHING!--------------')
-        #     print(list(skill_rewarded.json() for skill_rewarded in course_id_list))
-        #    # print('--------------I AM NO LONGER PRINTIGN!=---------------')
-        #     result = invoke_http("http://127.0.0.1:5000"+"/course/multiple_course_id?course_id_list={course_id_list}", method='GET', json=None)
-        #     print('order_result:', result)
-        #     return jsonify(result)
+        
         return jsonify(
-            {
-                "code": 404,
-                "message": "No course is associated with " + str(Skill_ID)
-            }
-        ), 404
-
-
-
-
-    # @app.route("/view_course_skills/get_course/<Skill_Name>")
-    # def view_course_by_skills(Skill_Name):
-    #     course_id_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name)
-    #     if course_id_list:
-    #         return jsonify(
-    #             {
-    #                 "code": 200,
-    #                 "data": {
-    #                     "Course List": [course.json() for course in course_id_list]
-    #                 }
-    #             }
-    #         )
-    #     return jsonify(
-    #         {
-    #             "code": 404,
-    #             "message": "No course is associated with " + str(Skill_Name)
-    #         }
-    #     ), 404
+             {
+                 "code": 404,
+                 "message": "No course is associated"
+             }
+         ), 404
+     
