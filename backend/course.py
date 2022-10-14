@@ -1,9 +1,8 @@
 from flask import jsonify
-#from invokes import invoke_http, all_route
-
+from flask_cors import CORS
 
 def create(app, db):
-    #route_dict = all_route()
+    CORS(app)
     class Course(db.Model):
         tablename = 'Course'
 

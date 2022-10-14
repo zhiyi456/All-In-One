@@ -1,7 +1,8 @@
 from flask import jsonify
-from invokes import invoke_http
+from flask_cors import CORS
 
 def create(app, db):
+    CORS(app)
     class Skill_Rewarded(db.Model):
         __tablename__ = 'Skill_Rewarded'
 
