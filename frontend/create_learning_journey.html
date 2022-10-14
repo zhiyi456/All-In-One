@@ -64,10 +64,10 @@
             <div class = "border p-4 m-4"> You have selected {{roleName}}</div>
         </div>
 
-        {{response}}
+        <br>{{response}}</br>
 
         <h2>Learning Journey</h2>
-        <div class = "row d-flex justify-content-center">
+        <!-- <div class = "row d-flex justify-content-center">
             <table class="table border">
                 <thead>
                   <tr>
@@ -82,7 +82,7 @@
                     <td>Skill 1</td>
                     <td>
                         <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 2</button>
                         
                     </td>
                   </tr>
@@ -90,22 +90,43 @@
                     <th scope="row">2</th>
                     <td>Skill 2</td>
                     <td>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 3</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 4</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 5</button>
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">3</th>
                     <td>Skill 3</td>
                     <td>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 6</button>
+                        <button type="button" value="course1" class="btn btn-primary" >Course 7</button>
                     </td>
                   </tr>
                 </tbody>
               </table>
-        </div>
+        </div> -->
+
+        <div class = "row d-flex justify-content-center">
+          <table class="table border">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Course(s)</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr v-for="skill in skill_set[0]">
+                  <th>Skill</th>
+                </tr>
+                
+              </tbody>
+            </table>
+      </div>
+
+
         <div class = "row d-flex justify-content-end">
             <button type="button" class="btn btn-danger">Submit</button>
         </div>
@@ -119,9 +140,24 @@
     
     <script>
 
+      var positionID = 1;
+      var skillID = 1;
+
       var config = {
       method: 'get',
-      url: 'http://127.0.0.1:5000/get_position_by_ID/1',
+      url: `http://127.0.0.1:5000/get_position_by_ID/${positionID}`,
+      headers: { }
+      };
+
+      var config2 = {
+      method: 'get',
+      url: `http://127.0.0.1:5000/skill_set/${positionID}`,
+      headers: { }
+      };
+
+      var config3 = {
+      method: 'get',
+      url: `http://127.0.0.1:5000/skill/${skillID}`,
       headers: { }
       };
 
@@ -130,15 +166,24 @@
         data: {
           position_id: 1,
           response: [],
-          roleName: "Role Name"
+          roleName: "Role Name",
+          skill_set: [],
+          skills: []
           },
         mounted: function(){
           axios(config)
           .then(function (response) {
-            console.log(response.data.data);
             vm.roleName = response.data.data["Positions"][0]["Position_Name"];
             vm.response.splice(0, 0, response.data.data["Positions"][0]);
-          })
+          });
+          axios(config2)
+          .then(function (response) {
+            var skill_sets = response.data.data["Skill_Set"]
+            for(let i=0; i<skill_sets.length; i++){
+              vm.skills.splice(i, 0, skill_sets[i]["Skill_ID"]);
+            }
+          });
+
         }
       })
     </script>
