@@ -50,4 +50,22 @@ def create(app, db):
                     "message": "There are no Staffs."
                 }
             ), 404
-        
+
+        @app.route("/staff_get/<Staff_ID>")
+        def staff_get(Staff_ID):
+            staff_data = Staff.query.filter_by(Staff_ID = Staff_ID)
+            if staff_data:
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "skills": staff_data
+                        }
+                    }
+                )
+            return jsonify (
+                {
+                    "code": 404,
+                    "message": 'No staff with given staff ID'
+                }
+            ), 404

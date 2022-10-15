@@ -104,23 +104,25 @@
                 </tbody>
               </table>
         </div> -->
-        {{courses}}
 
         <div class = "row d-flex justify-content-center">
+
           <table class="table border">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Skill</th>
-                  <th scope="col">Course(s)</th>
-                </tr>
-              </thead>
+
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Skill</th>
+                <th scope="col">Course(s)</th>
+              </tr>
+            </thead>
+
               <tbody>
 
                 <tr v-for="(skill_name, index) in skills_names">
                   <th>{{index+1}}</th>
                   <td>{{skill_name}}</td>
-                  <td>{{courses[index]}}</td>
+                  <td v-for="course in courses[index]">{{course}}</td>
                 </tr>
                 
               </tbody>
@@ -184,7 +186,7 @@
               headers: { }
               }) //get skill by skill ID
               .then(function(response){
-                vm.skills_names.splice(0,0, response.data.data["skill"][0]["Skill_Name"]);
+                vm.skills_names.splice(i,0, response.data.data["skill"][0]["Skill_Name"]);
                 axios({
                   method: 'get',
                   url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill_ID}`,
