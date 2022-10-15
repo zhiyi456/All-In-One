@@ -1,7 +1,8 @@
 from flask import jsonify
-
+from flask_cors import CORS
 
 def create(app, db):
+    CORS(app)
 
     class Role(db.Model):
         tablename = 'Role'

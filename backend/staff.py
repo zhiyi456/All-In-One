@@ -1,19 +1,20 @@
 from flask import jsonify
-
+from flask_cors import CORS
 
 def create(app, db):
+    CORS(app)
     class Staff(db.Model):
         tablename = 'Staff'
 
-        staff_id = db.Column(db.Integer, primary_key=True)
+        Staff_ID = db.Column(db.Integer, primary_key=True)
         staff_fname = db.Column(db.String(32), nullable=False)
         staff_lname = db.Column(db.String(32), nullable=False)
         dept = db.Column(db.String(32), nullable=False)
         email = db.Column(db.String(32), nullable=False)
         role = db.Column(db.String(32), nullable=False)
 
-        def __init__(self, staff_id, staff_fname, staff_lname, dept, email, role):
-            self.staff_id = staff_id
+        def __init__(self, Staff_ID, staff_fname, staff_lname, dept, email, role):
+            self.Staff_ID = Staff_ID
             self.staff_fname = staff_fname
             self.staff_lname = staff_lname
             self.dept = dept
@@ -22,7 +23,7 @@ def create(app, db):
 
         def json(self):
             dto = {
-                'staff_id': self.staff_id,
+                'staff_id': self.Staff_ID,
                 'staff_fname': self.staff_fname,
                 'staff_lname': self.staff_lname,
                 'dept': self.dept,
@@ -49,3 +50,4 @@ def create(app, db):
                     "message": "There are no Staffs."
                 }
             ), 404
+        

@@ -10,14 +10,10 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-DROP DATABASE IF EXISTS `is212_ALL_IN_ONE`;
-CREATE DATABASE IF NOT EXISTS `is212_ALL_IN_ONE` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS `SKill`, `Positions`, `Skill_set`, `Skill_Rewarded`, `Learning_Journey`;
+SET foreign_key_checks = 1;
 USE `is212_ALL_IN_ONE`;
-
-CREATE TABLE `Role` (
-  `Role_ID` int PRIMARY KEY,
-  `Role_Name` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Skill` (
   `Skill_ID` int PRIMARY KEY AUTO_INCREMENT,
@@ -27,36 +23,6 @@ CREATE TABLE `Skill` (
 CREATE TABLE `Positions` (
   `Position_ID` int PRIMARY KEY,
   `Position_Name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `Course` (
-  `Course_ID` varchar(20) PRIMARY KEY,
-  `Course_Name` varchar(50) NOT NULL,
-  `Course_Desc` varchar(255) DEFAULT NULL,
-  `Course_Status` varchar(15) DEFAULT NULL,
-  `Course_Type` varchar(10) DEFAULT NULL,
-  `Course_Category` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `Staff` (
-  `Staff_ID` int PRIMARY KEY,
-  `Staff_FName` varchar(50) NOT NULL,
-  `Staff_LName` varchar(50) NOT NULL,
-  `Dept` varchar(50) NOT NULL,
-  `Email` varchar(50) NOT NULL,
-  `Role` int,
-  FOREIGN KEY (`Role`) REFERENCES Role(`Role_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Save staff enroled in courses and courses which enrolled by staff
-CREATE TABLE `Registration` (
-  `Reg_ID` int PRIMARY KEY,
-  `Reg_Status` varchar(20) NOT NULL,
-  `Completion_Status` varchar(20) NOT NULL,
-  `Course_ID` varchar(20),
-  `Staff_ID` int,
-  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`),
-  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save skills required by positions and positions which require which skills
@@ -88,13 +54,9 @@ CREATE TABLE `Learning_Journey` (
   FOREIGN KEY (`Skill_Rewarded_ID`) REFERENCES Skill_Rewarded(`Skill_Rewarded_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- ------------------------------------ DUMMY DATA STARTS HERE -------------------------------------------------------------------------------
- 
-INSERT INTO `Role` (`Role_ID`, `Role_Name`) VALUES
-(1, 'Staff'),
-(2, 'Admin'),
-(3, 'Manager');
+
+-- **Given tables from LMS are: Course, Role, Staff, Registration**
 
 INSERT INTO `Positions` (`Position_ID`, `Position_Name`) VALUES
 (1, 'Data Analyst'),
@@ -108,11 +70,6 @@ INSERT INTO `Skill` (`Skill_ID`,`Skill_Name`) VALUES
 (4,'Interpersonal Skills'),
 (5,'Public Speaking');
 
-INSERT INTO `Course` (`Course_ID`, `Course_Name`, `Course_Desc`, `Course_Status`, `Course_Type`, `Course_Category`) VALUES
-('course1', 'Data Analytics with Advanced Tableau', 'Ben Dover', 'Active', 'External', 'Technical'),
-('course2', 'Management Communication', 'Mike Hunt', 'Retired', 'Internal', 'General'),
-('course3', 'Introduction to Programming', 'Benedict', 'Active', 'External', 'Technical');
-
 INSERT INTO `Skill_Set` (`Skill_ID`, `Position_ID`) VALUES
 (1, 1),
 (1, 1),
@@ -121,9 +78,10 @@ INSERT INTO `Skill_Set` (`Skill_ID`, `Position_ID`) VALUES
 (5, 2);
 
 INSERT INTO `Skill_Rewarded` (`Skill_ID`, `Course_ID`) VALUES
-(1, 'course1'),
-(2, 'course1'),
-(3, 'course1'),
-(4, 'course2'),
-(5, 'course2'),
-(1, 'course3');
+(1, 'FIN001'),
+(1, 'tch006'),
+(1, 'tch009'),
+(2, 'COR001'),
+(3, 'COR001'),
+(4, 'MGT001'),
+(5, 'MGT001');

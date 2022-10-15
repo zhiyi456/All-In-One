@@ -1,11 +1,10 @@
 from urllib import request
 from flask import jsonify
 
-# import positions
-# positions.create(app, db)
-
+from flask_cors import CORS
 
 def create(app, db):
+    CORS(app)
     class Skill_Set(db.Model):
         __tablename__ = 'Skill_Set'
 

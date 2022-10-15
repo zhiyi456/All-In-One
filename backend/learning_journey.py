@@ -1,6 +1,9 @@
 from flask import request, jsonify
+import staff,skill_set,skill_rewarded
+from flask_cors import CORS
 
 def create(app, db):
+    CORS(app)
     class LearningJourney(db.Model):
         __tablename__ = 'Learning_Journey'
          
@@ -23,15 +26,35 @@ def create(app, db):
                 "Skill_Rewarded_ID": self.Skill_Rewarded_ID,
             }
 
+        @app.route("/get_learning_journey")
+        def get_learning_journey():
+            lj_list = LearningJourney.query.all()
+            if len(lj_list):
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "lj": [lj.json() for lj in lj_list]
+                        }
+                    }
+                )
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "There are no Learning Journey."
+                }
+            ), 404
+
         @app.route("/create_learning_journey", methods=['POST'])
         def create_learning_journey():
 
             data = request.get_json()
             lj = LearningJourney(**data)
-
+            db.session.add(lj)
+            db.session.commit()
             try:
-                db.session.add(lj)
-                db.session.commit()
+                print("Hello")
+                
             except:
                 return jsonify(
                     {
