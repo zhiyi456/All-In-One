@@ -64,8 +64,6 @@
             <div class = "border p-4 m-4"> You have selected {{roleName}}</div>
         </div>
 
-        <br>{{response}}</br>
-
         <h2>Learning Journey</h2>
         <!-- <div class = "row d-flex justify-content-center">
             <table class="table border">
@@ -106,6 +104,7 @@
                 </tbody>
               </table>
         </div> -->
+        {{courses}}
 
         <div class = "row d-flex justify-content-center">
           <table class="table border">
@@ -118,8 +117,10 @@
               </thead>
               <tbody>
 
-                <tr v-for="skill in skill_set[0]">
-                  <th>Skill</th>
+                <tr v-for="(skill_name, index) in skills_names">
+                  <th>{{index+1}}</th>
+                  <td>{{skill_name}}</td>
+                  <td>{{courses[index]}}</td>
                 </tr>
                 
               </tbody>
@@ -141,7 +142,6 @@
     <script>
 
       var positionID = 1;
-      var skillID = 1;
 
       var config = {
       method: 'get',
@@ -155,12 +155,6 @@
       headers: { }
       };
 
-      var config3 = {
-      method: 'get',
-      url: `http://127.0.0.1:5000/skill/${skillID}`,
-      headers: { }
-      };
-
       var vm = new Vue({
         el: '#app',
         data: {
@@ -168,22 +162,41 @@
           response: [],
           roleName: "Role Name",
           skill_set: [],
-          skills: []
+          skills_ID: [],
+          skills_names: [],
+          courses: [],
           },
         mounted: function(){
-          axios(config)
+          axios(config) // get position by position ID
           .then(function (response) {
             vm.roleName = response.data.data["Positions"][0]["Position_Name"];
             vm.response.splice(0, 0, response.data.data["Positions"][0]);
           });
-          axios(config2)
+          axios(config2) // get skill set by position ID
           .then(function (response) {
             var skill_sets = response.data.data["Skill_Set"]
             for(let i=0; i<skill_sets.length; i++){
-              vm.skills.splice(i, 0, skill_sets[i]["Skill_ID"]);
+              vm.skills_ID.splice(i, 0, skill_sets[i]["Skill_ID"]); //store skill IDs in skills_ID
+              let current_skill_ID = vm.skills_ID[i];
+              axios({
+              method: 'get',
+              url: `http://127.0.0.1:5000/skill/${current_skill_ID}`,
+              headers: { }
+              }) //get skill by skill ID
+              .then(function(response){
+                vm.skills_names.splice(0,0, response.data.data["skill"][0]["Skill_Name"]);
+                axios({
+                  method: 'get',
+                  url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill_ID}`,
+                  headers: { }
+                })
+                .then(function(response){
+                  vm.courses.splice(i, 0, response.data.data["Skill_Rewarded"])
+                })
+              })
+              
             }
           });
-
         }
       })
     </script>
