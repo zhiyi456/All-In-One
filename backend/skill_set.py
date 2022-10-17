@@ -59,8 +59,20 @@ def create(app, db):
                 }
             ), 404
 
-        @app.route("/create_new_skillset/<int:new_position_id>", methods=['POST'])
+        @app.route("/create_new_skillset/<int:new_position_id>", methods=['POST']) # create skillset 
         def create_new_skillset(new_position_id):
+
+            if (Skill_Set.query.filterby(Position_ID=new_position_id).first()):
+                return jsonify(
+                    {
+                        "code": 400,
+                        "data": {
+                            "Position_Name": new_position_id
+                        },
+                        "message": "A skillset with the same ID already exists."
+                    }
+                ), 400
+
             data = request.get_json()
             print(data)
             skillset = Skill_Set(**data)
@@ -85,5 +97,3 @@ def create(app, db):
                     "data": skillset.json()
                 }
             ), 201
-
-
