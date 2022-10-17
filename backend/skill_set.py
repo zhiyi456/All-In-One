@@ -1,5 +1,5 @@
 from urllib import request
-from flask import jsonify
+from flask import jsonify, request
 
 from flask_cors import CORS
 

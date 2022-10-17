@@ -94,7 +94,7 @@
             url: 'http://127.0.0.1:5000/skill',
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         };
 
@@ -103,7 +103,7 @@
             url: 'http://127.0.0.1:5000/create_new_position/' + document.getElementById('position_name').value,
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         }
 
@@ -131,13 +131,14 @@
                         'Position_ID': Number(this.position_ID),
                         'Position_Name': this.position_name,
                     };
-                    //console.log(temp);
-                    axios(config2, this.temp)
+                    console.log(temp);
+                    axios(config2, temp)
                     .then(response => {
                         alert('New role added!');
-                        createSkillset();
+                        this.createSkillset();
                     })
                     .catch(error => {
+                        this.createSkillset();
                         console.log(error);
                     });
                 },
@@ -151,15 +152,17 @@
                         }
                         final.push(temp1);
                     }
-                    let jsondata = JSON.stringify(final);
-                    console.log(jsondata);
-                    axios(config3, jsondata)
-                    .then( function (response) {
-                        alert('New skillset(s) added!');
-                    })
-                    .catch (error => {
-                        console.log(error);
-                    });
+                    //console.log(final);
+                    for (i in final) {
+                        //console.log(final[i])
+                        axios(config3, final[i])
+                        .then( function (response) {
+                            //alert('New skillset(s) added!');
+                        })
+                        .catch (error => {
+                            console.log(error);
+                        });
+                    }  
                 }
             },
             mounted: function() {
