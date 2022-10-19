@@ -1,50 +1,49 @@
 from flask import jsonify
-from flask_cors import CORS
+from __main__ import app,db
 
-def create(app, db):
-    CORS(app)
-    class Registration(db.Model):
-        tablename = 'Registration'
 
-        reg_id = db.Column(db.Integer, primary_key=True)
-        reg_status = db.Column(db.String(32), nullable=False)
-        completion_status = db.Column(db.String(32), nullable=False)
-        course_id = db.Column(db.String(32), nullable=False)
-        staff_id = db.Column(db.String(32), nullable=False)
+class Registration(db.Model):
+    tablename = 'Registration'
 
-        def __init__(self, reg_id, reg_status, completion_status, course_id, staff_id):
-            self.reg_id = reg_id
-            self.reg_status = reg_status
-            self.completion_status = completion_status
-            self.course_id = course_id
-            self.staff_id = staff_id
+    reg_id = db.Column(db.Integer, primary_key=True)
+    reg_status = db.Column(db.String(32), nullable=False)
+    completion_status = db.Column(db.String(32), nullable=False)
+    course_id = db.Column(db.String(32), nullable=False)
+    staff_id = db.Column(db.String(32), nullable=False)
 
-        def json(self):
-            dto = {
-                'reg_id': self.reg_id,
-                'reg_status': self.reg_status,
-                'completion_status': self.completion_status,
-                'course_id': self.course_id,
-                'staff_id': self.staff_id,
-            }
+    def __init__(self, reg_id, reg_status, completion_status, course_id, staff_id):
+        self.reg_id = reg_id
+        self.reg_status = reg_status
+        self.completion_status = completion_status
+        self.course_id = course_id
+        self.staff_id = staff_id
 
-            return dto
+    def json(self):
+        dto = {
+            'reg_id': self.reg_id,
+            'reg_status': self.reg_status,
+            'completion_status': self.completion_status,
+            'course_id': self.course_id,
+            'staff_id': self.staff_id,
+        }
 
-    @app.route("/registration")
-    def registration_get_all():
-        registration_list = Registration.query.all()
-        if len(registration_list):
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": {
-                        "registrations": [registration.json() for registration in registration_list]
-                    }
-                }
-            )
+        return dto
+
+@app.route("/registration")
+def registration_get_all():
+    registration_list = Registration.query.all()
+    if len(registration_list):
         return jsonify(
             {
-                "code": 404,
-                "message": "There are no registrations."
+                "code": 200,
+                "data": {
+                    "registrations": [registration.json() for registration in registration_list]
+                }
             }
-        ), 404
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no registrations."
+        }
+    ), 404
