@@ -6,11 +6,13 @@ class LearningJourney(db.Model):
         
     Learning_Journey_ID = db.Column(db.Integer, primary_key=True)
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'))
+    Position_Name = db.Column(db.Integer, db.ForeignKey('Positions.Position_Name'))
     Skill_Name = db.Column(db.Integer, db.ForeignKey('Skill.Skill_Name'))
     Course_ID = db.Column(db.Integer, db.ForeignKey('Course.Course_ID'))
 
-    def __init__(self,Staff_ID, Skill_Name, Course_ID):
+    def __init__(self, Staff_ID, Position_Name, Skill_Name, Course_ID):
         self.Staff_ID = Staff_ID
+        self.Position_Name = Position_Name
         self.Skill_Name = Skill_Name
         self.Course_ID = Course_ID
 
@@ -18,6 +20,7 @@ class LearningJourney(db.Model):
         return {
             "Learning_Journey_ID": self.Learning_Journey_ID,
             "Staff_ID": self.Staff_ID,
+            "Position_Name": self.Position_Name,
             "Skill_Name": self.Skill_Name,
             "Course_ID": self.Course_ID,
         }

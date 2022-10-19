@@ -66,63 +66,47 @@
     <div class="hero-image">
         <div class="hero-text">
             <h1>Welcome Back ....</h1>
-            <div v-if="lj_no">
+            <div v-if="lj_no >= 0">
                 <p>Seems like you have not create a Learning Journey</p>
                 <form action="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                     <button type="submit"> Click here to Create Now! </button>
                 </form>
             </div>
-            <v-else>Rabak</v-else>
+            <div v-else>A apple a day keeps the doctor away</div>
         </div>
     </div>
 
-    <div class="container" id="app">
-        <h2>Learning Journey {{ lj_no }}</h2>
-        <select name="Learning Journey" id="Learning Journey">
-            <option value=""></option>
-            <option v-for = "(lj, index) in response" value="{{ lj.Learning_Journey_ID }}">
-                {{ lj.Learning_Journey_ID }}
-            </option>
-        </select>
+    <div class="container" id = "app">
+        <h2>Learning Journey Tracker</h2>
         <div class="row d-flex justify-content-center">
             <table class="table border">
                 <thead></thead>
-                    <tr>
-                        <th scope="col" v-for = "(lj, index) in response"> {{lj.Skill_Set_ID}} {{lj.Skill_Rewarded_ID}} </th>
-                    </tr>
-                </thead>
+                <tr v-model = "position_name"> <td> <h2>{{ position_name }}</h2> </td>  
+                    <td> <select v-model = "lj_no">
+                        <option selected disabled hidden>Select your Learning Journey to Track!</option>
+                        <option v-for = "(lj, index) in response" :value="index">
+                            {{ lj.Position_Name }}
+                        </option>
+                    </select>
+                    </td>
+                </tr>
                 <tbody>
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Skill 1</td>
-                        <td v-for = "(lj, index) in response">
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-
-                        </td>
+                        <th> Skills </th>
+                        <th> Courses </th>
                     </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Skill 2</td>
-                        <td>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Skill 3</td>
-                        <td>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
-                            <button type="button" value="course1" class="btn btn-primary">Course 1</button>
+                    <tr scope="col" v-for="(lj,index) in lj_list">
+                        {{lj_list}}
+                        <td> <button type="button" :value="lj.Skill_Name" class="btn btn-primary"> {{lj.Skill_Name}} </button>  </td>
+                        <!-- can v-for the courses to have multiple courses for a single skill -->
+                        <td> <button type="button" :value="lj.Course_ID" class="btn btn-primary"> {{lj.Course_ID}} </button> 
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="row d-flex justify-content-end">
-            <button type="button" class="btn btn-primary">Edit</button>
+            <button type="button" class="btn btn-primary">Edit Learning Journey</button>
         </div>
     </div>
 
@@ -140,52 +124,69 @@
 
     <script>
 
-        var config = {
-            method: 'get',
-            url: 'http://127.0.0.1:5000/get_learning_journey',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-                }
-            };
+
 
         const vm = new Vue({
             el: '#app',
             data: {
                 response: [],
-                positionName: "",
-                lj_no: 0,
+                lj_list: [],
+                position_name: "",
+                lj_no: "",
+                lj_name: ""
             },
-            mounted: function () {
+            mounted: function get_learning_journey() {
+                var config = {
+                    method: 'get',
+                    url: 'http://127.0.0.1:5000/get_learning_journey_by_staff_id/' + 130001 , //Should not be hardcoded but no session for now
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                    }
                 axios(config)
                     .then(function (response) {
                         console.log(response.data.data.lj);
-                        vm.positionName = response.data.data["lj"][0]["Skill_Set_ID"];
-                        vm.response = response.data.data.lj
-                        console.log(vm.positionName, vm.response, vm.lj_no)
+                        vm.response = response.data.data.lj;
+                        console.log(vm.positionName, vm.response);
                     })
-                
-            }
+            },
+            watch: {
+                // whenever question changes, this function will run
+                lj_no: function () {
+                    vm.position_name = vm.response[vm.lj_no]["Position_Name"];
+                    vm.lj_list = [vm.response[vm.lj_no]];
+                    console.log(vm.lj_list);
+                }
+            },
+            method: {
+                get_learning_journey: function () {
+                }
+            },
+
         })
 
-/*        var json = {
-            "Position_ID": 20,
-            "Position_Name" : "FE Developer",
-        }
-        var config1 = {
-            method: 'post',
-            url: 'http://127.0.0.1:5000/create_new_position/FEDeveloper',
-            json
-            };
-            axios(config1).then(function (response) {
-                console.log(response.data.data)}).catch(function (error) {
-                    console.log(error);
-                  }); */
+        /* var config1 = {
+            "url": "http://127.0.0.1:5000/create_new_position/dfgr321423ew",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+              "Position_ID": 34354,
+              "Position_Name": "a32213441d"
+            }),
+          };
+          
+          axios(config1).then(function (response) {
+            console.log(response);
+          }).finally(function(error){
+            console.log(error)
+          }); */
     </script>
 
     <script>
         //function to prevent default button click behaviour
-        var selectedCourses = [];
+        /* var selectedCourses = [];
         $('.btn').click(function (e) {
             e.preventDefault();
             if ($(this).hasClass('active')) {
@@ -199,7 +200,7 @@
                 selectedCourses.push($(this).attr('value'));
                 console.log(selectedCourses);
             }
-        })
+        }) */
     </script>
 </body>
 

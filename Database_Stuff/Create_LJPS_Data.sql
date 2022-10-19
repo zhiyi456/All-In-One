@@ -87,4 +87,5 @@ INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
 
 INSERT INTO `Learning_Journey` (`Staff_ID`, `Position_Name`, `Skill_Name`, `Course_ID`) VALUES
 (130001,'Data Analyst', 'Python', 'FIN001'),
+(130001,'Human Resource', 'Public Speaking', 'MGT001'),
 (130002,'Data Analyst', 'Python', 'FIN001');
