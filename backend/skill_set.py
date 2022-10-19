@@ -5,18 +5,18 @@ class Skill_Set(db.Model):
     __tablename__ = 'Skill_Set'
 
     Skill_Set_ID = db.Column(db.Integer, primary_key=True)
-    Skill_ID = db.Column(
-        db.String(50), db.ForeignKey('Skill.Skill_ID'))
-    Position_ID = db.Column(
-        db.Integer, db.ForeignKey('Positions.Position_ID'))
+    Position_Name = db.Column(
+        db.String(50), db.ForeignKey('Positions.Position_Name'))
+    Skill_Name = db.Column(
+        db.String(50), db.ForeignKey('Skill.Skill_Name'))
 
-    def __init__(self, Skill_Set_ID, Skill_ID, Position_ID):
+    def __init__(self, Skill_Set_ID, Skill_Name, Position_Name):
         self.Skill_Set_ID = Skill_Set_ID
-        self.Skill_ID = Skill_ID
-        self.Position_ID = Position_ID
+        self.Skill_Name = Skill_Name
+        self.Position_Name = Position_Name
 
     def json(self):
-        return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_ID": self.Skill_ID, "Position_ID": self.Position_ID}
+        return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_ID": self.Position_Name}
 
 @app.route("/skill_set")  # get all skill sets
 def get_all():

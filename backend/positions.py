@@ -5,15 +5,13 @@ from __main__ import app,db
 class Positions(db.Model):
     __tablename__ = 'Positions'
 
-    Position_ID = db.Column(db.Integer, primary_key=True)
-    Position_Name = db.Column(db.String(50))
+    Position_Name = db.Column(db.String(50), primary_key=True)
 
-    def __init__(self, Position_ID, Position_Name):
-        self.Position_ID = Position_ID
+    def __init__(self, Position_Name):
         self.Position_Name = Position_Name
 
     def json(self):
-        return {"Position_ID": self.Position_ID, "Position_Name": self.Position_Name}
+        return {"Position_Name": self.Position_Name}
 
 @app.route("/positions")
 def position_get_all():

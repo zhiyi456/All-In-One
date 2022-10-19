@@ -6,21 +6,20 @@ class LearningJourney(db.Model):
         
     Learning_Journey_ID = db.Column(db.Integer, primary_key=True)
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'))
-    Skill_Set_ID = db.Column(db.Integer, db.ForeignKey('Skill_Set.Skill_Set_ID'))
-    Skill_Rewarded_ID = db.Column(db.Integer, db.ForeignKey('Skill_Rewarded.Skill_Rewarded_ID'))
+    Skill_Name = db.Column(db.Integer, db.ForeignKey('Skill.Skill_Name'))
+    Course_ID = db.Column(db.Integer, db.ForeignKey('Course.Course_ID'))
 
-    def __init__(self,Staff_ID, Skill_Set_ID, Skill_Rewarded_ID):
+    def __init__(self,Staff_ID, Skill_Name, Course_ID):
         self.Staff_ID = Staff_ID
-        self.Skill_Set_ID = Skill_Set_ID
-        self.Skill_Rewarded_ID = Skill_Rewarded_ID
-
+        self.Skill_Name = Skill_Name
+        self.Course_ID = Course_ID
 
     def json(self):
         return {
             "Learning_Journey_ID": self.Learning_Journey_ID,
             "Staff_ID": self.Staff_ID,
-            "Skill_Set_ID": self.Skill_Set_ID,
-            "Skill_Rewarded_ID": self.Skill_Rewarded_ID,
+            "Skill_Name": self.Skill_Name,
+            "Course_ID": self.Course_ID,
         }
 
 @app.route("/get_learning_journey")
