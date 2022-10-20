@@ -11,4 +11,4 @@ e. then repeat for each csv IN THIS EXACT ORDER: role --> staff --> registration
 
 4. Import Create_LJPS_Data.sql
 
-5. If you need more data, just add to Import_LMS_Data.sql then re-import Import_LMS_Data.sql
+5. If you need more data, just add to Create_LJPS_Data.sql then re-import Create_LJPS_Data.sql
