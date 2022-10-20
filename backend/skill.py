@@ -29,15 +29,16 @@ def skill_get_all():
             "message": "Skills not found."
         }), 404
 
-@app.route("/skill/name/<string:name>", methods=['GET'])
+@app.route("/skill/name/<string:name>", methods=['GET']) # search skill by name using wildcard
 def skill_get_by_name(name):
-    skill_data = Skill.query.filter_by(Skill_Name = name).first()
+    skill_data = Skill.query.filter(Skill.Skill_Name.like('%' + name + '%'))
     if skill_data:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "skills": skill_data
+                    # "skills": skill_data
+                    "skills": [skill.json() for skill in skill_data]
                 }
             }
         )

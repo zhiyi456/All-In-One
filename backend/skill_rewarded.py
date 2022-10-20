@@ -41,9 +41,9 @@ def view_course_skills(Course_ID):
 
 
 
-@app.route("/view_course_skills/get_course/<Skill_ID>")
-def view_course_by_skill_id(Skill_ID):
-    skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_ID=Skill_ID)
+@app.route("/view_course_skills/get_course/<Skill_Name>")
+def view_course_by_skill_id(Skill_Name):
+    skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name)
     if skill_rewarded_list:
         return jsonify(
                 {
