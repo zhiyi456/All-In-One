@@ -3,7 +3,7 @@ from __main__ import app,db
 
 
 class Registration(db.Model):
-    tablename = 'Registration'
+    __tablename__ = 'Registration'
 
     reg_id = db.Column(db.Integer, primary_key=True)
     reg_status = db.Column(db.String(32), nullable=False)

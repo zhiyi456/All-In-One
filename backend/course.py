@@ -1,33 +1,32 @@
 from flask import jsonify
-from flask_cors import CORS
 from __main__ import app,db
 
 class Course(db.Model):
-    tablename = 'Course'
+    __tablename__ = 'Course'
 
-    course_id = db.Column(db.Integer, primary_key=True)
-    course_name = db.Column(db.String(32), nullable=False)
-    course_desc = db.Column(db.String(32), nullable=False)
-    course_status = db.Column(db.String(32), nullable=False)
-    course_type = db.Column(db.String(32), nullable=False)
-    course_category = db.Column(db.String(32), nullable=False)
+    Course_ID = db.Column(db.Integer, primary_key=True)
+    Course_Name = db.Column(db.String(32), nullable=False)
+    Course_Desc = db.Column(db.String(32), nullable=False)
+    Course_Status = db.Column(db.String(32), nullable=False)
+    Course_Type = db.Column(db.String(32), nullable=False)
+    Course_Category = db.Column(db.String(32), nullable=False)
 
-    def __init__(self, course_id, course_name, course_desc, course_status, course_type, course_category):
-        self.course_id = course_id
-        self.course_name = course_name
-        self.course_desc = course_desc
-        self.course_status = course_status
-        self.course_type = course_type
-        self.course_category = course_category
+    def __init__(self, Course_ID, Course_Name, Course_Desc, Course_Status, Course_Type, Course_Category):
+        self.Course_ID = Course_ID
+        self.Course_Name = Course_Name
+        self.Course_Desc = Course_Desc
+        self.Course_Status = Course_Status
+        self.Course_Type = Course_Type
+        self.Course_Category = Course_Category
 
     def json(self):
         dto = {
-            'course_id': self.course_id,
-            'course_name': self.course_name,
-            'course_desc': self.course_desc,
-            'course_status': self.course_status,
-            'course_type': self.course_type,
-            'course_category': self.course_category,
+            'Course_ID': self.Course_ID,
+            'Course_Name': self.Course_Name,
+            'Course_Desc': self.Course_Desc,
+            'Course_Status': self.Course_Status,
+            'Course_Type': self.Course_Type,
+            'Course_Category': self.Course_Category,
         }
         return dto 
 

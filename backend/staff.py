@@ -2,7 +2,7 @@ from flask import jsonify
 from __main__ import app,db
 
 class Staff(db.Model):
-    tablename = 'Staff'
+    __tablename__ = 'Staff'
 
     Staff_ID = db.Column(db.Integer, primary_key=True)
     staff_fname = db.Column(db.String(32), nullable=False)

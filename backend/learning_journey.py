@@ -1,14 +1,15 @@
 from flask import request, jsonify
 from __main__ import app,db
 
+
 class LearningJourney(db.Model):
     __tablename__ = 'Learning_Journey'
         
     Learning_Journey_ID = db.Column(db.Integer, primary_key=True)
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'))
-    Position_Name = db.Column(db.Integer, db.ForeignKey('Positions.Position_Name'))
-    Skill_Name = db.Column(db.Integer, db.ForeignKey('Skill.Skill_Name'))
-    Course_ID = db.Column(db.Integer, db.ForeignKey('Course.Course_ID'))
+    Position_Name = db.Column(db.String(50), db.ForeignKey('Positions.Position_Name'))
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'))
+    Course_ID = db.Column(db.String(50), db.ForeignKey('Course.Course_ID'))
 
     def __init__(self, Staff_ID, Position_Name, Skill_Name, Course_ID):
         self.Staff_ID = Staff_ID

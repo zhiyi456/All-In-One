@@ -48,6 +48,7 @@ CREATE TABLE `Learning_Journey` (
   `Position_Name` varchar(50) NOT NULL,
   `Skill_Name` varchar(50) NOT NULL,
   `Course_ID` varchar(20)  NOT NULL,
+  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`),
   FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`),
   FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
   FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
