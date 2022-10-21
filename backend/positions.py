@@ -51,9 +51,9 @@ def get_position_by_name(Position_Name):
         }
     ), 404
 
-@app.route("/get_position_by_ID/<Position_ID>")
-def get_position_by_ID(Position_ID):
-    position_list = Positions.query.filter_by(Position_ID=Position_ID)
+@app.route("/get_position/<Position_Name>")
+def get_position(Position_Name):
+    position_list = Positions.query.filter_by(Position_Name=Position_Name)
     if position_list:
         return jsonify(
             {

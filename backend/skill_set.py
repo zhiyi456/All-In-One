@@ -35,9 +35,9 @@ def get_all():
             "message": "Skill set not found."
         }), 404
 
-@app.route("/skill_set/<Position_ID>")  # get skills by Position_ID
-def get_skills_by_position(Position_ID):
-    skill_set_list = Skill_Set.query.filter_by(Position_ID=Position_ID)
+@app.route("/skill_set/<Position_Name>")  # get skills by Position_Name
+def get_skills_by_position(Position_Name):
+    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name)
 
     if skill_set_list:
         return jsonify(

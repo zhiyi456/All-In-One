@@ -61,7 +61,7 @@
 
       <div class="container" id="app">
         <div class = "row d-flex justify-content-center">
-            <div class = "border p-4 m-4"> You have selected {{roleName}}</div>
+            <div class = "border p-4 m-4"> You have selected {{positionName}}</div>
         </div>
 
         <h2>Learning Journey</h2>
@@ -119,10 +119,12 @@
 
               <tbody>
 
-                <tr v-for="(skill_name, index) in skills_names">
+                <tr v-for="(skill_set, index) in skill_sets">
                   <th>{{index+1}}</th>
-                  <td>{{skill_name}}</td>
-                  <td v-for="course in courses[index]">{{course}}</td>
+                  <td>{{skill_set[index].Skill_Name}}</td>
+                  <td>
+                    <button class="btn btn-primary m-1" v-for="skill_reward, index in skill_rewarded[index]">{{skill_reward.Course_ID}}</button>
+                  </td>
                 </tr>
                 
               </tbody>
@@ -143,83 +145,57 @@
     
     <script>
 
-      var positionID = 1;
+      // var selectedCourses = [];
+      // $('button').click(function(e) {
+      //     e.preventDefault();
+      //     console.log("hello");
+      //     if ($(this).hasClass('active')){
+      //         $(this).removeClass('active');
+      //         var indexOf = selectedCourses.indexOf($(this).attr('value'));
+      //         selectedCourses.splice(indexOf,1);
+      //         console.log(selectedCourses);
+      //     }
+      //     else{
+      //         $(this).addClass('active');
+      //         selectedCourses.push($(this).attr('value'));
+      //         console.log(selectedCourses);
+      //     }
+      // })
 
-      var config = {
-      method: 'get',
-      url: `http://127.0.0.1:5000/get_position_by_ID/${positionID}`,
-      headers: { }
-      };
-
-      var config2 = {
-      method: 'get',
-      url: `http://127.0.0.1:5000/skill_set/${positionID}`,
-      headers: { }
-      };
+      var positionName = "Human Resource";
 
       var vm = new Vue({
         el: '#app',
         data: {
-          position_id: 1,
           response: [],
-          roleName: "Role Name",
-          skill_set: [],
-          skills_ID: [],
-          skills_names: [],
-          courses: [],
-          },
+          positionName: positionName,
+          skill_sets: [],
+          skill_rewarded:[],
+          selectedCourses: []
+        },
         mounted: function(){
-          axios(config) // get position by position ID
+          axios({
+            method: 'get',
+            url: `http://127.0.0.1:5000/skill_set/${positionName}`,
+            headers: { }
+            }) // get skill set by position Name
           .then(function (response) {
-            vm.roleName = response.data.data["Positions"][0]["Position_Name"];
-            vm.response.splice(0, 0, response.data.data["Positions"][0]);
-          });
-          axios(config2) // get skill set by position ID
-          .then(function (response) {
-            var skill_sets = response.data.data["Skill_Set"]
-            for(let i=0; i<skill_sets.length; i++){
-              vm.skills_ID.splice(i, 0, skill_sets[i]["Skill_ID"]); //store skill IDs in skills_ID
-              let current_skill_ID = vm.skills_ID[i];
+            vm.skill_sets.splice(0,0,response.data.data["Skill_Set"]);
+            for(let i=0; i<vm.skill_sets.length; i++){
+              let current_skill = vm.skill_sets[0][i]["Skill_Name"];
               axios({
-              method: 'get',
-              url: `http://127.0.0.1:5000/skill/${current_skill_ID}`,
-              headers: { }
-              }) //get skill by skill ID
-              .then(function(response){
-                vm.skills_names.splice(i,0, response.data.data["skill"][0]["Skill_Name"]);
-                axios({
-                  method: 'get',
-                  url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill_ID}`,
-                  headers: { }
-                })
-                .then(function(response){
-                  vm.courses.splice(i, 0, response.data.data["Skill_Rewarded"])
-                })
+                method: 'get',
+                url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill}`,
+                headers: { }
               })
-              
+              .then(function (response){
+                  vm.skill_rewarded.splice(0,0, response.data.data["Skill_Rewarded"]);
+              })
             }
           });
         }
       })
     </script>
     
-    <script>
-      //function to prevent default button click behaviour
-        var selectedCourses = [];
-        $('.btn').click(function(e) {
-            e.preventDefault();
-            if ($(this).hasClass('active')){
-                $(this).removeClass('active');
-                var indexOf = selectedCourses.indexOf($(this).attr('value'));
-                selectedCourses.splice(indexOf,1);
-                console.log(selectedCourses);
-            }
-            else{
-                $(this).addClass('active');
-                selectedCourses.push($(this).attr('value'));
-                console.log(selectedCourses);
-            }
-        })
-    </script>
   </body>
 </html>

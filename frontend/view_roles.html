@@ -117,8 +117,9 @@
                                             <div class="card-body">
                                                 <h4 class="card-title">{{position.Position_Name}}</h4>
                                                 <p class="card-text">{{position.Position_Desc}}</p>
+                                                <a class="btn btn-primary btn-sm" href="create_learning_journey.html" role="button">Create Learning Journey</a>
                                                 <!-- JW edit edit button -->
-                                                <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a>
+                                                <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
                                             </div>
     
                                         </div>
@@ -154,9 +155,7 @@
             mounted: function(){
                 axios(config)
                 .then(function (response) {
-                    console.log(response);
                     vm.positions.splice(0, 0, response.data.data["positions"]); 
-                    console.log(positions)
                 })
             }
             })
