@@ -1,24 +1,27 @@
 import unittest
-from flask import jsonify
-from positions import Positions
-#from __main__ import app,db
+from flask import Flask,jsonify
+from flask_sqlalchemy import SQLAlchemy
 import flask_testing
 import json
-from app import app,db
+
+
+app = Flask(__name__)
+db = SQLAlchemy(app)
+
+
 
 class TestApp(flask_testing.TestCase):
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {}
-    app.config['TESTING'] = True
 
     def create_app(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite://"
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {}
+        app.config['TESTING'] = True
         return app
 
     def setUp(self):
-        db.session.add(Positions(1, 'Human Resource'))
-        db.session.add(Positions(2, 'Analyst'))
-        db.session.add(Positions(3, 'Head of Security'))
-
+        db.session.add(Positions('Human Resource'))
+        db.session.add(Positions('Analyst'))
+        db.session.add(Positions('Head of Security'))
         #db.session.commit()
         db.create_all()
 
@@ -26,14 +29,16 @@ class TestApp(flask_testing.TestCase):
         db.session.remove()
         db.drop_all()
 
-class TestPositions(TestApp):
+from positions import Positions
+
+class TestPositions(TestApp):    
     def test_create_new_position(self):
-        new_position = Positions(Position_ID= 4, Position_Name= 'Software Developer')
-        # db.session.add(new_position)
-        # db.session.commit()
+        
+        new_position = Positions(Position_Name= 'Software Developer')
+        db.session.add(new_position)
+        db.session.commit()
 
         request_body = {
-            'Position_ID': new_position.Position_ID, 
             'Position_Name': new_position.Position_Name
         }
 
@@ -45,19 +50,17 @@ class TestPositions(TestApp):
         {
             "code": 201,
             "data": {
-            'Position_ID': new_position.Position_ID, 
             'Position_Name': new_position.Position_Name
         }
         }
         ).data)
     
     def test_create_existing_position(self):
-        new_position = Positions(Position_ID= 3, Position_Name= 'Head of Security')
+        new_position = Positions(Position_Name= 'Head of Security')
         # db.session.add(new_position)
         # db.session.commit()
 
         request_body = {
-            'Position_ID': new_position.Position_ID, 
             'Position_Name': new_position.Position_Name
         }
 
@@ -82,15 +85,12 @@ class TestPositions(TestApp):
             "data": {
                 "positions": [
                 {
-                    "Position_ID": 1,
                     "Position_Name": "Human Resource"
                 },
                 {
-                    "Position_ID": 2,
                     "Position_Name": "Analyst"
                 },
                 {
-                    "Position_ID": 3,
                     "Position_Name": "Head of Security"
                 }
                 ]
@@ -115,14 +115,13 @@ class TestPositions(TestApp):
             "data": {
                 "Positions": [
                 {
-                    "Position_ID": 3,
                     "Position_Name": "Head of Security"
                 }
                 ]
             }
             }
         ).data)
-    
+
 
 
 
