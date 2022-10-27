@@ -57,13 +57,32 @@ class Staff(db.Model):
                 {
                     "code": 200,
                     "data": {
-                        "skills": staff_data
-                    }
+                        "staff": [staff.json() for staff in staff_data]
+                    },
                 }
             )
         return jsonify (
             {
                 "code": 404,
                 "message": 'No staff with given staff ID'
+            }
+        ), 404
+
+    @app.route("/staff_get_by_dept/<Dept_Name>")
+    def staff_get_by_dept(Dept_Name):
+        dept_staff = Staff.query.filter_by(dept=Dept_Name)
+        if dept_staff:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "staffs": [staff.json() for staff in dept_staff]
+                    }
+                }
+            )
+        return jsonify (
+            {
+                "code": 404,
+                "message": 'No staff found in the department.'
             }
         ), 404

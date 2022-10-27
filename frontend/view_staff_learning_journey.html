@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+    <title>View Course</title>
+
+    <!-- Vue 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10"></script>
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light custombg">
+		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<div class="navbar-nav">
+			<div class="nav-item active">
+				<a class="nav-link" href="#">Home</a>
+			</div>
+			<div class="navbar-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Browse
+				</a>
+				<div class="dropdown-menu" aria-labelledby="browseDropdown">
+					<a class="dropdown-item" href="view_courses.html">Courses</a>
+					<a class="dropdown-item" href="view_roles.html">Roles</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
+				</div>
+			</div>
+			<div class="navbar-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					User Type
+				</a>
+				<div class="dropdown-menu" aria-labelledby="userDropdown">
+					<a class="dropdown-item" href="#">Learner</a>
+					<a class="dropdown-item" href="#">Human Resouces</a>
+				</div>
+			</div>
+		</div>
+		<div class="navbar-item ml-auto">
+			<a class="nav-link" href="#">Logout</a>
+		</div>
+	</nav>
+
+    <div class="container mx-5 my-4" id="app">
+        <h2>{{dept}} Department</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">Staff ID</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+                  <th scope="col">Email</th>
+                </tr>
+            </thead>
+            <div v-for="(emp,index) in employees" :key="index">
+                <tr>
+                    <td>{{emp.staff_id}}</td>
+                    <td>{{emp.staff_fname}}</td>
+                    <td>{{emp.staff_lname}}</td>
+                    <td>{{emp.email}}</td>
+                </tr>
+            </div>
+
+        </table>
+    
+    </div>
+    
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                employees: [],
+                dept: "",
+                usertype: 0,
+            },
+            mounted: function () {
+                var config = {
+                    method: 'get',
+                    url: 'http://127.0.0.1:5000/staff_get/' + 140001 ,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+                var config2 = {
+                    method: 'get',
+                    url: 'http://127.0.0.1:5000/staff_get_by_dept/' + 'Sales',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+                axios(config)
+                    .then(function (response) {
+                        //console.log(response.data.data);
+                        this.dept = response.data.data["staff"][0]['dept'];
+                        this.usertype = response.data.data["staff"][0]['role'];
+                        // console.log(this.usertype)
+                        // console.log(this.dept)
+                    })
+                    .catch ( error => {
+                        console.log(error)
+                    });
+
+                axios(config2)
+                    .then(function (response) {
+                        //console.log(response.data.data);  
+                        this.employees = response.data.data["staffs"]
+                        console.log(this.employees)
+                    })
+                    .catch ( error => {
+                        console.log(error)
+                    });
+            },},
+        )
+
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
