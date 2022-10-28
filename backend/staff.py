@@ -9,7 +9,7 @@ class Staff(db.Model):
     staff_lname = db.Column(db.String(32), nullable=False)
     dept = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(32), nullable=False)
-    role = db.Column(db.String(32), nullable=False)
+    role = db.Column(db.Integer, nullable=False)
 
     def __init__(self, Staff_ID, staff_fname, staff_lname, dept, email, role):
         self.Staff_ID = Staff_ID
