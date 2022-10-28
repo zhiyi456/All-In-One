@@ -10,8 +10,8 @@ class Skill_Set(db.Model):
     Skill_Name = db.Column(
         db.String(50), db.ForeignKey('Skill.Skill_Name'))
 
-    def __init__(self, Skill_Set_ID, Skill_Name, Position_Name):
-        self.Skill_Set_ID = Skill_Set_ID
+    def __init__(self, Skill_Name, Position_Name):
+        #self.Skill_Set_ID = Skill_Set_ID
         self.Skill_Name = Skill_Name
         self.Position_Name = Position_Name
 
@@ -91,5 +91,54 @@ def create_new_skillset(new_position_id):
         {
             "code": 201,
             "data": skillset.json()
+        }
+    ), 201
+
+
+@app.route("/update_skillset", methods=['POST']) # create skillset 
+def update_skillset():
+
+    data = request.get_json()
+    print(data,'============================')
+    position=data['position_name']
+    to_add=data['add']
+    to_delete=data['delete']
+    add_name=[]
+    delete_name=[]
+    for item in to_delete:
+        delete_name.append(item)
+    for item in to_add:
+        add_name.append(item)
+    print(delete_name,'=================================================================================================================================================================================================================================================================')
+    #skillset = Skill_Set(**data)
+    #print(skillset)
+    # delete where position is x and skill in skill array
+    # add position x and skill y
+    
+    try:
+        for item in to_add:
+            data={"Skill_Name":item,"Position_Name":position}
+            skillset = Skill_Set(**data)
+            db.session.add(skillset)
+            db.session.commit()
+        for item in to_delete :
+            Skill_Set.query.filter_by(Skill_Name=item,Position_Name=position).delete()
+            db.session.commit()
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "New_SkillSet": 'skillset'
+                },
+                "message": "An error occurred while creating the skillset."
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "message":"skills successfully updated!"
         }
     ), 201
