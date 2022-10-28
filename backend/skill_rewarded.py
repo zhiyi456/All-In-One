@@ -9,7 +9,7 @@ class Skill_Rewarded(db.Model):
     Skill_Name = db.Column(
         db.String(50), db.ForeignKey('Skill.Skill_Name'))
     Course_ID = db.Column(
-        db.String(20), db.ForeignKey('Course.Cosition_ID'))
+        db.String(20), db.ForeignKey('Course.Course_ID'))
 
     def __init__(self, Skill_Rewarded_ID, Skill_Name, Course_ID):
         self.Skill_Rewarded_ID = Skill_Rewarded_ID

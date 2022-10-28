@@ -11,12 +11,11 @@ class Skill_Set(db.Model):
         db.String(50), db.ForeignKey('Skill.Skill_Name'))
 
     def __init__(self, Skill_Name, Position_Name):
-        #self.Skill_Set_ID = Skill_Set_ID
         self.Skill_Name = Skill_Name
         self.Position_Name = Position_Name
 
     def json(self):
-        return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_ID": self.Position_Name}
+        return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_Name": self.Position_Name}
 
 @app.route("/skill_set")  # get all skill sets
 def get_all():
@@ -55,33 +54,32 @@ def get_skills_by_position(Position_Name):
         }
     ), 404
 
-@app.route("/create_new_skillset/<int:new_position_id>", methods=['POST']) # create skillset 
-def create_new_skillset(new_position_id):
+@app.route("/create_new_skillset", methods=['POST']) # create skillset 
+def create_new_skillset():
 
-    if (Skill_Set.query.filterby(Position_ID=new_position_id).first()):
+    data = request.get_json()
+    if (Skill_Set.query.filter_by(Position_Name=data["Position_Name"], Skill_Name=data["Skill_Name"]).first()):
         return jsonify(
             {
                 "code": 400,
-                "data": {
-                    "Position_Name": new_position_id
-                },
+                "data": data,
                 "message": "A skillset with the same ID already exists."
             }
         ), 400
 
-    data = request.get_json()
     print(data)
     skillset = Skill_Set(**data)
     print(skillset)
     try:
         db.session.add(skillset)
         db.session.commit()
-    except:
+    except Exception as e:
+        print(e,'================================================')
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "New_SkillSet": skillset
+                    "New_SkillSet": data
                 },
                 "message": "An error occurred while creating the skillset."
             }

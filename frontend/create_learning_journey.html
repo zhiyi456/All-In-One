@@ -105,6 +105,8 @@
               </table>
         </div> -->
 
+        {{selectedCourses}}
+
         <div class = "row d-flex justify-content-center">
 
           <table class="table border">
@@ -119,11 +121,17 @@
 
               <tbody>
 
+
                 <tr v-for="(skill_set, index) in skill_sets">
                   <th>{{index+1}}</th>
                   <td>{{skill_set[index].Skill_Name}}</td>
                   <td>
-                    <button class="btn btn-primary m-1" v-for="skill_reward, index in skill_rewarded[index]">{{skill_reward.Course_ID}}</button>
+                    <div class="form-check" v-for="skill_reward in skill_rewarded[index]" v-model="selectedCourses">
+                      <input class="form-check-input" type="checkbox" :value="skill_reward.Course_ID">
+                      <label class="form-check-label" for="skill_reward.Course_ID">
+                        {{skill_reward.Course_ID}}
+                      </label>
+                    </div>
                   </td>
                 </tr>
                 
@@ -171,7 +179,7 @@
           positionName: positionName,
           skill_sets: [],
           skill_rewarded:[],
-          selectedCourses: []
+          selectedCourses: {}
         },
         mounted: function(){
           axios({
@@ -183,6 +191,7 @@
             vm.skill_sets.splice(0,0,response.data.data["Skill_Set"]);
             for(let i=0; i<vm.skill_sets.length; i++){
               let current_skill = vm.skill_sets[0][i]["Skill_Name"];
+              Vue.set(vm.selectedCourses, current_skill, "");
               axios({
                 method: 'get',
                 url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill}`,
