@@ -9,7 +9,7 @@ class Staff(db.Model):
     staff_lname = db.Column(db.String(32), nullable=False)
     dept = db.Column(db.String(32), nullable=False)
     email = db.Column(db.String(32), nullable=False)
-    role = db.Column(db.String(32), nullable=False)
+    role = db.Column(db.Integer, nullable=False)
 
     def __init__(self, Staff_ID, staff_fname, staff_lname, dept, email, role):
         self.Staff_ID = Staff_ID
@@ -57,13 +57,32 @@ class Staff(db.Model):
                 {
                     "code": 200,
                     "data": {
-                        "skills": staff_data
-                    }
+                        "staff": [staff.json() for staff in staff_data]
+                    },
                 }
             )
         return jsonify (
             {
                 "code": 404,
                 "message": 'No staff with given staff ID'
+            }
+        ), 404
+
+    @app.route("/staff_get_by_dept/<Dept_Name>")
+    def staff_get_by_dept(Dept_Name):
+        dept_staff = Staff.query.filter_by(dept=Dept_Name)
+        if dept_staff:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "staffs": [staff.json() for staff in dept_staff]
+                    }
+                }
+            )
+        return jsonify (
+            {
+                "code": 404,
+                "message": 'No staff found in the department.'
             }
         ), 404

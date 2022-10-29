@@ -91,25 +91,12 @@
 
         var config1 = {
             method: 'get',
-            url: 'http://127.0.0.1:8080/skill',
+            url: 'http://127.0.0.1:5000/skill',
             headers: {
                 /* "Access-Control-Allow-Origin": "*", */
                 "Content-Type": "application/json",
             }
         };
-
-
-
-        
-
-        var config4 = {
-            method: 'get',
-            url: 'http://127.0.0.1:8080/get_position_by_name/' + this.position_name,
-            headers: {
-                /* "Access-Control-Allow-Origin": "*", */
-                "Content-Type": "application/json"
-            }
-        }
 
         var vm = new Vue({
             el: '#app',
@@ -127,7 +114,7 @@
                     };
                     var config2 = {
                         method: 'post',
-                        url: 'http://127.0.0.1:8080/create_new_position/' + vm.position_name,
+                        url: 'http://127.0.0.1:5000/create_new_position/' + vm.position_name,
                         headers: {
                             /* "Access-Control-Allow-Origin": "*", */
                             "Content-Type": "application/json",
@@ -160,7 +147,7 @@
                     for (i in final) {
                         var config3 = {
                             method: 'post',
-                            url: 'http://127.0.0.1:8080/create_new_skillset',
+                            url: 'http://127.0.0.1:5000/create_new_skillset',
                             headers: {
                                 /* "Access-Control-Allow-Origin": "*", */
                                 "Content-Type": "application/json"
@@ -181,7 +168,7 @@
             mounted: function() {
                 axios(config1)
                 .then( function (response) {
-                    // console.log(response);
+                    console.log(response.data.data);
                     vm.skills.splice(0, 0, response.data.data['skill']);
                 })
                 .catch ( error => {
