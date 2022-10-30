@@ -28,8 +28,8 @@ CREATE TABLE `Skill_Set` (
   `Skill_Set_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Position_Name` varchar(50) NOT NULL,
   `Skill_Name` varchar(50) NOT NULL,
-  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`),
-  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`)
+  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save skills rewarded by a course and save courses which give which skill
@@ -37,8 +37,8 @@ CREATE TABLE `Skill_Rewarded` (
   `Skill_Rewarded_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Skill_Name` varchar(50) NOT NULL,
   `Course_ID` varchar(20) NOT NULL,
-  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
-  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save which positions aspired by staff and save which staff aspire to be which positions
@@ -48,10 +48,10 @@ CREATE TABLE `Learning_Journey` (
   `Position_Name` varchar(50) NOT NULL,
   `Skill_Name` varchar(50) NOT NULL,
   `Course_ID` varchar(20)  NOT NULL,
-  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`),
-  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`),
-  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
-  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
+  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ------------------------------------ DUMMY DATA STARTS HERE -------------------------------------------------------------------------------

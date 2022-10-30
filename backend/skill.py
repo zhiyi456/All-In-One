@@ -71,24 +71,26 @@ def skill_delete_by_name(skill_name):
         result = Skill.query.filter_by(Skill_Name = skill_name).first()
         db.session.delete(result)
         db.session.commit()
+        return('success')
+    except Exception as e: print(e)
+    return('error')
+    # except:    
+    #     return jsonify(
+    #             {
+    #                 "code": 500,
+    #                 "data": {
+    #                     "Skill_Name": skill_name
+    #                 },
+    #                 "message": "An error occurred while deleting the Skill."
+    #             }
+    #         ), 500
 
-    except:    
-        return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "Skill_Name": skill_name
-                    },
-                    "message": "An error occurred while deleting the Skill."
-                }
-            ), 500
-
-    return jsonify(
-        {
-            "code": 200,
-            "data": skill_name
-        }
-    ), 200
+    # return jsonify(
+    #     {
+    #         "code": 200,
+    #         "data": skill_name
+    #     }
+    # ), 200
 
 @app.route("/skill/create", methods=['POST']) #add new skill
 def create_new_skill():
