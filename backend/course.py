@@ -74,7 +74,7 @@ def course_get_by_name(course_name):
 
 @app.route("/course/id/<string:course_id>", methods=['GET'])
 def get_course_by_course_id(course_id):
-    course = Course.query.filter_by(course_id = course_id).first()
+    course = Course.query.filter_by(Course_ID = course_id).first()
     if course:
         return jsonify(
             {
