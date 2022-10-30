@@ -1,21 +1,29 @@
 from flask import jsonify, request
 from __main__ import app,db
+#from app import app,db
 
 class Skill_Set(db.Model):
     __tablename__ = 'Skill_Set'
 
     Skill_Set_ID = db.Column(db.Integer, primary_key=True)
-    Position_Name = db.Column(
-        db.String(50), db.ForeignKey('Positions.Position_Name'))
     Skill_Name = db.Column(
         db.String(50), db.ForeignKey('Skill.Skill_Name'))
+    Position_Name = db.Column(
+        db.String(50), db.ForeignKey('Positions.Position_Name'))
+    
 
     def __init__(self, Skill_Name, Position_Name):
+        if not isinstance(Skill_Name, str):
+            raise TypeError("Skill_Name must be a string")
+        if not isinstance(Position_Name, str):
+            raise TypeError("Position_Name must be a string")
         self.Skill_Name = Skill_Name
         self.Position_Name = Position_Name
 
     def json(self):
-        return {"Skill_Set_ID": self.Skill_Set_ID, "Skill_Name": self.Skill_Name, "Position_Name": self.Position_Name}
+        return {"Skill_Set_ID": self.Skill_Set_ID, 
+                "Skill_Name": self.Skill_Name, 
+                "Position_Name": self.Position_Name}
 
 @app.route("/skill_set")  # get all skill sets
 def get_all():

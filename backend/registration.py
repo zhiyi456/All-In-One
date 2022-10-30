@@ -1,5 +1,6 @@
 from flask import jsonify
 from __main__ import app,db
+#from app import app,db
 
 
 class Registration(db.Model):
@@ -9,7 +10,7 @@ class Registration(db.Model):
     reg_status = db.Column(db.String(32), nullable=False)
     completion_status = db.Column(db.String(32), nullable=False)
     course_id = db.Column(db.String(32), nullable=False)
-    staff_id = db.Column(db.String(32), nullable=False)
+    staff_id = db.Column(db.Integer, nullable=False)
 
     def __init__(self, reg_id, reg_status, completion_status, course_id, staff_id):
         self.reg_id = reg_id

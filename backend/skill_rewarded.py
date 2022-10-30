@@ -1,6 +1,6 @@
 from flask import jsonify
 from __main__ import app,db
-
+#from app import app,db
 
 class Skill_Rewarded(db.Model):
     __tablename__ = 'Skill_Rewarded'
@@ -12,12 +12,20 @@ class Skill_Rewarded(db.Model):
         db.String(20), db.ForeignKey('Course.Course_ID'))
 
     def __init__(self, Skill_Rewarded_ID, Skill_Name, Course_ID):
+        if not isinstance(Skill_Rewarded_ID, int):
+            raise TypeError("Skill_Rewarded_ID must be an integer")
+        if not isinstance(Skill_Name, str):
+            raise TypeError("Skill_Name must be a string")
+        if not isinstance(Course_ID, str):
+            raise TypeError("Course_ID must be an string")
         self.Skill_Rewarded_ID = Skill_Rewarded_ID
         self.Skill_Name = Skill_Name
         self.Course_ID = Course_ID
 
     def json(self):
-        return {"Skill_Rewarded_ID": self.Skill_Rewarded_ID, "Skill_Name": self.Skill_Name, "Course_ID": self.Course_ID}
+        return {"Skill_Rewarded_ID": self.Skill_Rewarded_ID, 
+                "Skill_Name": self.Skill_Name, 
+                "Course_ID": self.Course_ID}
 
 @app.route("/view_course_skills/get_skill/<Course_ID>")
 def view_course_skills(Course_ID):

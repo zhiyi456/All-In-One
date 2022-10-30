@@ -12,6 +12,14 @@ class LearningJourney(db.Model):
     Course_ID = db.Column(db.String(50), db.ForeignKey('Course.Course_ID'))
 
     def __init__(self, Staff_ID, Position_Name, Skill_Name, Course_ID):
+        if not isinstance(Staff_ID, int):
+            raise TypeError("Staff_ID must be an integer")
+        if not isinstance(Position_Name, str):
+            raise TypeError("Position_Name must be an integer")
+        if not isinstance(Skill_Name, str):
+            raise TypeError("Skill_Name must be a string")
+        if not isinstance(Course_ID, str):
+            raise TypeError("Course_ID must be an string")
         self.Staff_ID = Staff_ID
         self.Position_Name = Position_Name
         self.Skill_Name = Skill_Name
@@ -23,7 +31,7 @@ class LearningJourney(db.Model):
             "Staff_ID": self.Staff_ID,
             "Position_Name": self.Position_Name,
             "Skill_Name": self.Skill_Name,
-            "Course_ID": self.Course_ID,
+            "Course_ID": self.Course_ID
         }
 
 @app.route("/get_learning_journey")
@@ -61,7 +69,7 @@ def get_learning_journey_by_staff_id(Staff_ID):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no Learning Journey."
+            "message": Staff_ID +" has no Learning Journey."
         }
     ), 404
 
@@ -82,7 +90,7 @@ def get_learning_journey_by_lj_id(Learning_Journey_ID):
     return jsonify(
         {
             "code": 404,
-            "message": "There are no Learning Journey."
+            "message": "Learning Journey ID do not exist."
         }
     ), 404
 
@@ -94,8 +102,7 @@ def create_learning_journey():
     db.session.add(lj)
     db.session.commit()
     try:
-        print("Hello")
-        
+        print("Hello")  
     except:
         return jsonify(
             {

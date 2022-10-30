@@ -4,7 +4,7 @@ from __main__ import app,db
 class Course(db.Model):
     __tablename__ = 'Course'
 
-    Course_ID = db.Column(db.Integer, primary_key=True)
+    Course_ID = db.Column(db.String(50), primary_key=True)
     Course_Name = db.Column(db.String(32), nullable=False)
     Course_Desc = db.Column(db.String(32), nullable=False)
     Course_Status = db.Column(db.String(32), nullable=False)
