@@ -11,7 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS `Skill`, `Positions`, `Skill_set`, `Skill_Rewarded`, `Learning_Journey`;
+DROP TABLE IF EXISTS `SKill`, `Positions`, `Skill_set`, `Skill_Rewarded`, `Learning_Journey`;
 SET foreign_key_checks = 1;
 USE `is212_ALL_IN_ONE`;
 
@@ -27,14 +27,18 @@ CREATE TABLE `Positions` (
 CREATE TABLE `Skill_Set` (
   `Skill_Set_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Position_Name` varchar(50) NOT NULL,
-  `Skill_Name` varchar(50) NOT NULL
+  `Skill_Name` varchar(50) NOT NULL,
+  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`),
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save skills rewarded by a course and save courses which give which skill
 CREATE TABLE `Skill_Rewarded` (
   `Skill_Rewarded_ID` int PRIMARY KEY AUTO_INCREMENT,
   `Skill_Name` varchar(50) NOT NULL,
-  `Course_ID` varchar(20) NOT NULL
+  `Course_ID` varchar(20) NOT NULL,
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
+  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- save which positions aspired by staff and save which staff aspire to be which positions
@@ -43,7 +47,11 @@ CREATE TABLE `Learning_Journey` (
   `Staff_ID` int NOT NULL,
   `Position_Name` varchar(50) NOT NULL,
   `Skill_Name` varchar(50) NOT NULL,
-  `Course_ID` varchar(20)  NOT NULL
+  `Course_ID` varchar(20)  NOT NULL,
+  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`),
+  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`),
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`),
+  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ------------------------------------ DUMMY DATA STARTS HERE -------------------------------------------------------------------------------
@@ -57,7 +65,7 @@ INSERT INTO `Positions` (`Position_Name`) VALUES
 
 INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('Python'),
-('Advanced Python'), 
+('Advanced Python'),
 ('R'),
 ('Tableau'),
 ('Interpersonal Skills'),

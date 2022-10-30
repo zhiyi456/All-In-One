@@ -99,9 +99,11 @@
 
             <div class="row">
                 <ul class="list-group list-group-flush">
-                    <div v-for="skill in search_results">
-                        <li class="list-group-item" >{{ skill }}
-                            <button v-if=" role == 'hr' || role == 'manager' " class="btn btn-danger float-right ml-4">Delete</button>
+                    <div v-for="skill_name in search_results">
+                        <li class="list-group-item" >{{ skill_name }}
+                            <button v-if=" role == 'hr' || role == 'manager' " 
+                            class="btn btn-danger float-right ml-4"
+                            @click="deleteSkill(skill_name)">Delete</button>
                         </li>
                     </div>
                 </ul>
@@ -125,7 +127,7 @@
 
                     var config = {
                         method: 'get', //get courses by skill name
-                        url: `http://127.0.0.1:5000/skill/name/` + vm.Submitted_Skill_Name_Enquiry, //how to dynamically edit the variable at the end
+                        url: `http://127.0.0.1:5000/skill/name/` + vm.Submitted_Skill_Name_Enquiry,
                         headers: { }
                     };
 
@@ -140,6 +142,30 @@
                     .catch(function (error) {
                         console.log(error);
                     });
+                },
+                deleteSkill: function(skill_name) {
+                    event.preventDefault();
+                    console.log("=============== delete skill start ====================")
+                    console.log("skill to be deleted: " + skill_name)
+
+                    var config = {
+                        method: 'delete', //get courses by skill name
+                        url: `http://127.0.0.1:5000/skill/delete/` + skill_name,
+                        headers: { }
+                    };
+                    axios(config)
+                    .then(function (response) {
+                        console.log(JSON.stringify(response.data));
+                        index_needed = vm.search_results.indexOf(skill_name)
+                        console.log(vm.search_results)
+                        console.log(index_needed)
+                        vm.search_results.splice(index_needed, 1)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        console.log('======== delete skill ERROR NOT WORKING ===========')
+                    });
+                    
                 },
             },
             mounted: function(){ //show all skils when first loading
