@@ -65,7 +65,7 @@ INSERT INTO `Positions` (`Position_Name`) VALUES
 
 INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('Python'),
-('Advanced Python'), --test searching multiple skills with %python%
+('Advanced Python'),
 ('R'),
 ('Tableau'),
 ('Interpersonal Skills'),
