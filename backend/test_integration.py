@@ -688,6 +688,22 @@ class TestSkillRewarded(TestApp):
             }
             }
         ).data)
+
+        #change to link later
+        def test_delete_skill_from_course_by_id(self):
+            db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
+            db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
+            db.session.add(Skill_Rewarded(3, 'R','COR001'))
+            db.session.commit()
+
+            response = self.client.delete("/position/delete/1")
+            #print(response.data)
+            self.assertEqual(response.data, jsonify(
+            {
+                "code": 200,
+                "data": 1
+            }
+            ).data)
     
 
 
