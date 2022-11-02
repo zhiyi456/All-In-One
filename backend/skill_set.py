@@ -106,9 +106,9 @@ def update_skillset():
 
     data = request.get_json()
     print (data,'=============================================================================')
-    position=data['position_name']
-    to_add=data['add']
-    to_delete=data['delete']
+    position=data['Position_Name']
+    to_add=data['Skills_To_Add']
+    to_delete=data['Skills_To_Delete']
     
     try:
         for item in to_add:
