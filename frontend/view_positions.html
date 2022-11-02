@@ -30,7 +30,7 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
-					<a class="dropdown-item" href="view_roles.html">Roles</a>
+					<a class="dropdown-item" href="view_positions.html">Positions</a>
 					<a class="dropdown-item" href="#">Skills</a>
 				</div>
 			</div>
@@ -93,39 +93,43 @@
 
                 <div class="row">
                     <div class="col-6">
-                        <h3 class="mb-3">Roles </h3>
+                        <h3 class="mb-3">Positions </h3>
                     </div>
                     
-                    <div class="col-6 text-right">
-                        <a class="btn btn-primary mb-3 mr-1" href="#carouselArrows" role="button" data-slide="prev">
-                            <i>←</i>
-                        </a>
-                        <a class="btn btn-primary mb-3 " href="#carouselArrows" role="button" data-slide="next">
-                            <i>→</i>
-                        </a>
-                    </div>
 
                     <div class="col-12">
-                        <div id="carouselArrows" class="carousel slide" data-ride="carousel" data-interval="false">
-                            
-                            <div class = "carousel-inner">
-
-                                <div class = "row">
-                                    <div class="col-4" v-for="position in positions[0]">
-                                        <div class="card">
-                                        
-                                            <div class="card-body">
-                                                <h4 class="card-title">{{position.Position_Name}}</h4>
-                                                <p class="card-text">{{position.Position_Desc}}</p>
-                                                <a class="btn btn-primary btn-sm" href="create_learning_journey.html" role="button">Create Learning Journey</a>
-                                                <!-- JW edit edit button -->
-                                                <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
-                                            </div>
-    
+                        <div v-for="(position,index) in positions[0]">
+                            <div class = "row pt-3 pb-3 " v-if="index%3==0">
+                                <div class="col-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{position.Position_Name}}</h4>
+                                            <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(position)">Create Learning Journey</button>
+                                            <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
                                         </div>
                                     </div>
                                 </div>
 
+                                <div class="col-4" v-if="positions[0][index+1]">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{positions[0][index+1] && positions[0][index+1]['Position_Name']}}</h4>
+                                            <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
+                                            <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4" v-if="positions[0][index+2]">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{positions[0][index+2] && positions[0][index+2]['Position_Name']}}</h4>
+                                            <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
+                                            <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            
                             </div>
                             
                         </div>
@@ -150,13 +154,21 @@
         var vm = new Vue({
             el: '#app',
             data: {
-                positions: []
+                positions: [],
+                positionName: ""
             },
             mounted: function(){
                 axios(config)
                 .then(function (response) {
                     vm.positions.splice(0, 0, response.data.data["positions"]); 
                 })
+            },
+            methods: {
+                sendPosition: function(position){
+                    vm.positionName = position
+                    sessionStorage.setItem("position", JSON.stringify(vm.positionName));
+                    console.log(sessionStorage);
+                }
             }
             })
     </script>
