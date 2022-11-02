@@ -116,35 +116,22 @@ def create_new_position(new_position):
 @app.route("/position/update", methods=['POST'])
 def update_position_name():
 
-    #lj_result=invoke_http("http://127.0.0.1:5000/lj", method='POST', json=None)
-    
-    #print(skillset_result,'========================================================================================================================================================================================================================================================================================================================================================================================================================================================')
-    #print(lj_result,'========================================================================================================================================================================================================================================================================================================================================================================================================================================================')
     data = request.get_json()
     old_position_name=data['old_position_name']
     new_position_name=data['new_position_name']
-   
-
-
-    print(new_position_name,old_position_name,'==========================================================================================================================================================================================================================================================================================================================================================================================')
-    
-    result=Positions.query.filter(Positions.Position_Name==old_position_name).update({'Position_Name': new_position_name})
-    #skillset_result = invoke_http("http://127.0.0.1:5000/skill_set/update_position", method='POST', json=data)
-    #lj_result=invoke_http("http://127.0.0.1:5000/lj", method='POST', json=None)
-
+       
+    result=Positions.query.filter_by(Position_Name=old_position_name).update({'Position_Name': new_position_name})
     db.session.commit()
-    if 'a':
+    if result:
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "skill": 'slayed'
-                }
+                "message": old_position_name +" has been changed to " + new_position_name
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Skill ID is not found. Please double check."
+            "message": "Position is not found. Please double check."
         }
     ), 404
