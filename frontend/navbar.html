@@ -16,7 +16,7 @@
 		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
 		<div class="navbar-nav">
 			<div class="nav-item active">
-				<a class="nav-link" href="#">Home</a>
+				<a class="nav-link" href="homepage.html">Home</a>
 			</div>
 			<div class="navbar-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,21 +28,19 @@
 					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
-			<div class="navbar-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					User Type
-				</a>
-				<div class="dropdown-menu" aria-labelledby="userDropdown">
-					<a class="dropdown-item" href="#">Learner</a>
-					<a class="dropdown-item" href="#">Human Resouces</a>
-				</div>
-			</div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" href="#">Logout</a>
+			<a class="nav-link" id="logout">Logout</a>
 		</div>
-	  </nav>
+	</nav>
 	
+	<script>
+		document.getElementById('logout').addEventListener('click', clearSession())
+		function clearSession() {
+			sessionStorage.clear();
+		}
+	</script>
+
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
