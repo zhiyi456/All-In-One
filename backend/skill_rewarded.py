@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from __main__ import app,db
 #from app import app,db
 
@@ -11,14 +11,11 @@ class Skill_Rewarded(db.Model):
     Course_ID = db.Column(
         db.String(20), db.ForeignKey('Course.Course_ID'))
 
-    def __init__(self, Skill_Rewarded_ID, Skill_Name, Course_ID):
-        if not isinstance(Skill_Rewarded_ID, int):
-            raise TypeError("Skill_Rewarded_ID must be an integer")
+    def __init__(self, Skill_Name, Course_ID):
         if not isinstance(Skill_Name, str):
             raise TypeError("Skill_Name must be a string")
         if not isinstance(Course_ID, str):
             raise TypeError("Course_ID must be an string")
-        self.Skill_Rewarded_ID = Skill_Rewarded_ID
         self.Skill_Name = Skill_Name
         self.Course_ID = Course_ID
 
@@ -46,9 +43,6 @@ def view_course_skills(Course_ID):
         }
     ), 404
 
-
-
-
 @app.route("/view_course_skills/get_course/<Skill_Name>")
 def view_course_by_skill_id(Skill_Name):
     skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name)
@@ -68,4 +62,42 @@ def view_course_by_skill_id(Skill_Name):
                 "message": "No course is associated"
             }
         ), 404
+
+@app.route("/create_new_skill_rewarded", methods=['POST']) # create skillset 
+def create_new_skill_rewarded():
+
+    data = request.get_json()
+    if (Skill_Rewarded.query.filter_by(Course_ID=data["Course_ID"], Skill_Name=data["Skill_Name"]).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": data,
+                "message": "A skill rewarded with the same ID already exists."
+            }
+        ), 400
+
+    print(data)
+    skill_rewarded = Skill_Rewarded(**data)
+    print(skill_rewarded)
+    try:
+        db.session.add(skill_rewarded)
+        db.session.commit()
+    except Exception as e:
+        print(e,'================================================')
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "New_Skill_Rewarded": data
+                },
+                "message": "An error occurred while creating the skill_rewarded"
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": skill_rewarded.json()
+        }
+    ), 201
      
