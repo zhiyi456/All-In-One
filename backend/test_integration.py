@@ -257,7 +257,7 @@ class TestLearningJourney(TestApp):
             }
         ).data)
 
-    def test_get_learning_journey_by__staff_id_with_no_lj(self):
+    def test_get_learning_journey_by_staff_id_with_no_lj(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
         db.session.add(LearningJourney(130002, 'Data Analyst', 'Python', 'FIN001'))
@@ -1008,7 +1008,7 @@ class TestStaff(TestApp):
             }
             }
         ).data)
-    
+
 #allow us to run the whole test suite by running - python test_unittest.py
 #UPDATE: don't have to cd test just run: python -m unittest test.test_unittest
 if __name__ == '__main__':

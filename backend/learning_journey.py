@@ -1,7 +1,6 @@
 from flask import request, jsonify
 from __main__ import app,db
 
-
 class LearningJourney(db.Model):
     __tablename__ = 'Learning_Journey'
         
@@ -69,7 +68,7 @@ def get_learning_journey_by_staff_id(Staff_ID):
     return jsonify(
         {
             "code": 404,
-            "message": Staff_ID +" has no Learning Journey."
+            "message": str(Staff_ID) + " has no Learning Journey."
         }
     ), 404
 
@@ -77,7 +76,6 @@ def get_learning_journey_by_staff_id(Staff_ID):
 @app.route("/get_learning_journey_by_lj_id/<Learning_Journey_ID>")
 def get_learning_journey_by_lj_id(Learning_Journey_ID):
     lj_list = LearningJourney.query.filter_by(Learning_Journey_ID=Learning_Journey_ID).all()
-
     if len(lj_list):
         return jsonify(
             {
@@ -113,13 +111,9 @@ def create_learning_journey():
                 "message": "An error occurred creating the Learning Journey."
             }
         ), 500
-
     return jsonify(
         {
             "code": 201,
             "data": data
         }
     ), 201
-
-
-    

@@ -17,21 +17,119 @@
   </head>
   <body>
     
-    <div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100%; height: 100%;">
-      <div class="d-flex justify-content-center">
-        <div class="dropdown">
-          <button class="btn btn-lg btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Select Role
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Staff</a>
-            <a class="dropdown-item" href="#">Trainer</a>
-            <a class="dropdown-item" href="#">Manager</a>
-            <a class="dropdown-item" href="#">HR Admin</a>
+    <div id="app" class="h-100">
+
+      <div class="container h-50 d-flex justify-content-center align-items-center">
+
+        <div class="row">
+          <div class="col-12 d-flex justify-content-center">
+            <select v-model="selected" @change="getStaff($event)" >
+              <option disabled selected value="">Please choose a role</option>
+              <option>Staff</option>
+              <option>Trainer</option>
+              <option>Manager</option>
+              <option>HR</option>
+            </select>
           </div>
         </div>
       </div>
+
+      <div class="row p-4">
+        <div class="col-12 d-flex justify-content-center">
+          <div v-if="positionSet">
+            <a class="btn btn-primary" href="homepage.html" role="button">Confirm</a>      
+          </div>
+        </div>
+      </div>
+      
     </div>
+
+    <script>
+
+      var config1 = {
+          method: 'get',
+          url: 'http://127.0.0.1:5000/staff_get/140002',
+          headers: {
+          } //this is a regular staff
+      };
+
+      var config2 = {
+          method: 'get',
+          url: 'http://127.0.0.1:5000/staff_get/150065',
+          headers: {
+          } //this is a trainer
+      };
+
+      var config3 = {
+          method: 'get',
+          url: 'http://127.0.0.1:5000/staff_get/170166',
+          headers: {
+          } //this is a manager
+      };
+
+      var config4 = {
+          method: 'get',
+          url: 'http://127.0.0.1:5000/staff_get/160008',
+          headers: {
+          } //this is a HR staff
+      };
+
+      var vm = new Vue({
+        el: '#app',
+        data: {
+          selected: "",
+          positionSet: false
+        },
+        mounted: function(){
+          window.sessionStorage 
+        },
+        methods: {
+          getStaff: function(event){
+            console.log(event.target.value);
+            if(event.target.value == "Staff"){
+              axios(config1)
+              .then( function (response) {
+                let staff = response.data.data.staff[0];
+                sessionStorage.setItem("staff",  JSON.stringify(staff))
+                let user = JSON.parse(sessionStorage.getItem("staff"));
+                console.log(user)
+                vm.positionSet = true;
+              })
+            }
+            else if(event.target.value == "Trainer"){
+              axios(config2)
+              .then( function (response) {
+                let trainer = response.data.data.staff[0];
+                sessionStorage.setItem("staff", JSON.stringify(trainer))
+                let user = JSON.parse(sessionStorage.getItem("staff"));
+                console.log(user)
+                vm.positionSet = true;
+              })
+            }
+            else if(event.target.value == "Manager"){
+              axios(config3)
+              .then( function (response) {
+                let manager = response.data.data.staff[0];
+                sessionStorage.setItem("staff", JSON.stringify(manager))
+                let user = JSON.parse(sessionStorage.getItem("staff"));
+                console.log(user)
+                vm.positionSet = true;
+              })
+            }
+            else if(event.target.value == "HR"){
+              axios(config4)
+              .then( function (response) {
+                let HR = response.data.data.staff[0];
+                sessionStorage.setItem("staff", JSON.stringify(HR))
+                let user = JSON.parse(sessionStorage.getItem("staff"));
+                console.log(user)
+                vm.positionSet = true;
+              })
+            }
+          }
+        }
+      })
+    </script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
