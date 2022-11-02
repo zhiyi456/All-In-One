@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify,request
 from __main__ import app,db
 #from app import app,db
 
@@ -90,14 +90,41 @@ def create_new_skill_rewarded():
                 "data": {
                     "New_Skill_Rewarded": data
                 },
-                "message": "An error occurred while creating the skill_rewarded"
+                "message": "An error occurred while creating the skill_rewarded"})
+
+@app.route("/update_skill_rewarded", methods=['POST']) # create skillset 
+def update_skill_rewarded():
+
+    data = request.get_json()
+
+    course_id=data['course_id']
+    to_add=data['add']
+    to_delete=data['delete']
+ 
+    try:
+        for item in to_add:
+            data={"Skill_Name":item,"Course_ID":course_id}
+            skill_rewarded = Skill_Rewarded(**data)
+            db.session.add(skill_rewarded)
+            db.session.commit()
+        for item in to_delete :
+            Skill_Rewarded.query.filter_by(Skill_Name=item,Course_ID=course_id).delete()
+            db.session.commit()
+        skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=course_id)   
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the skillset."
             }
         ), 500
 
     return jsonify(
         {
             "code": 201,
-            "data": skill_rewarded.json()
+            "message":"skills successfully updated!",
+            "new skills":[skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
         }
     ), 201
      
