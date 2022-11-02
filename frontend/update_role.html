@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Create Position</title>
+    <title>Update Role</title>
 
     <!-- Vue 2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js"></script>
@@ -52,125 +52,149 @@
     <!-- Page Content -->
     <div class="container mx-5 my-4" id="app">
         <form>
-            <h2>Create Position</h2><br/>
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                    <label for="positionID"><b>Position ID</b></label>
-                    <input type="number" min="1" class="form-control" id="position_ID" placeholder="Enter ID" v-model="position_ID">
-                </div>
-                <div class="form-group col-md-10">
-                    <label for="positionName"><b>Position Name</b></label>
-                    <input type="text" class="form-control" id="position_name" placeholder="Enter position name" v-model="position_name">
-                </div>
-            </div>
             
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label><b>Skills Required by Position</b></label><br/>
-                    <div v-for="(skill,index) in skills[0]" v-bind:key="skill.Skill_ID">
-                        <label class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" v-model="required_skills" v-bind:id="index" v-bind:value="skill.Skill_ID">
-                            Skill ID: {{skill.Skill_ID}} - {{skill.Skill_Name}}
+            <h2 v-if="editNameMode==true" @click="toggleNameEdit()">
+                <input class="form-control" :placeholder="selected_role_name" v-model="selected_role_name">
+            </h2>
+            <h2 v-if="editNameMode==false" @click="toggleNameEdit()">{{selected_role_name}}</h2>
+            <br/>
+          <h3>Skills Currently Required</h3>
+          <span v-for="skill in static_required_skills" :key="skill.Skill_Name">{{skill.Skill_Name}}<br></span>
+          <div class="container">
+            <br>
+                <div class="row">
+                    <div class="col-md">
+                        <h4>Skills Required</h4>
+                        <span v-for="skill in required_skills" @click="toggleSkill(skill)" :key="skill.Skill_Name"><br>{{skill.Skill_Name}}</span>
+                        
+                      </div>
+                  <div class="col-md">
+                    <h4>Other</h4>
+                    <span v-for="skill in all_skills" @click="toggleSkill(skill)" :key="skill.Skill_Name"><br>{{skill.Skill_Name}}</span>
+                  </div>
+                  
+                  
+                </div><br>
+                <div><button type="button" class="btn btn-primary" @click="save()">Save</button>&nbsp;
+                <button type="button" class="btn btn-secondary" @click="cancel()">Refresh</button></div>
 
-                        </label>
-                    </div>
-                </div>
-            </div><br/>
+              </div>
+     
 
-            <div class="form-row text-right">
-                <div class="col-sm-12">
-                    <button type="reset" class="btn customred">Cancel</button>
-                    <button type="submit" class="btn customblue" @click="createPosition()">Create</button>
-                </div>
-            </div>
+         
 
         </form>
     </div>
 
     <script>
-
-        var config1 = {
-            method: 'get',
-            url: 'http://127.0.0.1:5000/skill',
-            headers: {
+        var headers = {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json"
             }
-        };
-
-        var config2 = {
-            method: 'post',
-            url: 'http://127.0.0.1:5000/create_new_position/' + document.getElementById('position_name').value,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-            }
-        }
-
-        var config3 = {
-            method: 'post',
-            url: 'http://127.0.0.1:5000/create_new_skillset/' + document.getElementById('position_ID').value,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-            }
-        }
-
         var vm = new Vue({
             el: '#app',
             data: {
-                skills: [],
+                selected_role_name:'Data Analyst',
+                selected_role_id:3,
+                all_skills: [],
                 required_skills: [],
-                position_ID: '',
-                position_name: '',
+                static_required_skills:[],
+                editNameMode:false
             },
             methods: {
-                createPosition: function() {
-                    event.preventDefault();
-                    let temp = {
-                        'Position_ID': Number(this.position_ID),
-                        'Position_Name': this.position_name,
-                    };
-                    //console.log(temp);
-                    axios(config2, this.temp)
-                    .then(response => {
-                        alert('New role added!');
-                        createSkillset();
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                },
-                createSkillset: function() {
-                    event.preventDefault();
-                    let final = [];
-                    for (skill of this.required_skills) {
-                        let temp1 = {
-                            'Skill_ID': Number(skill),
-                            'Position_ID': Number(this.position_ID)
-                        }
-                        final.push(temp1);
+                toggleNameEdit(){
+                    if (vm.editNameMode==false){
+                        vm.editNameMode=true
+                    } else {
+                        vm.editNameMode=false
+                        console.log(this.selected_role_name)
                     }
-                    let jsondata = JSON.stringify(final);
-                    console.log(jsondata);
-                    axios(config3, jsondata)
-                    .then( function (response) {
-                        alert('New skillset(s) added!');
-                    })
-                    .catch (error => {
-                        console.log(error);
-                    });
-                }
+                },
+                getSkills(){
+                    axios.get('http://127.0.0.1:5000/skill_set/'+this.selected_role_name)
+                    .then(function (response) {
+                        var res=response.data.data['Skill_Set']
+                        vm.required_skills.splice(0, 0, res); 
+                        vm.required_skills=vm.required_skills[0]
+                        console.log(vm.required_skills,'REQUIRED SKILLS !!!!!!======')
+                        vm.static_required_skills=[...vm.required_skills]
+                        console.log(vm.static_required_skills,'STATIC')
+                        axios.get('http://127.0.0.1:5000/skill')
+                                .then(function (response3) {
+                                    vm.all_skills.splice(0, 0, response3.data.data.skill); 
+                                    vm.all_skills=vm.all_skills[0]
+                                    for(let j = 0; j < vm.required_skills.length; j++){
+                                        const i = vm.all_skills.findIndex(e => e.Skill_Name ==vm.required_skills[j].Skill_Name);
+                                        if (i > -1) {
+                                            vm.all_skills.splice(i,1)
+                                        }
+                                    }
+                                    
+                                    console.log(vm.all_skills,'all skill')
+                                }).catch(error => {
+                                    console.log(error);
+                                });    
+                    }).catch(error => {
+                                console.log(error);
+                            });
+                },
+                toggleSkill(skill) {
+                    //console.log(skill,'skill')
+                    if (vm.all_skills.includes(skill)){
+                        //console.log('it is in all skill')
+                        var index = this.all_skills.indexOf(skill);
+                        this.all_skills.splice(index,1)
+                        this.required_skills.push(skill)
+                    } else {
+                        //console.log('it is in requyired skill')
+                        var index = this.required_skills.indexOf(skill);
+                        this.required_skills.splice(index,1)
+                        this.all_skills.push(skill)
+                    }
+                    //console.log(vm.static_required_skills,'static')
+                    //console.log(vm.required_skills,'required')
+                },
+                cancel(){
+                    this.getSkills();
+                    this.selected_role_name='Data Analyst'
+                },
+                save(){
+                    // for item of static list
+                    // if not in updated list
+                    // remove
+                    let to_be_deleted=[]
+                    let to_be_added = []
+                    for(let i = 0; i < vm.static_required_skills.length; i++){
+                        if (!vm.required_skills.includes(vm.static_required_skills[i])){
+                            to_be_deleted.push(vm.static_required_skills[i]['Skill_Name'])
+                        }
+                    }
+                    console.log(to_be_deleted,'will be deleted')
+                    
+                    // for item in updated list
+                    // if not in static list
+                    // create
+                    for(let i = 0; i < vm.required_skills.length; i++){
+                        if (!vm.static_required_skills.includes(vm.required_skills[i])){
+                            to_be_added.push(vm.required_skills[i]['Skill_Name'])
+                        }
+                    }
+                    console.log(to_be_added,'will be added')
+
+                    update_data={'add':to_be_added,'delete':to_be_deleted,'position_name':'Data Analyst'}
+                    console.log(update_data,'UPDATE!')
+                    axios.post("http://127.0.0.1:5000/update_skillset",update_data)
+                        .then(response => console.log(response,'hi'));
+
+
+                    // update name of role
+
+                    
+                    
+                },
             },
             mounted: function() {
-                axios(config1)
-                .then( function (response) {
-                    // console.log(response);
-                    vm.skills.splice(0, 0, response.data.data['skill']);
-                })
-                .catch ( error => {
-                    console.log(error)
-                });
+                this.getSkills();
             }
         });
 
