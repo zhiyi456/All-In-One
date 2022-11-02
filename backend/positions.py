@@ -7,11 +7,7 @@ class Positions(db.Model):
     __tablename__ = 'Positions'
 
     Position_Name = db.Column(db.String(50), primary_key=True)
-    #skillset = db.relationship("Skill_Set", passive_deletes=True,cascade='all,delete')
-    #lj = db.relationship("LearningJourney", passive_deletes=True,cascade='all,delete')
 
-
- 
     def __init__(self, Position_Name):
         if not isinstance(Position_Name, str):
             raise TypeError("Position_Name must be a string")
@@ -119,8 +115,8 @@ def create_new_position(new_position):
 def update_position_name():
 
     data = request.get_json()
-    old_position_name=data['old_position_name']
-    new_position_name=data['new_position_name']
+    old_position_name=data['Current_Name']
+    new_position_name=data['New_Name']
        
     result=Positions.query.filter_by(Position_Name=old_position_name).update({'Position_Name': new_position_name})
     db.session.commit()

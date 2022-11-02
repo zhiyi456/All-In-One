@@ -44,7 +44,7 @@ def get_all():
 
 @app.route("/skill_set/<Position_Name>")  # get skills by Position_Name
 def get_skills_by_position(Position_Name):
-    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name).all()
+    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name)
 
     if skill_set_list:
         return jsonify(
