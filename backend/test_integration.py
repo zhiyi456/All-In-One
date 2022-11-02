@@ -737,9 +737,9 @@ from skill_rewarded import Skill_Rewarded
 class TestSkillRewarded(TestApp):
 
     def test_view_course_skills(self):
-        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
 
         response = self.client.get("/view_course_skills/get_skill/COR001")
@@ -765,9 +765,9 @@ class TestSkillRewarded(TestApp):
             ).data)
 
     def test_view_course_skills_with_wrong_CourseID(self):
-        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
 
         response = self.client.get("/view_course_skills/get_skill/COR002")
@@ -780,9 +780,9 @@ class TestSkillRewarded(TestApp):
         ).data)
 
     def test_view_course_by_skill_name(self):
-        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
 
         response = self.client.get("/view_course_skills/get_course/Python")
@@ -804,9 +804,9 @@ class TestSkillRewarded(TestApp):
 
         #change to link later
     def test_delete_skill_from_course_by_id(self):
-        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
 
         response = self.client.delete("/position/delete/1")
@@ -817,11 +817,11 @@ class TestSkillRewarded(TestApp):
             "data": 1
         }
         ).data)
-        
+
     def test_view_course_by_non_existing_skill_name(self):
-        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
 
         response = self.client.get("/view_course_skills/get_course/Python3")

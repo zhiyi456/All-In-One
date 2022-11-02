@@ -117,3 +117,29 @@ def create_learning_journey():
             "data": data
         }
     ), 201
+
+
+@app.route("/delete_learning_journey/<Staff_ID>/<Position_Name>", methods=['DELETE'])
+def delete_learning_journey(Staff_ID, Position_Name):
+
+    lj_list = LearningJourney.query.filter_by(Position_Name = Position_Name, Staff_ID = Staff_ID).all()
+    try:
+        for lj in lj_list:
+            db.session.delete(lj)
+        db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "Learning_Journey": [lj.json() for lj in lj_list]
+                },
+                "message": "An error occurred creating the Learning Journey."
+            }
+        ), 500
+    return jsonify(
+        {
+            "code": 201,
+            "data": [lj.json() for lj in lj_list]
+        }
+    ), 201
