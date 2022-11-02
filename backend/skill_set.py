@@ -62,6 +62,26 @@ def get_skills_by_position(Position_Name):
         }
     ), 404
 
+@app.route("/skill_set/get_position/<Skill_Name>")  # get positions by Skill_Name
+def get_positions_by_skill(Skill_Name):
+    skill_set_list = Skill_Set.query.filter_by(Skill_Name=Skill_Name).all()
+
+    if skill_set_list:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "Skill_Set": [skill_set.json() for skill_set in skill_set_list]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Skill Name is not found. Please double check."
+        }
+    ), 404
+
 @app.route("/create_new_skillset", methods=['POST']) # create skillset 
 def create_new_skillset():
 
@@ -101,8 +121,8 @@ def create_new_skillset():
     ), 201
 
 
-@app.route("/update_skillset", methods=['POST']) # create skillset 
-def update_skillset():
+@app.route("/update_skillset_same_position", methods=['POST']) # update skillset WITH CONSTANT POSITION NAME
+def update_skillset_same_position():
 
     data = request.get_json()
     print (data,'=============================================================================')
@@ -111,15 +131,60 @@ def update_skillset():
     to_delete=data['Skills_To_Delete']
     
     try:
-        for item in to_add:
-            data={"Skill_Name":item,"Position_Name":position}
-            skillset = Skill_Set(**data)
-            db.session.add(skillset)
-            db.session.commit()
         for item in to_delete :
             Skill_Set.query.filter_by(Skill_Name=item,Position_Name=position).delete()
             db.session.commit()
+        for item in to_add:
+            data={
+                "Skill_Name": item,
+                "Position_Name": position
+            }
+            skillset = Skill_Set(**data)
+            db.session.add(skillset)
+            db.session.commit()
         skill_set_list = Skill_Set.query.filter_by(Position_Name=position)
+    
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the skillset."
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "message":"skills successfully updated!",
+            "new skills":[skill_set.json() for skill_set in skill_set_list]
+        }
+    ), 201
+
+@app.route("/update_skillset_same_skill", methods=['POST']) # update skillset WITH CONSTANT SKILL NAME
+def update_skillset_same_skill():
+
+    data = request.get_json()
+    print (data,'=============================================================================')
+    skill=data['Skill_Name']
+    to_add=data['Positions_Add']
+    to_delete=data['Positions_Delete']
+    
+    try:
+        for item in to_delete :
+            Skill_Set.query.filter_by(Position_Name=item, Skill_Name=skill).delete()
+            db.session.commit()
+            print('================ delete skillset successful ==========')
+        for item in to_add:
+            data={
+                "Skill_Name": skill,
+                "Position_Name": item
+            }
+            skillset = Skill_Set(**data)
+            db.session.add(skillset)
+            db.session.commit()
+            print('================ create new skillset successful ==========')
+        skill_set_list = Skill_Set.query.filter_by(Skill_Name = skill)
     
     except Exception as e:
         print(e)

@@ -27,7 +27,7 @@ class Skill_Rewarded(db.Model):
 @app.route("/view_course_skills/get_skill/<Course_ID>")
 def view_course_skills(Course_ID):
     skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=Course_ID).all()
-    if len(skill_rewarded_list) != 0:
+    if skill_rewarded_list:
         return jsonify(
             {
                 "code": 200,
@@ -124,6 +124,48 @@ def update_skill_rewarded():
         {
             "code": 201,
             "message":"skills successfully updated!",
+            "new skills":[skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
+        }
+    ), 201
+
+@app.route("/update_skill_rewarded_same_skill", methods=['POST']) # update skill rewarded WITH CONSTANT SKILL NAME
+def update_skill_rewarded_same_skill():
+
+    data = request.get_json()
+    print (data,'=============================================================================')
+    skill=data['Skill_Name']
+    to_add=data['Courses_Add']
+    to_delete=data['Courses_Delete']
+    
+    try:
+        for item in to_delete :
+            Skill_Rewarded.query.filter_by(Course_ID=item, Skill_Name=skill).delete()
+            db.session.commit()
+        print('================ delete skill rewarded successful ==========')
+        for item in to_add:
+            data={
+                "Skill_Name": skill,
+                "Course_ID": item
+            }
+            skill_rewarded = Skill_Rewarded(**data)
+            db.session.add(skill_rewarded)
+            db.session.commit()
+        print('================ create new skillset successful ==========')
+        skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_Name = skill)
+    
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the skill rewarded."
+            }
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "message":"skill_rewarded successfully updated!",
             "new skills":[skill_rewarded.json() for skill_rewarded in skill_rewarded_list]
         }
     ), 201

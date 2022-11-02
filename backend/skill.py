@@ -134,3 +134,34 @@ def create_new_skill():
             "data": skill.json()
         }
     ), 201
+
+@app.route("/skill/update", methods=['POST']) # Update skill name
+def update_skill_name():
+
+    data = request.get_json()
+    Old_Skill_Name=data['Old_Skill_Name']
+    New_Skill_Name=data['New_Skill_Name']
+
+    if Old_Skill_Name == New_Skill_Name:
+        return jsonify(
+            {
+                "code": 400,
+                "message": "Old and new skill name is the same"
+            }
+        )
+       
+    result=Skill.query.filter_by(Skill_Name=Old_Skill_Name).update({'Skill_Name': New_Skill_Name})
+    db.session.commit()
+    if result:
+        return jsonify(
+            {
+                "code": 200,
+                "message": Old_Skill_Name +" has been changed to " + New_Skill_Name
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Skill is not found. Please double check."
+        }
+    ), 404

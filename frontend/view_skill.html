@@ -66,8 +66,8 @@
                     Courses that award {{Skill_Name}}:
                 </h3>
                 <div class="col-4" v-if=" role == 'hr' || role == 'manager' ">
-                    <button type="button" class="btn btn-primary">
-                        Edit
+                    <button type="button" class="btn btn-primary" @click="editSkill()">
+                        (Admin) Edit
                     </button>
                 </div>
             </div>
@@ -82,9 +82,11 @@
     </div>
 
     <script>
+        var session_skill_name = sessionStorage.getItem("skill_name") //TO-DO: make dynamic pull from session
+        
         var config = {
         method: 'get', //get courses by skill name
-        url: 'http://127.0.0.1:5000/view_course_skills/get_course/Python', //how to dynamically edit this Skill_Name
+        url: `http://127.0.0.1:5000/view_course_skills/get_course/${session_skill_name}`, //how to dynamically edit this Skill_Name
         headers: { }
         };
 
@@ -92,11 +94,16 @@
         var vm = new Vue({
             el: '#app',
             data: {
-                Skill_Name : 'Python', //hardcoded, need to retrieve from the site
+                Skill_Name : session_skill_name,
                 courses : [],
                 // role: "staff"
                 role: "hr"
                 // role: "manager"
+            },
+            methods: {
+                editSkill: function() {
+                    window.location.href = "edit_skill.html";
+                }
             },
             mounted: function(){
                 axios(config)

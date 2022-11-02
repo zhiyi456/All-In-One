@@ -72,6 +72,7 @@ INSERT INTO `Skill_Set` (`Position_Name`, `Skill_Name`) VALUES
 ('Data Analyst', 'R'),
 ('Data Analyst', 'Tableau'),
 ('Head of Security', 'Interpersonal Skills'),
+('Human Resource', 'Interpersonal Skills'),
 ('Human Resource', 'Public Speaking');
 
 INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
