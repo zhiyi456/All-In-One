@@ -47,7 +47,11 @@ CREATE TABLE `Learning_Journey` (
   `Staff_ID` int NOT NULL,
   `Position_Name` varchar(50) NOT NULL,
   `Skill_Name` varchar(50) NOT NULL,
-  `Course_ID` varchar(20)  NOT NULL
+  `Course_ID` varchar(20)  NOT NULL,
+  FOREIGN KEY (`Staff_ID`) REFERENCES Staff(`Staff_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Position_Name`) REFERENCES Positions(`Position_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Skill_Name`) REFERENCES Skill(`Skill_Name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`Course_ID`) REFERENCES Course(`Course_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ------------------------------------ DUMMY DATA STARTS HERE -------------------------------------------------------------------------------

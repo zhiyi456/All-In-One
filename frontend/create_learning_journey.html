@@ -64,6 +64,8 @@
             <div class = "border p-4 m-4"> You have selected {{positionName}}</div>
         </div>
 
+        <div class="row d-flex justify-content-center"><p class="text-danger">{{error}}</p></div>
+
         <h2>Learning Journey</h2>
         <!-- <div class = "row d-flex justify-content-center">
             <table class="table border">
@@ -105,8 +107,6 @@
               </table>
         </div> -->
 
-        {{selectedCourses}}
-
         <div class = "row d-flex justify-content-center">
 
           <table class="table border">
@@ -121,16 +121,13 @@
 
               <tbody>
 
-
                 <tr v-for="(skill_set, index) in skill_sets">
                   <th>{{index+1}}</th>
-                  <td>{{skill_set[index].Skill_Name}}</td>
+                  <td>{{skill_set.Skill_Name}}</td>
                   <td>
-                    <div class="form-check" v-for="skill_reward in skill_rewarded[index]" v-model="selectedCourses">
-                      <input class="form-check-input" type="checkbox" :value="skill_reward.Course_ID">
-                      <label class="form-check-label" for="skill_reward.Course_ID">
-                        {{skill_reward.Course_ID}}
-                      </label>
+                    <div v-for="(course, i) in skill_courses[index]" v-model="selected_courses">
+                      <input type="checkbox" :id="course['Course_ID']" :value="course" v-model="selected_courses">
+                      <label :for="course['Course_ID']">{{course['Course_ID']}}</label> 
                     </div>
                   </td>
                 </tr>
@@ -141,7 +138,7 @@
 
 
         <div class = "row d-flex justify-content-end">
-            <button type="button" class="btn btn-danger">Submit</button>
+            <button type="button" class="btn btn-danger" @click="createLearningJourney()">Submit</button>
         </div>
       </div>
 
@@ -153,55 +150,102 @@
     
     <script>
 
-      // var selectedCourses = [];
-      // $('button').click(function(e) {
-      //     e.preventDefault();
-      //     console.log("hello");
-      //     if ($(this).hasClass('active')){
-      //         $(this).removeClass('active');
-      //         var indexOf = selectedCourses.indexOf($(this).attr('value'));
-      //         selectedCourses.splice(indexOf,1);
-      //         console.log(selectedCourses);
-      //     }
-      //     else{
-      //         $(this).addClass('active');
-      //         selectedCourses.push($(this).attr('value'));
-      //         console.log(selectedCourses);
-      //     }
-      // })
-
-      var positionName = "Human Resource";
+      let user = JSON.parse(sessionStorage.getItem("staff"));
+      var positionName = "Human Resource"; // should not be hardcoded
 
       var vm = new Vue({
         el: '#app',
         data: {
-          response: [],
           positionName: positionName,
           skill_sets: [],
-          skill_rewarded:[],
-          selectedCourses: {}
+          skill_courses: [],
+          selected_courses: [],
+          error: ""
         },
         mounted: function(){
           axios({
             method: 'get',
             url: `http://127.0.0.1:5000/skill_set/${positionName}`,
             headers: { }
-            }) // get skill set by position Name
+            }) // get skill needed by position Name
           .then(function (response) {
-            vm.skill_sets.splice(0,0,response.data.data["Skill_Set"]);
-            for(let i=0; i<vm.skill_sets.length; i++){
-              let current_skill = vm.skill_sets[0][i]["Skill_Name"];
-              Vue.set(vm.selectedCourses, current_skill, "");
-              axios({
-                method: 'get',
-                url: `http://127.0.0.1:5000/view_course_skills/get_course/${current_skill}`,
-                headers: { }
-              })
-              .then(function (response){
-                  vm.skill_rewarded.splice(0,0, response.data.data["Skill_Rewarded"]);
-              })
-            }
+            vm.skill_sets = response.data.data["Skill_Set"];
+            for (i=0; i<vm.skill_sets.length; i++){
+              //for each skill set, get skill name and associated courses
+              vm.getSkillsRewarded(vm.skill_sets[i]["Skill_Name"], i); 
+            } 
           });
+        },
+        methods: {
+          getSkillsRewarded: function(skill_name, i){
+            //get skills rewarded based on skill name
+            axios({
+            method: 'get',
+            url: `http://127.0.0.1:5000/view_course_skills/get_course/${skill_name}`,
+            headers: { }
+            }) // get skill set by position Name
+            .then(function (response) {
+              vm.skill_courses.splice(i, 0, response.data.data["Skill_Rewarded"]);
+            });
+          },
+          createLearningJourney: function(){
+
+            let noError = true
+
+            if(vm.selected_courses.length ==0){
+              vm.error = "You must select one course for each skill"
+            }
+
+            let existing_skills = []
+            let needed_skills = vm.skill_sets.length;
+
+            for(let i=0; i<vm.selected_courses.length; i++){
+              // check if all skills have at least one course
+              let course = vm.selected_courses[i]
+              existing_skills.push(course.Skill_Name);
+            }
+            if (existing_skills.length < needed_skills){
+              vm.error = "You must select one course for each skill"
+              noError = false;
+            }
+
+            var set = new Set(existing_skills);
+            console.log(set);
+
+            if(existing_skills.length !== new Set(existing_skills).size){
+              vm.error = "You must select one course for each skill"
+              noError = false;
+            }
+
+            for(let i=0; i<vm.selected_courses.length; i++){
+              if(noError===true){ //create LJ
+                let staff_id = user.staff_id;
+                let position = positionName;
+                for(let i=0; i<vm.selected_courses.length; i++){
+                  let course = vm.selected_courses[i];
+                  let skill_name = course.Skill_Name;
+                  let course_ID = course.Course_ID;
+                  let learning_journey = {
+                    "Staff_ID":staff_id,
+                    "Position_Name":position,
+                    "Skill_Name": skill_name,
+                    "Course_ID": course_ID
+                  };
+                  let json = JSON.stringify(learning_journey);
+                  axios({
+                  method: 'post',
+                  url: `http://127.0.0.1:5000/create_learning_journey`, data:json,
+                  headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                  }
+                  }) // create learning journey
+                  .then(function (response) {
+                  window.location.replace("homepage.html");
+                  });
+                }
+              }
+            }
+          }
         }
       })
     </script>
