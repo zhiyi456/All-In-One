@@ -53,10 +53,27 @@
     <div class="container mx-5 my-4" id="app">
         <form>
             
-            <h2 v-if="editNameMode==true" @click="toggleNameEdit()">
-                <input class="form-control" :placeholder="selected_role_name" v-model="selected_role_name">
-            </h2>
-            <h2 v-if="editNameMode==false" @click="toggleNameEdit()">{{selected_role_name}}</h2>
+            <div v-if="editNameMode==true">
+                
+                <h2>{{selected_role_name}}</h2>
+
+                <h5>New Name: </h5>
+                    <div class="row">
+                        <div class="col-sm">
+                <input class="form-control" :placeholder="selected_role_name" v-model="changed_name">
+            </div>
+                <div class="col-lg"><button type="button" class="btn btn-primary" @click="toggleNameEdit()">Cancel Edit</button></div>
+            </div>
+            </div>
+            <div v-if="editNameMode==false" class="row">
+                <div class="col-sm">
+                <h2>{{selected_role_name}}</h2>
+                </div>
+                <div class="col-lg">
+                <button type="button" class="btn btn-primary" @click="toggleNameEdit()">Edit Name</button>
+                </div>
+            </div>
+            
             <br/>
           <h3>Skills Currently Required</h3>
           <span v-for="skill in static_required_skills" :key="skill.Skill_Name">{{skill.Skill_Name}}<br></span>
@@ -93,8 +110,10 @@
             }
         var vm = new Vue({
             el: '#app',
+            
             data: {
                 selected_role_name:'Data Analyst',
+                changed_name:'Data Analyst',
                 selected_role_id:3,
                 all_skills: [],
                 required_skills: [],
@@ -107,6 +126,7 @@
                         vm.editNameMode=true
                     } else {
                         vm.editNameMode=false
+                        this.changed_name=''
                         console.log(this.selected_role_name)
                     }
                 },
@@ -158,7 +178,7 @@
                     this.getSkills();
                     this.selected_role_name='Data Analyst'
                 },
-                save(){
+                async save(){
                     // for item of static list
                     // if not in updated list
                     // remove
@@ -181,20 +201,23 @@
                     }
                     console.log(to_be_added,'will be added')
 
-                    update_data={'add':to_be_added,'delete':to_be_deleted,'position_name':'Data Analyst'}
+                    update_data={'Skills_To_Add':to_be_added,'Skills_To_Delete':to_be_deleted,'Position_Name':'Data Analyst'}
                     console.log(update_data,'UPDATE!')
-                    axios.post("http://127.0.0.1:5000/update_skillset",update_data)
+                    await axios.post("http://127.0.0.1:5000/update_skillset",update_data)
                         .then(response => console.log(response,'hi'));
 
-
-                    // update name of role
-
                     
+                    // update name of role
+                    update_name_data={"Current_Name":this.selected_role_name,"New_Name":this.changed_name}
+                    console.log(update_name_data)
+                    axios.post("http://127.0.0.1:5000/position/update",update_name_data)
+                        .then(response => console.log(response,'hi'));
                     
                 },
             },
             mounted: function() {
                 this.getSkills();
+                console.log(this.changed_name)
             }
         });
 
