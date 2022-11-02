@@ -11,7 +11,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link rel="stylesheet" href="style.css">
-    <title>View Course</title>
+    <title>Homepage</title>
 
     <!-- Vue 2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10"></script>
@@ -22,7 +22,6 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-light custombg">
         <a class="navbar-brand" href="#">Learning Journey Planning System</a>
 
@@ -65,10 +64,10 @@
 
     <div class="hero-image">
         <div class="hero-text">
-            <h1>Welcome Back ....</h1>
-            <div v-if="lj_no >= 0">
+            <h1>Welcome Back {{staff_id}}</h1>
+            <div v-if="lj_no == 0">
                 <p>Seems like you have not create a Learning Journey</p>
-                <form action="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                <form action="create_learning_journey.html">
                     <button type="submit"> Click here to Create Now! </button>
                 </form>
             </div>
@@ -85,7 +84,7 @@
                     <td> <select v-model = "lj_no">
                         <option selected disabled hidden>Select your Learning Journey to Track!</option>
                         <option v-for = "(lj, index) in response" :value="index">
-                            {{ lj.Position_Name }}
+                            {{ lj[0].Position_Name }}
                         </option>
                     </select>
                     </td>
@@ -96,18 +95,20 @@
                         <th> Courses </th>
                     </tr>
                     <tr scope="col" v-for="(lj,index) in lj_list">
-                        {{lj_list}}
                         <td> <button type="button" :value="lj.Skill_Name" class="btn btn-primary"> {{lj.Skill_Name}} </button>  </td>
                         <!-- can v-for the courses to have multiple courses for a single skill -->
-                        <td> <button type="button" :value="lj.Course_ID" class="btn btn-primary"> {{lj.Course_ID}} </button> 
-                        </td>
+                        <td> <button type="button" :value="lj.Course_ID" class="btn btn-primary"> {{lj.Course_ID}} </button>  </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="row d-flex justify-content-end">
-            <button type="button" class="btn btn-primary">Edit Learning Journey</button>
+        
+        <div class="row d-flex justify-content-between" v-if="position_name">
+            <a type="button" class="btn btn-danger" @click="delete_learning_journey">Delete Learning Journey</a>
+            <!-- <a type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a> -->
+            
         </div>
+        <div v-else></div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -125,7 +126,7 @@
     <script>
 
 
-
+        sessionStorage
         const vm = new Vue({
             el: '#app',
             data: {
@@ -133,12 +134,14 @@
                 lj_list: [],
                 position_name: "",
                 lj_no: "",
-                lj_name: ""
+                lj_name: "",
+                staff_id: "",
             },
             mounted: function get_learning_journey() {
-                var config = {
+                this.staff_id = sessionStorage.getItem("staff");
+                let config = {
                     method: 'get',
-                    url: 'http://127.0.0.1:5000/get_learning_journey_by_staff_id/' + 130001 , //Should not be hardcoded but no session for now
+                    url: 'http://127.0.0.1:8080/get_learning_journey_by_staff_id/' + this.staff_id , //Should not be hardcoded but no session for now
                     headers: {
                         "Content-Type": "application/json"
                     }
@@ -146,62 +149,68 @@
                 axios(config)
                     .then(function (response) {
                         console.log(response.data.data.lj);
-                        vm.response = response.data.data.lj;
-                        console.log(vm.positionName, vm.response);
-                    })
-            },
+                        let datalist = response.data.data.lj;
+                        let tempArray = [];
+                        console.log(datalist.length);
+                        if (datalist.length == 1) {
+                            vm.response.push([datalist[0]]);
+                        } else {
+                            for (i=0; i < datalist.length; i++) {
+                                let sID = datalist[i]["Staff_ID"];
+                                let pName = datalist[i]["Position_Name"];
+                                if(!(i == 0)){
+                                    let prevPName = datalist[i-1]["Position_Name"];
+                                    let prevSID = datalist[i-1]["Staff_ID"];
+                                    if(pName == prevPName && sID == prevSID){
+                                        tempArray.push(datalist[i]);
+                                        if(i == datalist.length - 1){
+                                            vm.response.push(tempArray);
+                                        }
+                                    }
+                                    else{
+                                        vm.response.push(tempArray);
+                                        tempArray = [];
+                                        tempArray.push(datalist[i]);
+                                        if(i == datalist.length - 1){
+                                            vm.response.push(tempArray);
+                                        }
+                                    }
+                                }
+                                else {
+                                    tempArray.push(datalist[i]);
+                                }
+                            } // end of for loop
+                        } // end of else
+                    }) // end of axios
+            }, // end of mounted
+            methods:{
+                delete_learning_journey(){
+                    let config = {
+                        method: 'DELETE',
+                        url: 'http://127.0.0.1:8080/delete_learning_journey/' + vm.staff_id + "/" + vm.position_name,
+                };
+                if(confirm("Are you sure you want to delete the " + vm.position_name + " learning journey")){
+                    axios(config)
+                    .then(function (response) {
+                        alert("You have successfully deleted the " + vm.position_name + " learning journey")
+                        location.reload();
+                    })                
+                } else{
+                    alert("Good Choice Bitch");
+                }
+                } //delete_learning_journey()
+            }, // end of methods
             watch: {
                 // whenever question changes, this function will run
                 lj_no: function () {
-                    vm.position_name = vm.response[vm.lj_no]["Position_Name"];
-                    vm.lj_list = [vm.response[vm.lj_no]];
+                    vm.position_name = vm.response[vm.lj_no][0]["Position_Name"];
+                    vm.lj_list = [vm.response[vm.lj_no]][0];
                     console.log(vm.lj_list);
                 }
-            },
-            method: {
-                get_learning_journey: function () {
-                }
-            },
-
+            }
         })
-
-        /* var config1 = {
-            "url": "http://127.0.0.1:5000/create_new_position/dfgr321423ew",
-            "method": "POST",
-            "headers": {
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify({
-              "Position_ID": 34354,
-              "Position_Name": "a32213441d"
-            }),
-          };
-          
-          axios(config1).then(function (response) {
-            console.log(response);
-          }).finally(function(error){
-            console.log(error)
-          }); */
     </script>
 
-    <script>
-        //function to prevent default button click behaviour
-        /* var selectedCourses = [];
-        $('.btn').click(function (e) {
-            e.preventDefault();
-            if ($(this).hasClass('active')) {
-                $(this).removeClass('active');
-                var indexOf = selectedCourses.indexOf($(this).attr('value'));
-                selectedCourses.splice(indexOf, 1);
-                console.log(selectedCourses);
-            }
-            else {
-                $(this).addClass('active');
-                selectedCourses.push($(this).attr('value'));
-                console.log(selectedCourses);
-            }
-        }) */
-    </script>
 </body>
 
 </html>
