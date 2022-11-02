@@ -1115,6 +1115,28 @@ class TestSkills(TestApp):
             }
             }
         ).data)
+    # kevan
+    def test_update_skill(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+
+        request_body = {
+            "Old_Skill_Name":"Python",
+            "New_Skill_Name":"Flask"
+        }
+
+        response = self.client.post("/skill/update",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+            {
+                "code": 200,
+                "message": "Python has been changed to Flask"
+            }
+        ).data)
 
     def test_skill_get_by_name(self):
         db.session.add(Skill('Python'))
