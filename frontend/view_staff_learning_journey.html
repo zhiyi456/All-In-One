@@ -57,6 +57,8 @@
             <button class="btn btn-primary my-1" @click="getSubordinates()">View Employees in Department</button>
             <button class="btn btn-primary my-1" @click="getLearningJourneys()">View Employees' Learning Journeys</button>
         </div>
+
+        <br/>
         
         <div v-if="showSubs"> 
             <table class="table">
@@ -78,23 +80,25 @@
         </div>
 
         <div v-if="showLJs">
-            <div v-for="lj in learningjourneys">
-                {{ lj['full_name'] }}'s Learning Journey (ID: {{ lj['staff_id'] }})
+            <div v-for="staff in lj_list">
+                <b>Staff Name: {{ staff[1] }}</b><br/>
+                <b>Staff ID: {{ staff[0] }}</b>
                 <table class="table">
                     <thead>
                         <tr>
                           <th scope="col">Position Name</th>
-                          <th scope="col"></th>
-                          <th scope="col">Last Name</th>
-                          <th scope="col">Email</th>
+                          <th scope="col">Skill Name</th>
+                          <th scope="col">Courses</th>
                         </tr>
                     </thead>
+                    <tr v-for="(ljs, position) in staff[2]">
+                        <td>{{ position }}</td>
+                        <td><p v-for="lj in ljs">{{ lj.Skill_Name }}</p></td>
+                        <td><p v-for="lj in ljs">{{ lj.Course_ID }}</p></td>
+                    </tr>
                 </table>
             </div>
-            {{ learningjourneys }}
-
         </div>
-    
     </div>
     
     <script>
@@ -105,7 +109,6 @@
                 "Content-Type": "application/json"
             }
         }
-
         var vm = new Vue({
             el: '#app',
             data() {
@@ -116,43 +119,21 @@
                     usertype: 0,
                     showSubs: false,
                     showLJs: false,
-                    learningjourneys: [],
+                    lj_list: [],
                 }
             },
             mounted: function () {
                 axios(config)
-                    .then( response => {
-                        //console.log(response.data.data);
-                        this.dept = response.data.data["staff"][0]['dept'];
-                        this.usertype = response.data.data["staff"][0]['role'];
-                        // console.log(this.usertype)
-                        // console.log(this.dept)
-                    })
-                    .catch ( error => {
-                        console.log(error)
-                    });
-
-                var config2 = {
-                    method: 'get',
-                    url: 'http://127.0.0.1:5000/staff_get_by_dept/' + 'Sales', // this.dept and vm.dept dont work..
-                    headers: {
-                        "Content-Type": "application/json",
-                        },
-                }
-                axios(config2)
-                    .then(response => {
-                        this.employees = response.data.data["staffs"];
-                        //console.log(this.employees);
-                        for (emp of this.employees) {
-                            if (emp.staff_id != 140001) { // to-do: add session data
-                                this.subordinates.push(emp);
-                            } 
-                        }
-                        //console.log(this.subordinates);   
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                .then( response => {
+                    //console.log(response.data.data);
+                    this.dept = response.data.data["staff"][0]['dept'];
+                    this.usertype = response.data.data["staff"][0]['role'];
+                    // console.log(this.usertype)
+                    // console.log(this.dept)
+                })
+                .catch ( error => {
+                    console.log(error)
+                });
             },
             methods: {
                 getSubordinates: function() {
@@ -162,13 +143,17 @@
                 },
                 getLearningJourneys: function() {
                     event.preventDefault();
+                    this.lj_list = [];
                     this.showSubs = false;
                     this.showLJs = true;
 
-                    for (emp of this.employees) {
+                    for (emp of this.subordinates) {
                         let id = emp.staff_id;
                         let full_name = emp.staff_fname + " " + emp.staff_lname;
-                        var config3 = {
+                        //console.log(full_name);
+                        //console.log(id)
+                        
+                        let config3 = {
                             method: 'get',
                             url: 'http://127.0.0.1:5000/get_learning_journey_by_staff_id/' + String(id),
                             headers: {
@@ -177,28 +162,79 @@
                         }
                         axios(config3)
                             .then(response => {
-                                console.log(response.data.data["lj"],'helo'); // error means that staff has no LJ
-
-                                // how to ignore errors ah??
-
-                                for (journey of response.data.data["lj"]) {
-                                    journey['Fullname'] = fullname;
-                                    // this.learningjourneys.push(lj);
-                                    // console.log(this.learningjourneys)
-                                    console.log(journey,'journey')
+                                var all_staffs_lj = [id, full_name];
+                                var temp = {};
+                                var temp2 = [];
+                                if (response.data.code == 200) {
+                                    var datalist = response.data.data.lj;
+                                    //console.log(datalist);
+                                    if (datalist.length == 1) {
+                                        let data = datalist[0]
+                                        let pos = data["Position_Name"];
+                                        temp[pos] = datalist;
+                                        all_staffs_lj.push(temp);
+                                        this.lj_list.push(all_staffs_lj);
+                                    } else {
+                                        for (i=0; i < datalist.length; i++) {  
+                                            let sID = datalist[i]["Staff_ID"];
+                                            let pName = datalist[i]["Position_Name"];
+                                            //console.log(sID, pName);
+                                            if (!(i == 0)) {
+                                                let prevPName = datalist[i-1]["Position_Name"];
+                                                let prevSID = datalist[i-1]["Staff_ID"];
+                                                //console.log(prevPName);
+                                                if (pName == prevPName && sID == prevSID) {
+                                                    temp2.push(datalist[i]);
+                                                    if (i == datalist.length - 1) { temp[pName] = temp2; }
+                                                } else {
+                                                    temp[prevPName] = temp2;
+                                                    temp2 = [];
+                                                    temp2.push(datalist[i]);
+                                                    if (i == datalist.length - 1) { temp[pName] = temp2; }
+                                                }
+                                            } else {
+                                                temp2.push(datalist[i]);
+                                            }
+                                        }
+                                        all_staffs_lj.push(temp);
+                                        this.lj_list.push(all_staffs_lj);
+                                    }
                                 }
                             })
                             .catch(error => {
-                                //console.log(error);
+                                console.log("====== Error!! ====== " + error);
                             });
-
                     }
-
+                    console.log(this.lj_list);
                 }
+            },
+            watch: {
+                dept: function() {
+                    axios({
+                        method: 'get',
+                        url: 'http://127.0.0.1:5000/staff_get_by_dept/' + vm.dept,
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                    .then(response => {
+                        this.employees = response.data.data["staffs"];
+                        //console.log(this.employees);
+                        for (emp of this.employees) {
+                            if (emp.staff_id != 140001) { // to-do: add session data
+                                this.subordinates.push(emp); 
+                            } 
+                        } 
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                },
             },
         })
 
     </script>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

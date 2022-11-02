@@ -257,7 +257,7 @@ class TestLearningJourney(TestApp):
             }
         ).data)
 
-    def test_get_learning_journey_by__staff_id_with_no_lj(self):
+    def test_get_learning_journey_by_staff_id_with_no_lj(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
         db.session.add(LearningJourney(130002, 'Data Analyst', 'Python', 'FIN001'))
@@ -851,6 +851,91 @@ class TestSkills(TestApp):
             }
             }
         ).data)
+    def test_create_new_skill(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        
+        new_skill = Skill(Skill_Name= 'Public Speaking SKills')
+
+        request_body = {
+            'Skill_Name': new_skill.Skill_Name
+        }
+
+        response = self.client.post("/skill/create",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 201,
+            "data": {
+                "Skill_Name": new_skill.Skill_Name
+            }
+            }
+        ).data)
+    #kevan
+    def test_create_existing_skill(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        
+        new_skill = Skill(Skill_Name= 'Python')
+
+        request_body = {
+            'Skill_Name': new_skill.Skill_Name
+        }
+
+        response = self.client.post("/skill/create",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 400,
+            "data": {
+                "Skill_Name":"Python"
+                },
+            "message":"Skill already exists."
+            }
+        ).data)
+    #kevan
+    def test_delete_skill_by_name(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+
+        response = self.client.delete("/skill/delete/Python")
+        response1 = self.client.get("/skill")
+        #print(response.data)
+        # self.assertEqual(response.data, jsonify(
+        #     {
+        #     "code": 200,
+        #     "data": 'Python'
+        #     }
+        # ).data)
+        
+        #print(response.data)
+        self.assertEqual(response1.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "skill": [
+                {
+                    "Skill_Name": "Flutter"
+                },
+                {
+                    "Skill_Name": "Tableau"
+                }
+                ]
+            }
+            }
+        ).data)
 
 
 from staff import Staff
@@ -923,7 +1008,7 @@ class TestStaff(TestApp):
             }
             }
         ).data)
-    
+
 #allow us to run the whole test suite by running - python test_unittest.py
 #UPDATE: don't have to cd test just run: python -m unittest test.test_unittest
 if __name__ == '__main__':
