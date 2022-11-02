@@ -105,21 +105,10 @@ def create_new_skillset():
 def update_skillset():
 
     data = request.get_json()
-    print(data,'============================')
+    print (data,'=============================================================================')
     position=data['position_name']
     to_add=data['add']
     to_delete=data['delete']
-    add_name=[]
-    delete_name=[]
-    for item in to_delete:
-        delete_name.append(item)
-    for item in to_add:
-        add_name.append(item)
-    print(delete_name,'=================================================================================================================================================================================================================================================================')
-    #skillset = Skill_Set(**data)
-    #print(skillset)
-    # delete where position is x and skill in skill array
-    # add position x and skill y
     
     try:
         for item in to_add:
@@ -130,14 +119,13 @@ def update_skillset():
         for item in to_delete :
             Skill_Set.query.filter_by(Skill_Name=item,Position_Name=position).delete()
             db.session.commit()
+        skill_set_list = Skill_Set.query.filter_by(Position_Name=position)
+    
     except Exception as e:
         print(e)
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "New_SkillSet": 'skillset'
-                },
                 "message": "An error occurred while creating the skillset."
             }
         ), 500
@@ -145,6 +133,7 @@ def update_skillset():
     return jsonify(
         {
             "code": 201,
-            "message":"skills successfully updated!"
+            "message":"skills successfully updated!",
+            "new skills":[skill_set.json() for skill_set in skill_set_list]
         }
     ), 201
