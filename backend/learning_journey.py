@@ -97,10 +97,10 @@ def create_learning_journey():
 
     data = request.get_json()
     lj = LearningJourney(**data)
-    db.session.add(lj)
-    db.session.commit()
+
     try:
-        print("Hello")  
+        db.session.add(lj)
+        db.session.commit() 
     except:
         return jsonify(
             {
@@ -118,11 +118,10 @@ def create_learning_journey():
         }
     ), 201
 
-
 @app.route("/delete_learning_journey/<Staff_ID>/<Position_Name>", methods=['DELETE'])
 def delete_learning_journey(Staff_ID, Position_Name):
 
-    lj_list = LearningJourney.query.filter_by(Position_Name = Position_Name, Staff_ID = Staff_ID).all()
+    lj_list = LearningJourney.query.filter_by(Position_Name = Position_Name, Staff_ID = Staff_ID)
     try:
         for lj in lj_list:
             db.session.delete(lj)
@@ -143,3 +142,36 @@ def delete_learning_journey(Staff_ID, Position_Name):
             "data": [lj.json() for lj in lj_list]
         }
     ), 201
+
+
+@app.route("/update_learning_journey/<int:Learning_Journey_ID>", methods=['PUT'])
+def update_learning_journey(Learning_Journey_ID):
+    lj = LearningJourney.query.filter_by(Learning_Journey_ID=Learning_Journey_ID).first()
+    if lj:
+        try:
+            data = request.get_json()
+            if data['Skill_Name']:
+                lj.Skill_Name = data['Skill_Name']
+            if data['Course_ID']:
+                lj.Course_ID = data['Course_ID']
+            db.session.commit()
+        except:
+            return jsonify(
+                    {
+                        "code": 500,
+                        "data": data,
+                        "message": "Error in updating learning journey " + str(Learning_Journey_ID)
+                    }
+                ), 500
+
+        return jsonify(
+            {
+                "code": 200,
+                "data": data,
+                "message": "Successfully updated learning journey " + str(Learning_Journey_ID)
+            }, 200
+        )
+   
+
+
+    

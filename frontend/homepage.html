@@ -106,7 +106,7 @@
         <div class="row d-flex justify-content-between" v-if="position_name">
             <a type="button" class="btn btn-danger" @click="delete_learning_journey">Delete Learning Journey</a>
             <!-- <a type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a> -->
-            
+            <a href = "edit_learning_journey.html" type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a>
         </div>
         <div v-else></div>
     </div>
@@ -138,7 +138,8 @@
                 staff_id: "",
             },
             mounted: function get_learning_journey() {
-                this.staff_id = sessionStorage.getItem("staff");
+                this.staff_id = 130001;
+                //this.staff_id = sessionStorage.getItem("staff");
                 let config = {
                     method: 'get',
                     url: 'http://127.0.0.1:8080/get_learning_journey_by_staff_id/' + this.staff_id , //Should not be hardcoded but no session for now
@@ -184,6 +185,16 @@
                     }) // end of axios
             }, // end of mounted
             methods:{
+                edit_learning_journey(){
+                    let lj_id_list = [];
+                    console.log(vm.lj_list);
+                    for(lj in vm.lj_list){
+                        lj_id_list.push(vm.lj_list[lj]["Learning_Journey_ID"]);
+                    }
+                    console.log(lj_id_list);
+                    sessionStorage.setItem("position_name", vm.position_name);
+                    sessionStorage.setItem("lj_id_list", JSON.stringify(lj_id_list));
+                },
                 delete_learning_journey(){
                     let config = {
                         method: 'DELETE',

@@ -394,7 +394,7 @@ class TestLearningJourney(TestApp):
         }
         ).data)
 
-    def test_delete_learning_journey(self):
+    def test_update_learning_journey_by_ID(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
         db.session.add(LearningJourney(130002, 'Data Analyst', 'Python', 'FIN001'))
@@ -409,36 +409,42 @@ class TestLearningJourney(TestApp):
         db.session.add(Course('FIN001', 'Analytics Foundation', 'Learn pandas framework', 'Retired', 'Internal', 'Analytics'))
         db.session.commit()
 
-        response = self.client.delete("/delete_learning_journey/130001/Human Resource Manager")
+        request_body = {
+                    "Skill_Name": 'Python',
+                    "Course_ID": 'MGT001'
+                }
+
+        response = self.client.put("/update_learning_journey/2",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
         response1 = self.client.get("/get_learning_journey")
         #print(response.data)
+        #return updated learning journey with ID equal 2
         self.assertEqual(response.data, jsonify(
-        {
-            "code": 201,
-            "data": [
-                {
-                "Learning_Journey_ID": 1,
-                "Staff_ID": 130001,
-                "Position_Name": 'Human Resource Manager',
-                "Skill_Name": 'Public Speaking',
-                "Course_ID": 'MGT001'
-                }
-            ]
-        }
+            {
+                "code": 200,
+                "data": request_body,
+                "message": "Successfully updated learning journey " + "2"
+            }, 200
         ).data)
-
-        #print(response.data)
         self.assertEqual(response1.data, jsonify(
             {
             "code": 200,
             "data": {
                 "lj": [
                 {
+                    "Learning_Journey_ID":1,
+                    "Staff_ID": 130001,
+                    "Position_Name": 'Human Resource Manager',
+                    "Skill_Name": 'Public Speaking',
+                    "Course_ID": 'MGT001'
+                },
+                {
                     "Learning_Journey_ID":2,
                     "Staff_ID": 130001,
                     "Position_Name": 'Data Analyst',
                     "Skill_Name": 'Python',
-                    "Course_ID": 'FIN001'
+                    "Course_ID": 'MGT001'
                 },
                 {
                     "Learning_Journey_ID":3,
@@ -450,7 +456,7 @@ class TestLearningJourney(TestApp):
                 ]
             }
             }
-        ).data) 
+        ).data)    
 
 
 from positions import Positions
