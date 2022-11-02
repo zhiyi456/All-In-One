@@ -61,51 +61,12 @@
 
       <div class="container" id="app">
         <div class = "row d-flex justify-content-center">
-            <div class = "border p-4 m-4"> You have selected {{positionName}}</div>
+            <div class = "border p-4 m-4"> You have selected {{position.Position_Name}}</div>
         </div>
 
         <div class="row d-flex justify-content-center"><p class="text-danger">{{error}}</p></div>
 
         <h2>Learning Journey</h2>
-        <!-- <div class = "row d-flex justify-content-center">
-            <table class="table border">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Skill</th>
-                    <th scope="col">Course(s)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Skill 1</td>
-                    <td>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 1</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 2</button>
-                        
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Skill 2</td>
-                    <td>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 3</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 4</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 5</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Skill 3</td>
-                    <td>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 6</button>
-                        <button type="button" value="course1" class="btn btn-primary" >Course 7</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-        </div> -->
 
         <div class = "row d-flex justify-content-center">
 
@@ -150,31 +111,35 @@
     
     <script>
 
-      let user = JSON.parse(sessionStorage.getItem("staff"));
-      var positionName = "Human Resource"; // should not be hardcoded
+      var user = JSON.parse(sessionStorage.getItem("staff"));
+      var position = JSON.parse(sessionStorage.getItem("position"));
 
       var vm = new Vue({
         el: '#app',
         data: {
-          positionName: positionName,
+          positionName: "",
           skill_sets: [],
           skill_courses: [],
           selected_courses: [],
           error: ""
         },
         mounted: function(){
-          axios({
-            method: 'get',
-            url: `http://127.0.0.1:5000/skill_set/${positionName}`,
-            headers: { }
-            }) // get skill needed by position Name
-          .then(function (response) {
-            vm.skill_sets = response.data.data["Skill_Set"];
-            for (i=0; i<vm.skill_sets.length; i++){
-              //for each skill set, get skill name and associated courses
-              vm.getSkillsRewarded(vm.skill_sets[i]["Skill_Name"], i); 
-            } 
-          });
+          if(sessionStorage.getItem("position")){
+              let position = JSON.parse(sessionStorage.getItem("position"));
+              this.positionName = position.Position_Name
+              axios({
+              method: 'get',
+              url: `http://127.0.0.1:5000/skill_set/${position.Position_Name}`,
+              headers: { }
+              }) // get skill needed by position Name
+            .then(function (response) {
+              vm.skill_sets = response.data.data["Skill_Set"];
+              for (i=0; i<vm.skill_sets.length; i++){
+                //for each skill set, get skill name and associated courses
+                vm.getSkillsRewarded(vm.skill_sets[i]["Skill_Name"], i); 
+              } 
+            });
+          }
         },
         methods: {
           getSkillsRewarded: function(skill_name, i){
@@ -218,7 +183,7 @@
 
             if(noError===true){ //create LJ
                 let staff_id = user.staff_id;
-                let position = positionName;
+                let position = vm.positionName;
                 for(let i=0; i<vm.selected_courses.length; i++){
                   let course = vm.selected_courses[i];
                   let skill_name = course.Skill_Name;
@@ -238,7 +203,7 @@
                   }
                   }) // create learning journey
                   .then(function (response) {
-                  // window.location.replace("homepage.html");
+                  window.location.replace("homepage.html");
                   });
                 }
               }
