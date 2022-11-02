@@ -210,15 +210,13 @@
             }
 
             var set = new Set(existing_skills);
-            console.log(set);
 
             if(existing_skills.length !== new Set(existing_skills).size){
               vm.error = "You must select one course for each skill"
               noError = false;
             }
 
-            for(let i=0; i<vm.selected_courses.length; i++){
-              if(noError===true){ //create LJ
+            if(noError===true){ //create LJ
                 let staff_id = user.staff_id;
                 let position = positionName;
                 for(let i=0; i<vm.selected_courses.length; i++){
@@ -240,12 +238,11 @@
                   }
                   }) // create learning journey
                   .then(function (response) {
-                  window.location.replace("homepage.html");
+                  // window.location.replace("homepage.html");
                   });
                 }
               }
             }
-          }
         }
       })
     </script>
