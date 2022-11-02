@@ -851,6 +851,91 @@ class TestSkills(TestApp):
             }
             }
         ).data)
+    def test_create_new_skill(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        
+        new_skill = Skill(Skill_Name= 'Public Speaking SKills')
+
+        request_body = {
+            'Skill_Name': new_skill.Skill_Name
+        }
+
+        response = self.client.post("/skill/create",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 201,
+            "data": {
+                "Skill_Name": new_skill.Skill_Name
+            }
+            }
+        ).data)
+    #kevan
+    def test_create_existing_skill(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        
+        new_skill = Skill(Skill_Name= 'Python')
+
+        request_body = {
+            'Skill_Name': new_skill.Skill_Name
+        }
+
+        response = self.client.post("/skill/create",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 400,
+            "data": {
+                "Skill_Name":"Python"
+                },
+            "message":"Skill already exists."
+            }
+        ).data)
+    #kevan
+    def test_delete_skill_by_name(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+
+        response = self.client.delete("/skill/delete/Python")
+        response1 = self.client.get("/skill")
+        #print(response.data)
+        # self.assertEqual(response.data, jsonify(
+        #     {
+        #     "code": 200,
+        #     "data": 'Python'
+        #     }
+        # ).data)
+        
+        #print(response.data)
+        self.assertEqual(response1.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "skill": [
+                {
+                    "Skill_Name": "Flutter"
+                },
+                {
+                    "Skill_Name": "Tableau"
+                }
+                ]
+            }
+            }
+        ).data)
 
 
 from staff import Staff
