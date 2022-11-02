@@ -137,40 +137,31 @@ from skill_rewarded import Skill_Rewarded
 class TestSkill_Rewarded(unittest.TestCase):
     
     def test_create_new_SR(self):
-        new_SR = Skill_Rewarded(1, 'Analytics', 'IS217')
-        self.assertEqual(new_SR.Skill_Rewarded_ID, 1)
+        new_SR = Skill_Rewarded('Analytics', 'IS217')
         self.assertEqual(new_SR.Skill_Name, 'Analytics')
         self.assertEqual(new_SR.Course_ID, 'IS217')
 
     def test_create_new_SR_with_wrong_type(self):
         with self.assertRaises(TypeError):
-            Skill_Rewarded('one', 'Analytics', 'IS217')
+            Skill_Rewarded(['Analytics'], 'IS217')
     def test_create_new_SR_with_wrong_type2(self):
         with self.assertRaises(TypeError):
-            Skill_Rewarded(1, ['Analytics'], 'IS217')
-    def test_create_new_SR_with_wrong_type3(self):
-        with self.assertRaises(TypeError):
-            Skill_Rewarded(1, 'Analytics', 217)
+            Skill_Rewarded('Analytics', 217)
 
     def test_create_new_SR_with_wrong_type_error_msg(self):
         with self.assertRaises(TypeError) as e:
-            Skill_Rewarded('one', 'Analytics', 'IS217')
-        msg = e.exception
-        self.assertEqual(str(msg), "Skill_Rewarded_ID must be an integer")
-    def test_create_new_SR_with_wrong_type_error_msg2(self):
-        with self.assertRaises(TypeError) as e:
-            Skill_Rewarded(1, ['Analytics'], 'IS217')
+            Skill_Rewarded(['Analytics'], 'IS217')
         msg = e.exception
         self.assertEqual(str(msg), "Skill_Name must be a string")
-    def test_create_new_SR_with_wrong_type_error_msg3(self):
+    def test_create_new_SR_with_wrong_type_error_msg2(self):
         with self.assertRaises(TypeError) as e:
-            Skill_Rewarded(1, 'Analytics', 217)
+            Skill_Rewarded('Analytics', 217)
         msg = e.exception
         self.assertEqual(str(msg), "Course_ID must be an string")
 
     def test_SR_json(self):
-        new_SR = Skill_Rewarded(1, 'Analytics', 'IS217').json()
-        self.assertEqual(new_SR, {"Skill_Rewarded_ID": 1, 
+        new_SR = Skill_Rewarded('Analytics', 'IS217').json()
+        self.assertEqual(new_SR, {"Skill_Rewarded_ID": None, 
                                 "Skill_Name": 'Analytics',
                                 "Course_ID": 'IS217'})
 
