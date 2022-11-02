@@ -25,7 +25,7 @@ class Registration(db.Model):
             'reg_status': self.reg_status,
             'completion_status': self.completion_status,
             'course_id': self.course_id,
-            'staff_id': self.staff_id,
+            'staff_id': self.staff_id
         }
 
         return dto

@@ -26,8 +26,8 @@ class Skill_Rewarded(db.Model):
 
 @app.route("/view_course_skills/get_skill/<Course_ID>")
 def view_course_skills(Course_ID):
-    skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=Course_ID)
-    if skill_rewarded_list:
+    skill_rewarded_list = Skill_Rewarded.query.filter_by(Course_ID=Course_ID).all()
+    if len(skill_rewarded_list) != 0:
         return jsonify(
             {
                 "code": 200,
@@ -44,8 +44,8 @@ def view_course_skills(Course_ID):
     ), 404
 
 @app.route("/view_course_skills/get_course/<Skill_Name>")
-def view_course_by_skill_id(Skill_Name):
-    skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name)
+def view_course_by_skill_name(Skill_Name):
+    skill_rewarded_list = Skill_Rewarded.query.filter_by(Skill_Name=Skill_Name).all()
     if skill_rewarded_list:
         return jsonify(
                 {

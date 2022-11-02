@@ -168,6 +168,16 @@ from course import Course
 
 class TestLearningJourney(TestApp): 
 
+    def test_get_empty_learning_journey(self):
+        response = self.client.get("/get_learning_journey")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 404,
+            "message": "There are no Learning Journey."
+        }
+        ).data)
+
     def test_get_learning_journey(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
@@ -281,6 +291,7 @@ class TestLearningJourney(TestApp):
         }
         ).data)
 
+
     def test_get_learning_journey_by_lj_id(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
@@ -381,7 +392,65 @@ class TestLearningJourney(TestApp):
             ]
         }
         }
-        ).data)    
+        ).data)
+
+    def test_delete_learning_journey(self):
+        db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
+        db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
+        db.session.add(LearningJourney(130002, 'Data Analyst', 'Python', 'FIN001'))
+        db.session.add(Staff(130001, 'John', 'Sim', 'Chairman', 'john.sim@allinone.com.sg', 1))
+        db.session.add(Staff(130002, 'Jack', 'Sim', 'CEO', 'jack.sim@allinone.com.sg', 1))
+        db.session.add(Staff(140001, 'Derek', 'Tan', 'Sales', 'Derek.Tan@allinone.com.sg', 3))
+        db.session.add(Positions('Human Resource'))
+        db.session.add(Positions('Data Analyst'))
+        db.session.add(Skill('Public Speaking'))
+        db.session.add(Skill('Python'))
+        db.session.add(Course('MGT001', 'Agile Leadership', 'Learn Agile leadership', 'Active', 'External', 'Management'))
+        db.session.add(Course('FIN001', 'Analytics Foundation', 'Learn pandas framework', 'Retired', 'Internal', 'Analytics'))
+        db.session.commit()
+
+        response = self.client.delete("/delete_learning_journey/130001/Human Resource Manager")
+        response1 = self.client.get("/get_learning_journey")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 201,
+            "data": [
+                {
+                "Learning_Journey_ID": 1,
+                "Staff_ID": 130001,
+                "Position_Name": 'Human Resource Manager',
+                "Skill_Name": 'Public Speaking',
+                "Course_ID": 'MGT001'
+                }
+            ]
+        }
+        ).data)
+
+        #print(response.data)
+        self.assertEqual(response1.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "lj": [
+                {
+                    "Learning_Journey_ID":2,
+                    "Staff_ID": 130001,
+                    "Position_Name": 'Data Analyst',
+                    "Skill_Name": 'Python',
+                    "Course_ID": 'FIN001'
+                },
+                {
+                    "Learning_Journey_ID":3,
+                    "Staff_ID": 130002,
+                    "Position_Name": 'Data Analyst',
+                    "Skill_Name": 'Python',
+                    "Course_ID": 'FIN001'
+                }
+                ]
+            }
+            }
+        ).data) 
 
 
 from positions import Positions
@@ -435,6 +504,16 @@ class TestPositions(TestApp):
             "code": 400,
             "data": {"Position_Name":"Head of Security"},
             "message":"Position already exists."}
+        ).data)
+
+    def test_get_all_position_empty(self):
+        response = self.client.get("/positions")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 404,
+            "message": "There are no Positions."
+        }
         ).data)
 
     def test_get_all_position(self):
@@ -495,52 +574,76 @@ class TestPositions(TestApp):
             }
         ).data)
 
-
-
-    def test_update_position(self):
+    def test_get_position_by_non_existing_name(self):
         db.session.add(Positions('Human Resource'))
         db.session.add(Positions('Analyst'))
         db.session.add(Positions('Head of Security'))
         db.session.commit()
-
-        request_body = {
-            'Position_Name': 'Senior Analyst'
-        }
-
-        response = self.client.put("/skill/update/Analyst",
-                                    data=json.dumps(request_body),
-                                    content_type='application/json')
+        response = self.client.get("/get_position_by_name/CEO")
         #print(response.data)
         self.assertEqual(response.data, jsonify(
-            {
-            "code": 200,
-            "data": 'Senior Analyst'
-            }
+        {
+            "code": 404,
+            "message": "Position is not found. Please double check."
+        }
         ).data)
-        response1 = self.client.get("/positions")
-        #print(response.data)
-        self.assertEqual(response1.data, jsonify(
-            {
-            "code": 200,
-            "data": {
-                "positions": [
-                {
-                    "Position_Name": "Human Resource"
-                },
-                {
-                    "Position_Name": "Senior Analyst"
-                },
-                {
-                    "Position_Name": "Head of Security"
-                }
-                ]
-            }
-            }
-        ).data)
+
+
+
+    # def test_update_position(self):
+    #     db.session.add(Positions('Human Resource'))
+    #     db.session.add(Positions('Analyst'))
+    #     db.session.add(Positions('Head of Security'))
+    #     db.session.commit()
+
+    #     request_body = {
+    #         'Position_Name': 'Senior Analyst'
+    #     }
+
+    #     response = self.client.put("/position/update/Analyst",
+    #                                 data=json.dumps(request_body),
+    #                                 content_type='application/json')
+    #     #print(response.data)
+    #     self.assertEqual(response.data, jsonify(
+    #         {
+    #         "code": 200,
+    #         "data": 'Senior Analyst'
+    #         }
+    #     ).data)
+    #     response1 = self.client.get("/positions")
+    #     #print(response.data)
+    #     self.assertEqual(response1.data, jsonify(
+    #         {
+    #         "code": 200,
+    #         "data": {
+    #             "positions": [
+    #             {
+    #                 "Position_Name": "Human Resource"
+    #             },
+    #             {
+    #                 "Position_Name": "Senior Analyst"
+    #             },
+    #             {
+    #                 "Position_Name": "Head of Security"
+    #             }
+    #             ]
+    #         }
+    #         }
+    #     ).data)
 
 from registration import Registration
 
 class TestRegistration(TestApp):
+
+    def test_registration_get_all_empty(self):
+        response = self.client.get("/registration")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 404,
+            "message": "There are no registrations."
+        }
+        ).data)
 
     def test_registration_get_all(self):
         db.session.add(Registration(1, 'Registered', 'Completed', 'COR002',130001))
@@ -584,6 +687,16 @@ from role import Role
 
 class TestRole(TestApp): 
 
+    def test_role_get_all_empty(self):
+        response = self.client.get("/role")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 404,
+            "message": "There are no Roles."
+        }
+        ).data)
+
     def test_role_get_all(self):
         db.session.add(Role(1, 'Admin'))
         db.session.add(Role(2, 'User'))
@@ -600,19 +713,19 @@ class TestRole(TestApp):
                 "roles": [
                 {
                     'role_id': 1,
-                    'role_name': 'Admin',
+                    'role_name': 'Admin'
                 },
                 {
                     'role_id': 2,
-                    'role_name': 'User',
+                    'role_name': 'User'
                 },
                 {
                     'role_id': 3,
-                    'role_name': 'Manager',
+                    'role_name': 'Manager'
                 },
                 {
                     'role_id': 4,
-                    'role_name': 'Trainer',
+                    'role_name': 'Trainer'
                 }
                 ]
             }
@@ -658,7 +771,7 @@ class TestSkillRewarded(TestApp):
         db.session.commit()
 
         response = self.client.get("/view_course_skills/get_skill/COR002")
-        print(response.data)
+        #print(response.data)
         self.assertEqual(response.data, jsonify(
         {
             "code": 404,
@@ -666,7 +779,7 @@ class TestSkillRewarded(TestApp):
         }
         ).data)
 
-    def test_view_course_by_skill_id(self):
+    def test_view_course_by_skill_name(self):
         db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
         db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
         db.session.add(Skill_Rewarded(3, 'R','COR001'))
@@ -690,26 +803,48 @@ class TestSkillRewarded(TestApp):
         ).data)
 
         #change to link later
-        def test_delete_skill_from_course_by_id(self):
-            db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
-            db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
-            db.session.add(Skill_Rewarded(3, 'R','COR001'))
-            db.session.commit()
+    def test_delete_skill_from_course_by_id(self):
+        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
+        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
+        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.commit()
 
-            response = self.client.delete("/position/delete/1")
-            #print(response.data)
-            self.assertEqual(response.data, jsonify(
+        response = self.client.delete("/position/delete/1")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 200,
+            "data": 1
+        }
+        ).data)
+        
+    def test_view_course_by_non_existing_skill_name(self):
+        db.session.add(Skill_Rewarded(1, 'Python','FIN001'))
+        db.session.add(Skill_Rewarded(2, 'Tableau','COR001'))
+        db.session.add(Skill_Rewarded(3, 'R','COR001'))
+        db.session.commit()
+
+        response = self.client.get("/view_course_skills/get_course/Python3")
+
+        self.assertEqual(response.data, jsonify(
             {
-                "code": 200,
-                "data": 1
+                "code": 404,
+                "message": "No course is associated"
             }
-            ).data)
+        ).data)
     
 
 
 from skill_set import Skill_Set
 
 class TestSkillSet(TestApp):
+
+    def test_get_all_skill_set_empty(self):
+        response = self.client.get("/skill_set")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify({
+            "message": "Skill set not found."
+        }).data)
 
     def test_get_all_skill_set(self):
         db.session.add(Skill_Set('Python','Data Analyst'))
@@ -770,6 +905,20 @@ class TestSkillSet(TestApp):
             }
         ).data)
 
+    def test_get_skills_by_non_existing_position(self):
+        db.session.add(Skill_Set('Python','Data Analyst'))
+        db.session.add(Skill_Set('R','Data Analyst'))
+        db.session.add(Skill_Set('Public Speaking','Human Resource'))
+        db.session.commit()
+        response = self.client.get("/skill_set/CEO")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 404,
+            "message": "Position name is not found. Please double check."
+        }
+        ).data)
+
     def test_create_new_skillset(self):
         db.session.add(Skill_Set('Python','Data Analyst'))
         db.session.add(Skill_Set('R','Data Analyst'))
@@ -820,7 +969,15 @@ class TestSkillSet(TestApp):
 
 from skill import Skill
 
-class TestSkills(TestApp): 
+class TestSkills(TestApp):
+
+    def test_skill_get_all_empty(self):
+        response = self.client.get("/skill")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify({
+            "message": "Skills not found."
+        }).data)
+
     def test_skill_get_all(self):
         db.session.add(Skill('Python'))
         db.session.add(Skill('Flutter'))
@@ -848,7 +1005,7 @@ class TestSkills(TestApp):
         ).data)
     
     #test if wildcard works
-    def test_skill_get_by_name(self):
+    def test_skill_get_by_name_wildcard(self):
         db.session.add(Skill('Python'))
         db.session.add(Skill('Flutter'))
         db.session.add(Skill('Tableau'))
@@ -953,6 +1110,40 @@ class TestSkills(TestApp):
             }
         ).data)
 
+    def test_skill_get_by_name(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        response = self.client.get("/skill/name/F")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "skills": [
+                {
+                    "Skill_Name": "Flutter"
+                }
+                ]
+            }
+            }
+        ).data)
+
+    def test_skill_get_by_non_existing_name(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+        response = self.client.get("/skill/name/PublicSpeaking")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify (
+        {
+            "code": 404,
+            "message": 'No skill named PublicSpeaking'
+        }
+        ).data)
+
 
 from staff import Staff
 
@@ -969,14 +1160,14 @@ class TestStaff(TestApp):
             {
             "code": 200,
             "data": {
-                "Skill_Rewarded": [
+                "staffs": [
                 {
                     'staff_id': 130001,
                     'staff_fname': 'John',
                     'staff_lname': 'Sim',
                     'dept': 'Chairman',
                     'email': 'john.sim@allinone.com.sg',
-                    'role': 1,
+                    'role': 1
                 },
                 {
                     'staff_id': 130002,
@@ -984,7 +1175,7 @@ class TestStaff(TestApp):
                     'staff_lname': 'Sim',
                     'dept': 'CEO',
                     'email': 'jack.sim@allinone.com.sg',
-                    'role': 1,
+                    'role': 1
                 },
                 {
                     'staff_id': 140001,
@@ -992,7 +1183,7 @@ class TestStaff(TestApp):
                     'staff_lname': 'Tan',
                     'dept': 'Sales',
                     'email': 'Derek.Tan@allinone.com.sg',
-                    'role': 3,
+                    'role': 3
                 }
                 ]
             }
@@ -1011,14 +1202,40 @@ class TestStaff(TestApp):
             {
             "code": 200,
             "data": {
-                "Skill_Rewarded": [
+                "staff": [
                 {
                     'staff_id': 130001,
                     'staff_fname': 'John',
                     'staff_lname': 'Sim',
                     'dept': 'Chairman',
                     'email': 'john.sim@allinone.com.sg',
-                    'role': 1,
+                    'role': 1
+                }
+                ]
+            }
+            }
+        ).data)
+
+    def test_staff_get_by_dept(self):
+        db.session.add(Staff(130001, 'John', 'Sim', 'Chairman', 'john.sim@allinone.com.sg', 1))
+        db.session.add(Staff(130002, 'Jack', 'Sim', 'CEO', 'jack.sim@allinone.com.sg', 1))
+        db.session.add(Staff(140001, 'Derek', 'Tan', 'Sales', 'Derek.Tan@allinone.com.sg', 3))
+        db.session.commit()
+
+        response = self.client.get("/staff_get_by_dept/Sales")
+
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "staffs": [
+                {
+                    'staff_id': 140001,
+                    'staff_fname': 'Derek',
+                    'staff_lname': 'Tan',
+                    'dept': 'Sales',
+                    'email': 'Derek.Tan@allinone.com.sg',
+                    'role': 3
                 }
                 ]
             }

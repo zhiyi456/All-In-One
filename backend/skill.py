@@ -34,7 +34,7 @@ def skill_get_all():
 
 @app.route("/skill/name/<string:name>", methods=['GET']) # search skill by name using wildcard
 def skill_get_by_name(name):
-    skill_data = Skill.query.filter(Skill.Skill_Name.like('%' + name + '%'))
+    skill_data = Skill.query.filter(Skill.Skill_Name.like('%' + name + '%')).all()
     if skill_data:
         return jsonify(
             {

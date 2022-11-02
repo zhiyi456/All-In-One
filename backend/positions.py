@@ -13,6 +13,8 @@ class Positions(db.Model):
 
  
     def __init__(self, Position_Name):
+        if not isinstance(Position_Name, str):
+            raise TypeError("Position_Name must be a string")
         self.Position_Name = Position_Name
 
     def json(self):
@@ -39,13 +41,13 @@ def position_get_all():
 
 @app.route("/get_position_by_name/<Position_Name>")
 def get_position_by_name(Position_Name):
-    position_list = Positions.query.filter_by(Position_Name=Position_Name)
-    if position_list:
+    position = Positions.query.filter_by(Position_Name=Position_Name).first()
+    if position:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "Positions": [position.json() for position in position_list]
+                    "Positions": [position.json()]
                 }
             }
         )

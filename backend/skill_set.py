@@ -44,7 +44,7 @@ def get_all():
 
 @app.route("/skill_set/<Position_Name>")  # get skills by Position_Name
 def get_skills_by_position(Position_Name):
-    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name)
+    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name).all()
 
     if skill_set_list:
         return jsonify(
@@ -58,7 +58,7 @@ def get_skills_by_position(Position_Name):
     return jsonify(
         {
             "code": 404,
-            "message": "Position ID is not found. Please double check."
+            "message": "Position name is not found. Please double check."
         }
     ), 404
 
@@ -75,9 +75,9 @@ def create_new_skillset():
             }
         ), 400
 
-    print(data)
+    #print(data)
     skillset = Skill_Set(**data)
-    print(skillset)
+    #print(skillset)
     try:
         db.session.add(skillset)
         db.session.commit()
