@@ -24,20 +24,20 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
-					<a class="dropdown-item" href="view_roles.html">Roles</a>
+					<a class="dropdown-item" href="view_positions.html">Roles</a>
 					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" id="logout">Logout</a>
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
 	</nav>
 	
 	<script>
-		document.getElementById('logout').addEventListener('click', clearSession())
 		function clearSession() {
 			sessionStorage.clear();
+			window.location.replace('role_toggle.html');
 		}
 	</script>
 
