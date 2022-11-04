@@ -141,12 +141,15 @@
         error: "",
       },
       mounted: function () {
-        this.staff_id = sessionStorage.getItem("staff");
-        this.position_name = sessionStorage.getItem("position_name");
+        var staff = JSON.parse(sessionStorage.getItem("staff"));
+        var position = JSON.parse(sessionStorage.getItem("position"));
+        console.log(staff, position);
+        this.staff_id = staff.staff_id;
+        this.position_name = position.Position_Name;
         this.lj_id_list = JSON.parse(sessionStorage.getItem("lj_id_list"));
         let config = {
           method: 'get',
-          url: "http://127.0.0.1:8080/skill_set/" + this.position_name,
+          url: "http://127.0.0.1:5000/skill_set/" + this.position_name,
           }
           axios(config) // get skill needed by position Name
           .then(function (response) {
@@ -162,7 +165,7 @@
           //get skills rewarded based on skill name
           axios({
           method: 'get',
-          url: "http://127.0.0.1:8080/view_course_skills/get_course/" + skill_name,
+          url: "http://127.0.0.1:5000/view_course_skills/get_course/" + skill_name,
           headers: { }
           }) // get skill set by position Name
           .then(function (response) {

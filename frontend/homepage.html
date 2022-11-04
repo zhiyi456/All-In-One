@@ -25,11 +25,6 @@
     <nav class="navbar navbar-expand-lg navbar-light custombg">
         <a class="navbar-brand" href="#">Learning Journey Planning System</a>
 
-        <!-- uncomment this to use hamburger menu -->
-        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		  	<span class="navbar-toggler-icon"></span>
-		</button> -->
-
         <div class="navbar-nav">
             <div class="nav-item active">
                 <a class="nav-link" href="#">Home</a>
@@ -62,53 +57,56 @@
         </div>
     </nav>
 
-    <div class="hero-image">
-        <div class="hero-text">
-            <h1>Welcome Back {{staff_id}}</h1>
-            <div v-if="lj_no == 0">
-                <p>Seems like you have not create a Learning Journey</p>
-                <form action="create_learning_journey.html">
-                    <button type="submit"> Click here to Create Now! </button>
-                </form>
-            </div>
-            <div v-else>A apple a day keeps the doctor away</div>
-        </div>
-    </div>
 
-    <div class="container" id = "app">
-        <h2>Learning Journey Tracker</h2>
-        <div class="row d-flex justify-content-center">
-            <table class="table border">
-                <thead></thead>
-                <tr v-model = "position_name"> <td> <h2>{{ position_name }}</h2> </td>  
-                    <td> <select v-model = "lj_no">
-                        <option selected disabled hidden>Select your Learning Journey to Track!</option>
-                        <option v-for = "(lj, index) in response" :value="index">
-                            {{ lj[0].Position_Name }}
-                        </option>
-                    </select>
-                    </td>
-                </tr>
-                <tbody>
-                    <tr>
-                        <th> Skills </th>
-                        <th> Courses </th>
-                    </tr>
-                    <tr scope="col" v-for="(lj,index) in lj_list">
-                        <td> <button type="button" :value="lj.Skill_Name" class="btn btn-primary"> {{lj.Skill_Name}} </button>  </td>
-                        <!-- can v-for the courses to have multiple courses for a single skill -->
-                        <td> <button type="button" :value="lj.Course_ID" class="btn btn-primary"> {{lj.Course_ID}} </button>  </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="container-fluid" id = "app">
+
+        <div class="d-flex justify-content-center pt-4">
+            <div>
+                <h1>Welcome Back {{fname}}</h1>
+                <div v-if="response.length == 0">
+                    <p>Seems like you have not create a Learning Journey</p>
+                    <form action="view_positions.html">
+                        <button type="submit"> Click here to Create Now! </button>
+                    </form>
+                </div>
+            </div>
         </div>
-        
-        <div class="row d-flex justify-content-between" v-if="position_name">
-            <a type="button" class="btn btn-danger" @click="delete_learning_journey">Delete Learning Journey</a>
-            <!-- <a type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a> -->
-            <a href = "edit_learning_journey.html" type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a>
+
+        <div class="container">
+            <h2 class="pt-4">Learning Journey Tracker</h2>
+            <div class="row">
+                <table class="table border">
+                    <thead></thead>
+                    <tr v-model = "position_name"> <td> <h2>{{ position_name }}</h2> </td>  
+                        <td> <select v-model = "lj_no">
+                            <option selected disabled value="">Select your Learning Journey to Track!</option>
+                            <option v-for = "(lj, index) in response" :value="index">
+                                {{ lj[0].Position_Name }}
+                            </option>
+                        </select>
+                        </td>
+                    </tr>
+                    <tbody>
+                        <tr>
+                            <th> Skills </th>
+                            <th> Courses </th>
+                        </tr>
+                        <tr scope="col" v-for="(lj,index) in lj_list">
+                            <td> <button type="button" :value="lj.Skill_Name" class="btn btn-primary"> {{lj.Skill_Name}} </button>  </td>
+                            <!-- can v-for the courses to have multiple courses for a single skill -->
+                            <td> <button type="button" :value="lj.Course_ID" class="btn btn-primary"> {{lj.Course_ID}} </button>  </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="row d-flex justify-content-between" v-if="position_name">
+                <a type="button" class="btn btn-danger" @click="delete_learning_journey">Delete Learning Journey</a>
+                <!-- <a type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a> -->
+                <a href = "edit_learning_journey.html" type="button" class="btn btn-primary" @click="edit_learning_journey">Edit Learning Journey</a>
+            </div>
+            <div v-else></div>
         </div>
-        <div v-else></div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -125,8 +123,6 @@
 
     <script>
 
-
-        sessionStorage
         const vm = new Vue({
             el: '#app',
             data: {
@@ -136,53 +132,57 @@
                 lj_no: "",
                 lj_name: "",
                 staff_id: "",
+                fname: ""
             },
             mounted: function get_learning_journey() {
-                this.staff_id = 130001;
-                //this.staff_id = sessionStorage.getItem("staff");
-                let config = {
-                    method: 'get',
-                    url: 'http://127.0.0.1:8080/get_learning_journey_by_staff_id/' + this.staff_id , //Should not be hardcoded but no session for now
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                    }
-                axios(config)
-                    .then(function (response) {
-                        console.log(response.data.data.lj);
-                        let datalist = response.data.data.lj;
-                        let tempArray = [];
-                        console.log(datalist.length);
-                        if (datalist.length == 1) {
-                            vm.response.push([datalist[0]]);
-                        } else {
-                            for (i=0; i < datalist.length; i++) {
-                                let sID = datalist[i]["Staff_ID"];
-                                let pName = datalist[i]["Position_Name"];
-                                if(!(i == 0)){
-                                    let prevPName = datalist[i-1]["Position_Name"];
-                                    let prevSID = datalist[i-1]["Staff_ID"];
-                                    if(pName == prevPName && sID == prevSID){
-                                        tempArray.push(datalist[i]);
-                                        if(i == datalist.length - 1){
+                if(sessionStorage.getItem("staff")){
+                    var staff = JSON.parse(sessionStorage.getItem("staff"));
+                    this.staff_id = staff.staff_id;
+                    let config = {
+                        method: 'get',
+                        url: 'http://127.0.0.1:5000/get_learning_journey_by_staff_id/' + this.staff_id , //Should not be hardcoded but no session for now
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                        }
+                    axios(config)
+                        .then(function (response) {
+                            vm.fname = staff.staff_fname;
+                            let datalist = response.data.data.lj;
+                            let tempArray = [];
+                            console.log(datalist.length);
+                            if (datalist.length == 1) {
+                                vm.response.push([datalist[0]]);
+                            } else {
+                                for (i=0; i < datalist.length; i++) {
+                                    let sID = datalist[i]["Staff_ID"];
+                                    let pName = datalist[i]["Position_Name"];
+                                    if(!(i == 0)){
+                                        let prevPName = datalist[i-1]["Position_Name"];
+                                        let prevSID = datalist[i-1]["Staff_ID"];
+                                        if(pName == prevPName && sID == prevSID){
+                                            tempArray.push(datalist[i]);
+                                            if(i == datalist.length - 1){
+                                                vm.response.push(tempArray);
+                                            }
+                                        }
+                                        else{
                                             vm.response.push(tempArray);
+                                            tempArray = [];
+                                            tempArray.push(datalist[i]);
+                                            if(i == datalist.length - 1){
+                                                vm.response.push(tempArray);
+                                            }
                                         }
                                     }
-                                    else{
-                                        vm.response.push(tempArray);
-                                        tempArray = [];
+                                    else {
                                         tempArray.push(datalist[i]);
-                                        if(i == datalist.length - 1){
-                                            vm.response.push(tempArray);
-                                        }
                                     }
-                                }
-                                else {
-                                    tempArray.push(datalist[i]);
-                                }
-                            } // end of for loop
-                        } // end of else
-                    }) // end of axios
+                                } // end of for loop
+                            } // end of else
+                        }) // end of axios
+                    
+                }
             }, // end of mounted
             methods:{
                 edit_learning_journey(){
@@ -198,11 +198,12 @@
                 delete_learning_journey(){
                     let config = {
                         method: 'DELETE',
-                        url: 'http://127.0.0.1:8080/delete_learning_journey/' + vm.staff_id + "/" + vm.position_name,
+                        url: 'http://127.0.0.1:5000/delete_learning_journey/' + vm.staff_id + "/" + vm.position_name,
                 };
                 if(confirm("Are you sure you want to delete the " + vm.position_name + " learning journey")){
                     axios(config)
                     .then(function (response) {
+                        console.log(response);
                         alert("You have successfully deleted the " + vm.position_name + " learning journey")
                         location.reload();
                     })                
