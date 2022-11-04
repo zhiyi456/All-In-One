@@ -44,7 +44,7 @@ def get_all():
 
 @app.route("/skill_set/<Position_Name>")  # get skills by Position_Name
 def get_skills_by_position(Position_Name):
-    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name)
+    skill_set_list = Skill_Set.query.filter_by(Position_Name=Position_Name).all()
 
     if skill_set_list:
         return jsonify(
@@ -119,6 +119,33 @@ def create_new_skillset():
             "data": skillset.json()
         }
     ), 201
+
+@app.route("/delete_skillset", methods=['POST']) # create skillset 
+def delete_skillset():
+
+    data = request.get_json()
+    try:
+        res = Skill_Set.query.filter_by(Position_Name=data["Position_Name"], Skill_Name=data["Skill_Name"]).delete()
+        db.session.commit()
+        if res:
+            return jsonify(
+                {
+                    "code": 200,
+                    "deleted_position": res 
+                }
+            ), 200
+    except Exception as e:
+        print(e,'================================================')
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "New_SkillSet": data
+                },
+                "message": "An error occurred while deleting the skillset."
+            }
+        ), 500
+
 
 
 @app.route("/update_skillset_same_position", methods=['POST']) # update skillset WITH CONSTANT POSITION NAME
