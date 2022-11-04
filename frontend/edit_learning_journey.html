@@ -142,11 +142,10 @@
       },
       mounted: function () {
         var staff = JSON.parse(sessionStorage.getItem("staff"));
-        var position = JSON.parse(sessionStorage.getItem("position"));
-        console.log(staff, position);
         this.staff_id = staff.staff_id;
-        this.position_name = position.Position_Name;
+        this.position_name = sessionStorage.getItem("position_name");
         this.lj_id_list = JSON.parse(sessionStorage.getItem("lj_id_list"));
+        console.log("lj_id_list", this.lj_id_list);
         let config = {
           method: 'get',
           url: "http://127.0.0.1:5000/skill_set/" + this.position_name,
@@ -175,76 +174,78 @@
 
         update_learning_journey: function(){
           let datalist = [];
-          let noError = true
+          let noError = true;
 
-            if(vm.selected_courses.length == 0){
-              vm.error = "You must select only one course for each skill"
-            }
+          console.log(vm.selected_courses);
 
-            let existing_skills = []
-            let needed_skills = vm.skill_sets.length;
-
-            for(let i=0; i<vm.selected_courses.length; i++){
-              // check if all skills have at least one course
-              let course = vm.selected_courses[i]
-              existing_skills.push(course.Skill_Name);
-            }
-
-            if (existing_skills.length < needed_skills){
-              vm.error = "You must select only one course for each skill"
-              noError = false;
-            }
-
-            var set = new Set(existing_skills);
-            console.log(set);
-
-            if(existing_skills.length !== new Set(existing_skills).size){
-              vm.error = "You must select one course for each skill"
-              noError = false;
-            }
-
-            for(let i=0; i<vm.selected_courses.length; i++){
-              if(noError===true){ //create LJ
-                  let course = vm.selected_courses[i];
-                  let skill_name = course.Skill_Name;
-                  let course_ID = course.Course_ID;
-                  let temp_data = {
-                    "Skill_Name": skill_name,
-                    "Course_ID": course_ID
-                  };
-                  console.log("lj data", temp_data);
-                  datalist.push(temp_data);
-              } // if statement
-            } // for loop
-
-
-          console.log(datalist);
-          var response = 200;
-          var message = "Successfully updated learning journey"
-          console.log(vm.lj_id_list);
-          for (i = 0; i < vm.lj_id_list.length; i++){
-            console.log(vm.lj_id_list[i]);
-            console.log(datalist[i]);
-            let config = {
-              method: 'PUT',
-              url: "http://127.0.0.1:8080/update_learning_journey/" + vm.lj_id_list[i],
-              data: datalist[i],
-            }
-            axios(config)
-                .then(function (response) {
-                  if(response.data.code != 200){
-                    response = response.data.code;
-                    message = response.data.message;
-                  }
-                  console.log(response.data.message);
-                }) // axios
-          } // for loop
-          if(response == 200){
-            alert(message);
-            location.href = "homepage.html"
-          } else{
-            alert(message);
+          if(vm.selected_courses.length == 0){
+            vm.error = "You must select only one course for each skill";
+            noError = false;
           }
+
+          let existing_skills = []
+          let needed_skills = vm.skill_sets.length;
+
+          for(let i=0; i<vm.selected_courses.length; i++){
+            // check if all skills have at least one course
+            let course = vm.selected_courses[i]
+            existing_skills.push(course.Skill_Name);
+          }
+
+          if (existing_skills.length < needed_skills){
+            vm.error = "You must select only one course for each skill";
+            noError = false;
+          }
+
+          var set = new Set(existing_skills);
+          if(existing_skills.length !== new Set(existing_skills).size){
+            vm.error = "You must select one course for each skill";
+            noError = false;
+          }
+
+          console.log(noError);
+
+          if(noError==true) {
+            for(let i=0; i<vm.selected_courses.length; i++){
+                let course = vm.selected_courses[i];
+                let skill_name = course.Skill_Name;
+                let course_ID = course.Course_ID;
+                let temp_data = {
+                  "Skill_Name": skill_name,
+                  "Course_ID": course_ID
+                };
+                console.log("lj data", temp_data);
+                datalist.push(temp_data);
+            } // for loop
+            
+            console.log(datalist);
+            var code = 200;
+            var message = "Successfully updated learning journey"
+            console.log("vm.lj_id_list",vm.lj_id_list);
+            for (i = 0; i < vm.lj_id_list.length; i++){
+              console.log(vm.lj_id_list[i]);
+              console.log(datalist[i]);
+              let config = {
+                method: 'PUT',
+                url: "http://127.0.0.1:5000/update_learning_journey/" + vm.lj_id_list[i],
+                data: datalist[i],
+              };
+              axios(config)
+                  .then(function (response) {
+                    if(response.data.code != 200){
+                      code = response.data.code;
+                      message = response.data[0].message;
+                    }
+                  }) // axios
+            } // for loop
+            if(code == 200){
+              alert(message);
+              location.href = "homepage.html"
+            } else{
+              alert(message);
+            }
+
+          } // if(noError) statement
         }, // update_learning_journey
       }, //methods
     }) // vue app
