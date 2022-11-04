@@ -23,40 +23,26 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light custombg">
-        <a class="navbar-brand" href="#">Learning Journey Planning System</a>
-
-        <div class="navbar-nav">
-            <div class="nav-item active">
-                <a class="nav-link" href="#">Home</a>
-            </div>
-            <div class="navbar-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    Browse
-                </a>
-                <div class="dropdown-menu" aria-labelledby="browseDropdown">
-                    <a class="dropdown-item" href="#">Courses</a>
-                    <a class="dropdown-item" href="#">Roles</a>
-                    <a class="dropdown-item" href="#">Skills</a>
-                </div>
-            </div>
-            <div class="navbar-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    User Type
-                </a>
-                <div class="dropdown-menu" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">Learner</a>
-                    <a class="dropdown-item" href="#">Human Resouces</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="navbar-item ml-auto">
-            <a class="nav-link" href="#">Logout</a>
-        </div>
-    </nav>
-
+		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<div class="navbar-nav">
+			<div class="nav-item active">
+				<a class="nav-link" href="homepage.html">Home</a>
+			</div>
+			<div class="navbar-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Browse
+				</a>
+				<div class="dropdown-menu" aria-labelledby="browseDropdown">
+					<a class="dropdown-item" href="view_courses.html">Courses</a>
+					<a class="dropdown-item" href="view_positions.html">Roles</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
+				</div>
+			</div>
+		</div>
+		<div class="navbar-item ml-auto">
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
+		</div>
+	</nav>
 
     <div class="container-fluid" id = "app">
 
@@ -122,7 +108,6 @@
         crossorigin="anonymous"></script>
 
     <script>
-
         const vm = new Vue({
             el: '#app',
             data: {
@@ -221,6 +206,13 @@
                 }
             }
         })
+    </script>
+
+    <script>
+    function clearSession() {
+      sessionStorage.clear();
+      window.location.replace('role_toggle.html');
+    }
     </script>
 
 </body>
