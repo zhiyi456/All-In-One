@@ -47,11 +47,12 @@
 		<div class="navbar-item ml-auto">
 			<a class="nav-link" href="#">Logout</a>
 		</div>
-	  </nav>
+	</nav>
     
     <!-- Page Content -->
     <div class="container mx-5 my-4" id="app">
-        <form>
+        <div v-if="deleted==false">
+            <form>
             
             <div v-if="editNameMode==true">
                 
@@ -93,14 +94,15 @@
                   
                 </div><br>
                 <div><button type="button" class="btn btn-primary" @click="save()">Save</button>&nbsp;
-                <button type="button" class="btn btn-secondary" @click="cancel()">Refresh</button></div>
+                <button type="button" class="btn btn-secondary" @click="cancel()">Refresh</button>
+                <button type="button" class="btn btn-danger" @click="deletePosition()">Delete Position</button></div>
 
-              </div>
+          </div>
      
 
-         
-
-        </form>
+            </form>
+        </div>
+        <div v-if="deleted==true"><h1>Position has been deleted.</h1></div>
     </div>
 
     <script>
@@ -112,13 +114,13 @@
             el: '#app',
             
             data: {
-                selected_role_name:'Data Analyst',
+                selected_role_name:'Data Analyst', // session data
                 changed_name:'Data Analyst',
-                selected_role_id:3,
                 all_skills: [],
                 required_skills: [],
                 static_required_skills:[],
-                editNameMode:false
+                editNameMode:false,
+                deleted:false
             },
             methods: {
                 toggleNameEdit(){
@@ -174,9 +176,17 @@
                     //console.log(vm.static_required_skills,'static')
                     //console.log(vm.required_skills,'required')
                 },
+                deletePosition(){
+                    axios.post("http://127.0.0.1:5000/position/delete",{'Delete':this.selected_role_name})
+                        .then(response => {
+                        console.log(response,'hi')
+                        this.deleted=true});
+                },
                 cancel(){
-                    this.getSkills();
                     this.selected_role_name='Data Analyst'
+                    this.getSkills();
+                    
+                    this.editNameMode=false
                 },
                 async save(){
                     // for item of static list
@@ -201,17 +211,30 @@
                     }
                     console.log(to_be_added,'will be added')
 
-                    update_data={'Skills_To_Add':to_be_added,'Skills_To_Delete':to_be_deleted,'Position_Name':'Data Analyst'}
-                    console.log(update_data,'UPDATE!')
-                    await axios.post("http://127.0.0.1:5000/update_skillset",update_data)
-                        .then(response => console.log(response,'hi'));
+                    for (add of to_be_added){
+                        console.log(add,'ADD!!!');
+                        await axios.post("http://127.0.0.1:5000/create_new_skillset",{'Skill_Name':add,'Position_Name':'Data Analyst'})
+                        .then(response => console.log(response,'HEY !!!!!!! ADD !'));
+                    }
+                    for (del of to_be_deleted){
+                        console.log(del,'ADD!!!');
+                        await axios.post("http://127.0.0.1:5000/delete_skillset",{'Skill_Name':del,'Position_Name':'Data Analyst'})
+                        .then(response => console.log(response,'HEY !!!!!!! DELETE!'));
+                    }
+                    // update_data={'Skills_To_Add':to_be_added,'Skills_To_Delete':to_be_deleted,'Position_Name':'Data Analyst'}
+                    // console.log(update_data,'UPDATE!')
+                    // await axios.post("http://127.0.0.1:5000/update_skillset",update_data)
+                    //     .then(response => console.log(response,'hi'));
 
                     
                     // update name of role
                     update_name_data={"Current_Name":this.selected_role_name,"New_Name":this.changed_name}
                     console.log(update_name_data)
                     axios.post("http://127.0.0.1:5000/position/update",update_name_data)
-                        .then(response => console.log(response,'hi'));
+                        .then(response => {
+                        console.log(response,'hi')
+                        this.selected_role_name=response.data['current_position']
+                        this.editNameMode=false});
                     
                 },
             },
