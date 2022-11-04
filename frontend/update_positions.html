@@ -106,6 +106,9 @@
     </div>
 
     <script>
+        var position = JSON.parse(sessionStorage.getItem("position2"));
+        console.log(position);
+
         var headers = {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json"
@@ -114,8 +117,8 @@
             el: '#app',
             
             data: {
-                selected_role_name:'Data Analyst', // session data
-                changed_name:'Data Analyst',
+                selected_role_name: position.Position_Name, // session data
+                changed_name: position.Position_Name,
                 all_skills: [],
                 required_skills: [],
                 static_required_skills:[],
@@ -183,7 +186,7 @@
                         this.deleted=true});
                 },
                 cancel(){
-                    this.selected_role_name='Data Analyst'
+                    this.selected_role_name=this.selected_role_name;
                     this.getSkills();
                     
                     this.editNameMode=false
@@ -213,12 +216,12 @@
 
                     for (add of to_be_added){
                         console.log(add,'ADD!!!');
-                        await axios.post("http://127.0.0.1:5000/create_new_skillset",{'Skill_Name':add,'Position_Name':'Data Analyst'})
+                        await axios.post("http://127.0.0.1:5000/create_new_skillset",{'Skill_Name':add,'Position_Name': this.selected_role_name})
                         .then(response => console.log(response,'HEY !!!!!!! ADD !'));
                     }
                     for (del of to_be_deleted){
                         console.log(del,'ADD!!!');
-                        await axios.post("http://127.0.0.1:5000/delete_skillset",{'Skill_Name':del,'Position_Name':'Data Analyst'})
+                        await axios.post("http://127.0.0.1:5000/delete_skillset",{'Skill_Name':del,'Position_Name': this.selected_role_name})
                         .then(response => console.log(response,'HEY !!!!!!! DELETE!'));
                     }
                     // update_data={'Skills_To_Add':to_be_added,'Skills_To_Delete':to_be_deleted,'Position_Name':'Data Analyst'}
@@ -233,6 +236,7 @@
                     axios.post("http://127.0.0.1:5000/position/update",update_name_data)
                         .then(response => {
                         console.log(response,'hi')
+                        console.log('name successfully updated!')
                         this.selected_role_name=response.data['current_position']
                         this.editNameMode=false});
                     

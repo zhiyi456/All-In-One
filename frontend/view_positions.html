@@ -105,6 +105,9 @@
                                         <div class="card-body">
                                             <h4 class="card-title">{{position.Position_Name}}</h4>
                                             <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(position)">Create Learning Journey</button>
+                                            <span v-if="">
+                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -167,6 +170,11 @@
                     vm.positionName = position
                     sessionStorage.setItem("position", JSON.stringify(vm.positionName)); //sessionStorage will have staff obj and position obj
                     window.location.replace("create_learning_journey.html");
+                },
+                sendPosition2: function(position){
+                    vm.positionName = position
+                    sessionStorage.setItem("position2", JSON.stringify(vm.positionName)); //sessionStorage will have staff obj and position obj
+                    window.location.replace("update_positions.html");
                 }
             }
             })
