@@ -124,7 +124,31 @@ def update_position_name():
         return jsonify(
             {
                 "code": 200,
-                "message": old_position_name +" has been changed to " + new_position_name
+                "old_position": old_position_name ,
+                "current_position":new_position_name
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Position is not found. Please double check."
+        }
+    ), 404
+
+@app.route("/position/delete", methods=['POST'])
+def delete_position():
+
+    data = request.get_json()
+    position=data['Delete']
+    #new_position_name=data['New_Name']
+    res=Positions.query.filter_by(Position_Name=position).delete()
+    db.session.commit()
+    if res:
+        return jsonify(
+            {
+                "code": 200,
+                "deleted_position": res 
+                
             }
         )
     return jsonify(
