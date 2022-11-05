@@ -20,6 +20,7 @@
 </head>
 
 <body>
+    <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
 		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
 		<div class="navbar-nav">
@@ -36,13 +37,24 @@
 					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
+            <div class="nav-item active" id="checkuser"></div>
 		</div>
 		<div class="navbar-item ml-auto">
 			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
 	</nav>
-	
 	<script>
+		if (sessionStorage.getItem('staff')) {
+			var user = JSON.parse(sessionStorage.getItem('staff'));
+			var usertype = user.role;
+			if (usertype==1 | usertype==3) { // if Manager or HR
+                let link = document.createElement('a');
+                link.setAttribute('class', 'nav-link');
+                link.setAttribute('href', 'view_staff_learning_journey.html');
+                link.appendChild(document.createTextNode('View My Staff'));
+                document.getElementById('checkuser').appendChild(link);
+			}
+		}
 		function clearSession() {
 			sessionStorage.clear();
 			window.location.replace('role_toggle.html');
