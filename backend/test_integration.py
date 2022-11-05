@@ -548,6 +548,38 @@ class TestPositions(TestApp):
             }
         ).data)
 
+    def test_delete_position(self):
+        db.session.add(Positions('Human Resource'))
+        db.session.add(Positions('Analyst'))
+        db.session.add(Positions('Head of Security'))
+        db.session.commit()
+        request_body = {
+            'Delete': 'Human Resource'
+        }
+        self.client.post("/position/delete",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+         
+        response = self.client.get("/positions")
+        # print(response.data,'RESPONS DATA!')
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "positions": [
+                {
+                    "Position_Name": "Analyst"
+                },
+                {
+                    "Position_Name": "Head of Security"
+                }
+                ]
+            }
+            }
+        ).data)
+
     #optional
     def test_get_all_position_length(self):
         db.session.add(Positions('Human Resource'))
@@ -814,14 +846,22 @@ class TestSkillRewarded(TestApp):
         db.session.add(Skill_Rewarded('Tableau','COR001'))
         db.session.add(Skill_Rewarded('R','COR001'))
         db.session.commit()
+        request_body = {
+                        "Skill_Name": 'Tableau', 
+                        "Course_ID": 'COR001'
+                        }
 
-        response = self.client.delete("/position/delete/1")
+        response = self.client.post("/delete_skill_rewarded",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
         #print(response.data)
         self.assertEqual(response.data, jsonify(
-        {
-            "code": 200,
-            "data": 1
-        }
+         {
+                    "code": 200,
+                    "message": "Skill is no longer associated with the course."
+                }
         ).data)
 
     def test_view_course_by_non_existing_skill_name(self):
@@ -917,7 +957,7 @@ class TestSkillSet(TestApp):
         db.session.add(Skill_Set('Public Speaking','Human Resource'))
         db.session.commit()
         response = self.client.get("/skill_set/CEO")
-        #print(response.data)
+        print(response.data)
         self.assertEqual(response.data, jsonify(
         {
             "code": 404,
