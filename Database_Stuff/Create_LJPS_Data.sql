@@ -11,7 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS `SKill`, `Positions`, `Skill_set`, `Skill_Rewarded`, `Learning_Journey`;
+DROP TABLE IF EXISTS `Skill`, `Positions`, `Skill_set`, `Skill_Rewarded`, `Learning_Journey`;
 SET foreign_key_checks = 1;
 USE `is212_ALL_IN_ONE`;
 
@@ -65,6 +65,10 @@ INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('R'),
 ('Tableau'),
 ('Interpersonal Skills'),
+('Martial Arts'),
+('CISSP Certification'),
+('OCSP Certification'),
+('Team Building'),
 ('Public Speaking');
 
 INSERT INTO `Skill_Set` (`Position_Name`, `Skill_Name`) VALUES
@@ -72,16 +76,31 @@ INSERT INTO `Skill_Set` (`Position_Name`, `Skill_Name`) VALUES
 ('Data Analyst', 'R'),
 ('Data Analyst', 'Tableau'),
 ('Head of Security', 'Interpersonal Skills'),
+('Head of Security', 'Martial Arts'),
+('Head of Security', 'CISSP Certification'),
+('Head of Security', 'OCSP Certification'),
 ('Human Resource', 'Interpersonal Skills'),
+('Human Resource', 'Team Building'),
 ('Human Resource', 'Public Speaking');
 
 INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
 ("Python", 'FIN001'),
 ('Python', 'tch006'),
 ('Python', 'tch009'),
+('Advanced Python', 'tch006'),	
+('Advanced Python', 'tch008'),	
 ('R', 'COR001'),
+('R', 'tch004'),
 ('Tableau', 'COR001'),
 ('Interpersonal Skills', 'MGT001'),
+('Interpersonal Skills', 'SAL004'),
+('Martial Arts', 'MGT001'),
+('CISSP Certification', 'COR006'),
+('CISSP Certification', 'COR002'),
+('OCSP Certification', 'tch002'),
+('OCSP Certification', 'tch003'),
+('Team Building', 'COR004'),
+('Team Building', 'MGT004'),
 ('Public Speaking', 'MGT001');
 
 INSERT INTO `Learning_Journey` (`Staff_ID`, `Position_Name`, `Skill_Name`, `Course_ID`) VALUES
