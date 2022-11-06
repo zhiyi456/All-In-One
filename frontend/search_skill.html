@@ -19,10 +19,10 @@
 
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
-		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<a class="navbar-brand" href="homepage.html">Learning Journey Planning System</a>
 		<div class="navbar-nav">
 			<div class="nav-item active">
-				<a class="nav-link" href="#">Home</a>
+				<a class="nav-link" href="homepage.html">Home</a>
 			</div>
 			<div class="navbar-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,24 +30,16 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
-					<a class="dropdown-item" href="view_roles.html">Roles</a>
-					<a class="dropdown-item" href="#">Skills</a>
+					<a class="dropdown-item" href="view_positions.html">Positions</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
-			<div class="navbar-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					User Type
-				</a>
-				<div class="dropdown-menu" aria-labelledby="userDropdown">
-					<a class="dropdown-item" href="#">Learner</a>
-					<a class="dropdown-item" href="#">Human Resouces</a>
-				</div>
-			</div>
+            <div class="nav-item active" id="checkuser"></div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" href="#">Logout</a>
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
-	  </nav>
+	</nav>
 
 
     <!--Page Content-->
@@ -60,21 +52,7 @@
         </div>
         
         <div class="container py-5">
-            <div class="row">
-                <div class ="col-4">
-                    <div class = "d-flex justify-content-end">
-                      <div class="dropdown">
-                        <button class="btn customblue dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Filter By...
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Action</a>
-                          <a class="dropdown-item" href="#">Another action</a>
-                          <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                      </div>
-                    </div>
-                </div>
+            <div class="row d-flex justify-content-center">
                 <div class ="col-6">
                     <div class="input-group mb-3">
                         <input v-model="Submitted_Skill_Name_Enquiry" type="text" class="form-control" placeholder="Search" aria-label="search" aria-describedby="search-bar">
@@ -88,7 +66,7 @@
 
         <div id="search-results" class="container-fluid border border-info p-4">
             <div class="row">
-                <button v-if=" role == 'hr' || role == 'manager' " class="btn btn-primary float-right ml-4 mb-2" @click="createNewSkill()">(ADMIN) Add a new skill</button>
+                <button v-if="usertype == 1" class="btn btn-primary float-right ml-4 mb-2" @click="createNewSkill()">(ADMIN) Add a new skill</button>
             </div>
 
             <div class="row ml-2">
@@ -109,7 +87,7 @@
                                 {{ skill_name }}
                             </button>
                             <button 
-                            v-if=" role == 'hr' || role == 'manager' " 
+                            v-if="usertype == 1" 
                             class="btn btn-danger float-right ml-4"
                             @click="deleteSkill(skill_name)">
                                 Delete
@@ -122,14 +100,20 @@
     </div>
 
     <script>
+        function clearSession() {
+			sessionStorage.clear();
+			window.location.replace('role_toggle.html');
+		}
+
         var vm = new Vue({
             el: '#app',
             data: {                            
                 Submitted_Skill_Name_Enquiry : '',
                 search_results : [],
-                // role: "staff"
-                role: "hr"
-                // role: "manager"
+                // role: "staff",
+                // role: "hr",
+                // role: "manager",
+                usertype: null
             },
             methods: {
                 searchSkills: function() {
@@ -193,18 +177,28 @@
                     headers: { }
                     };
 
-                    axios(config)
-                    .then(function (response) {
-                        axios_result = response.data.data.skill
-                        // console.log(axios_result)
-                        for (result in axios_result){
-                            // console.log(axios_result[result].Skill_Name)
-                            vm.search_results.push(axios_result[result].Skill_Name)
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                axios(config)
+                .then(function (response) {
+                    axios_result = response.data.data.skill
+                    // console.log(axios_result)
+                    for (result in axios_result){
+                        // console.log(axios_result[result].Skill_Name)
+                        vm.search_results.push(axios_result[result].Skill_Name)
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+                // get user type
+                if (sessionStorage.getItem('staff')) {
+                    console.log('======= getting user type ======')
+                    let user = JSON.parse(sessionStorage.getItem('staff'));
+                    // this.dept = user.dept;
+                    this.usertype = user.role;
+                    console.log(this.usertype)
+                    // this.userid = user.staff_id;
+                }
             }
         })
     </script>

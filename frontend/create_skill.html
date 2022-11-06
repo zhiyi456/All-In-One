@@ -19,10 +19,10 @@
 <body>
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
-		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<a class="navbar-brand" href="homepage.html">Learning Journey Planning System</a>
 		<div class="navbar-nav">
 			<div class="nav-item active">
-				<a class="nav-link" href="#">Home</a>
+				<a class="nav-link" href="homepage.html">Home</a>
 			</div>
 			<div class="navbar-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,24 +30,16 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
-					<a class="dropdown-item" href="view_roles.html">Roles</a>
-					<a class="dropdown-item" href="#">Skills</a>
+					<a class="dropdown-item" href="view_positions.html">Positions</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
-			<div class="navbar-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					User Type
-				</a>
-				<div class="dropdown-menu" aria-labelledby="userDropdown">
-					<a class="dropdown-item" href="#">Learner</a>
-					<a class="dropdown-item" href="#">Human Resouces</a>
-				</div>
-			</div>
+            <div class="nav-item active" id="checkuser"></div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" href="#">Logout</a>
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
-	  </nav>
+	</nav>
     
     <!-- Page Content -->
     <div class="container mx-5 my-4" id="app">
@@ -57,7 +49,7 @@
                 <div class="form-group col-md-12">
                     <label for="positionName"><b>Skill Name</b></label>
                     <input type="text" class="form-control" id="skill_name" placeholder="Enter skill name" v-model="skill_name">
-                    Skill_Name inputted: {{ skill_name }}
+                    <!-- Skill_Name inputted: {{ skill_name }} -->
                 </div>
             </div>
             
@@ -75,7 +67,7 @@
                             {{ course.Course_Name }}
                         </label>
                     </div>
-                    required courses: {{ required_courses }}
+                    <!-- required courses: {{ required_courses }} -->
                 </div>
 
                 <div class="form-group col-md-6">
@@ -86,7 +78,7 @@
                             {{ position.Position_Name }}
                         </label>
                     </div>
-                    required positions: {{ required_positions }}
+                    <!-- required positions: {{ required_positions }} -->
                 </div>
             </div><br/>
 
@@ -101,7 +93,11 @@
     </div>
 
     <script>
-
+        function clearSession() {
+			sessionStorage.clear();
+			window.location.replace('role_toggle.html');
+		}
+        
         var config_get_all_courses = {
             method: 'get',
             url: 'http://127.0.0.1:5000/course',
