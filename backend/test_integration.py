@@ -394,6 +394,49 @@ class TestLearningJourney(TestApp):
         }
         ).data)
 
+    def test_delete_learning_journey_by_ID(self):
+        db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
+        db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
+        db.session.add(LearningJourney(130002, 'Data Analyst', 'Python', 'FIN001'))
+        db.session.add(Staff(130001, 'John', 'Sim', 'Chairman', 'john.sim@allinone.com.sg', 1))
+        db.session.add(Staff(130002, 'Jack', 'Sim', 'CEO', 'jack.sim@allinone.com.sg', 1))
+        db.session.add(Staff(140001, 'Derek', 'Tan', 'Sales', 'Derek.Tan@allinone.com.sg', 3))
+        db.session.add(Positions('Human Resource'))
+        db.session.add(Positions('Data Analyst'))
+        db.session.add(Skill('Public Speaking'))
+        db.session.add(Skill('Python'))
+        db.session.add(Course('MGT001', 'Agile Leadership', 'Learn Agile leadership', 'Active', 'External', 'Management'))
+        db.session.add(Course('FIN001', 'Analytics Foundation', 'Learn pandas framework', 'Retired', 'Internal', 'Analytics'))
+        db.session.commit()
+
+        self.client.delete("/delete_learning_journey/130001/Human Resource Manager")
+        response = self.client.get("/get_learning_journey")
+
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "lj": [
+                {
+                    "Learning_Journey_ID":2,
+                    "Staff_ID": 130001,
+                    "Position_Name": 'Data Analyst',
+                    "Skill_Name": 'Python',
+                    "Course_ID": 'FIN001'
+                },
+                {
+                    "Learning_Journey_ID":3,
+                    "Staff_ID": 130002,
+                    "Position_Name": 'Data Analyst',
+                    "Skill_Name": 'Python',
+                    "Course_ID": 'FIN001'
+                }
+                ]
+            }
+            }
+            ).data)
+
     def test_update_learning_journey_by_ID(self):
         db.session.add(LearningJourney(130001, 'Human Resource Manager', 'Public Speaking', 'MGT001'))
         db.session.add(LearningJourney(130001, 'Data Analyst', 'Python', 'FIN001'))
@@ -628,46 +671,48 @@ class TestPositions(TestApp):
 
 
 
-    # def test_update_position(self):
-    #     db.session.add(Positions('Human Resource'))
-    #     db.session.add(Positions('Analyst'))
-    #     db.session.add(Positions('Head of Security'))
-    #     db.session.commit()
+    def test_update_position(self):
+        db.session.add(Positions('Human Resource'))
+        db.session.add(Positions('Analyst'))
+        db.session.add(Positions('Head of Security'))
+        db.session.commit()
 
-    #     request_body = {
-    #         'Position_Name': 'Senior Analyst'
-    #     }
+        request_body = {
+            'Current_Name': 'Analyst',
+            'New_Name': 'Senior Analyst'
+        }
 
-    #     response = self.client.put("/position/update/Analyst",
-    #                                 data=json.dumps(request_body),
-    #                                 content_type='application/json')
-    #     #print(response.data)
-    #     self.assertEqual(response.data, jsonify(
-    #         {
-    #         "code": 200,
-    #         "data": 'Senior Analyst'
-    #         }
-    #     ).data)
-    #     response1 = self.client.get("/positions")
-    #     #print(response.data)
-    #     self.assertEqual(response1.data, jsonify(
-    #         {
-    #         "code": 200,
-    #         "data": {
-    #             "positions": [
-    #             {
-    #                 "Position_Name": "Human Resource"
-    #             },
-    #             {
-    #                 "Position_Name": "Senior Analyst"
-    #             },
-    #             {
-    #                 "Position_Name": "Head of Security"
-    #             }
-    #             ]
-    #         }
-    #         }
-    #     ).data)
+        response = self.client.post("/position/update",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+            {
+                "code": 200,
+                "old_position": 'Analyst' ,
+                "current_position": 'Senior Analyst'
+            }
+        ).data)
+        response1 = self.client.get("/positions")
+        #print(response.data)
+        self.assertEqual(response1.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "positions": [
+                {
+                    "Position_Name": "Human Resource"
+                },
+                {
+                    "Position_Name": "Senior Analyst"
+                },
+                {
+                    "Position_Name": "Head of Security"
+                }
+                ]
+            }
+            }
+        ).data)
 
 from registration import Registration
 
@@ -840,7 +885,7 @@ class TestSkillRewarded(TestApp):
             }
         ).data)
 
-        #change to link later
+
     def test_delete_skill_from_course_by_id(self):
         db.session.add(Skill_Rewarded('Python','FIN001'))
         db.session.add(Skill_Rewarded('Tableau','COR001'))
@@ -1085,6 +1130,7 @@ class TestSkills(TestApp):
         response = self.client.post("/skill/create",
                                     data=json.dumps(request_body),
                                     content_type='application/json')
+        response1 = self.client.get("/skill")
         #print(response.data)
         self.maxDiff = None
         self.assertEqual(response.data, jsonify(
@@ -1095,7 +1141,29 @@ class TestSkills(TestApp):
             }
             }
         ).data)
-    #kevan
+ 
+        self.assertEqual(response1.data,jsonify(
+            {
+            "code": 200,
+            "data": {
+                "skill": [
+                {
+                    "Skill_Name": "Python"
+                },
+                {
+                    "Skill_Name": "Flutter"
+                },
+                {
+                    "Skill_Name": "Tableau"
+                },
+                                {
+                    "Skill_Name": "Public Speaking SKills"
+                }
+                ]
+            }
+            }
+        ).data)
+
     def test_create_existing_skill(self):
         db.session.add(Skill('Python'))
         db.session.add(Skill('Flutter'))
@@ -1122,24 +1190,16 @@ class TestSkills(TestApp):
             "message":"Skill already exists."
             }
         ).data)
-    #kevan
+
     def test_delete_skill_by_name(self):
         db.session.add(Skill('Python'))
         db.session.add(Skill('Flutter'))
         db.session.add(Skill('Tableau'))
         db.session.commit()
 
-        response = self.client.delete("/skill/delete/Python")
+        self.client.delete("/skill/delete/Python")
         response1 = self.client.get("/skill")
-        #print(response.data)
-        # self.assertEqual(response.data, jsonify(
-        #     {
-        #     "code": 200,
-        #     "data": 'Python'
-        #     }
-        # ).data)
-        
-        #print(response.data)
+
         self.assertEqual(response1.data, jsonify(
             {
             "code": 200,
@@ -1155,7 +1215,43 @@ class TestSkills(TestApp):
             }
             }
         ).data)
-    # kevan
+
+    def test_delete_non_existing_skill_name(self):
+        db.session.add(Skill('Python'))
+        db.session.add(Skill('Flutter'))
+        db.session.add(Skill('Tableau'))
+        db.session.commit()
+
+        response = self.client.delete("/skill/delete/Python3")
+        response1 = self.client.get("/skill")
+        self.assertEqual(response.data,jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "Skill_Name": 'Python3'
+                },
+                "message": "Skill does not exist"
+            }
+        ).data)
+        self.assertEqual(response1.data, jsonify(
+            {
+            "code": 200,
+            "data": {
+                "skill": [
+                {
+                    "Skill_Name": "Python"
+                },
+                {
+                    "Skill_Name": "Flutter"
+                },
+                {
+                    "Skill_Name": "Tableau"
+                }
+                ]
+            }
+            }
+        ).data)
+
     def test_update_skill(self):
         db.session.add(Skill('Python'))
         db.session.add(Skill('Flutter'))
