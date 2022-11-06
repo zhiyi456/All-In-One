@@ -19,10 +19,10 @@
 
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
-		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<a class="navbar-brand" href="homepage.html">Learning Journey Planning System</a>
 		<div class="navbar-nav">
 			<div class="nav-item active">
-				<a class="nav-link" href="#">Home</a>
+				<a class="nav-link" href="homepage.html">Home</a>
 			</div>
 			<div class="navbar-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,57 +31,15 @@
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
 					<a class="dropdown-item" href="view_positions.html">Positions</a>
-					<a class="dropdown-item" href="#">Skills</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
-			<div class="navbar-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					User Type
-				</a>
-				<div class="dropdown-menu" aria-labelledby="userDropdown">
-					<a class="dropdown-item" href="#">Learner</a>
-					<a class="dropdown-item" href="#">Human Resouces</a>
-				</div>
-			</div>
+            <div class="nav-item active" id="checkuser"></div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" href="#">Logout</a>
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
-	  </nav>
-
-
-    <!--Filter + Search Bar-->
-    
-    <div class="container py-5">
-        <div class="row">
-            <div class ="col-4">
-                <div class = "d-flex justify-content-end">
-                  <div class="dropdown">
-                    <button class="btn customblue dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Filter By...
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div class ="col-6">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search" aria-label="search" aria-describedby="search-bar">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="search-bar">🔍︎</span>
-                    </div>
-                  </div>
-            </div>
-            <div class ="col-2">
-            </div>
-        </div>
-      </div>
-    <div>
-    </div>
+	</nav>
 
     <!--Positions Display-->
 
@@ -95,7 +53,13 @@
                     <div class="col-6">
                         <h3 class="mb-3">Positions </h3>
                     </div>
-                    
+
+                    <div class="col-6 d-flex justify-content-end">
+                        <div v-if="role==1||role==3">
+                            <a class="btn btn-danger" href="create_position.html" role="button">Create Position</a>
+                        </div>
+                    </div>
+
 
                     <div class="col-12">
                         <div v-for="(position,index) in positions[0]">
@@ -105,7 +69,7 @@
                                         <div class="card-body">
                                             <h4 class="card-title">{{position.Position_Name}}</h4>
                                             <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(position)">Create Learning Journey</button>
-                                            <span v-if="">
+                                            <span v-if="role==1||role==3">
                                                 <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
                                             </span>
                                         </div>
@@ -117,7 +81,9 @@
                                         <div class="card-body">
                                             <h4 class="card-title">{{positions[0][index+1] && positions[0][index+1]['Position_Name']}}</h4>
                                             <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
-                                            <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
+                                            <span v-if="role==1||role==3">
+                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +93,9 @@
                                         <div class="card-body">
                                             <h4 class="card-title">{{positions[0][index+2] && positions[0][index+2]['Position_Name']}}</h4>
                                             <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
-                                            <!-- <a v-if = "role" class="btn btn-primary mb-3 mr-1" role="button"></a> -->
+                                            <span v-if="role==1||role==3">
+                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -146,6 +114,8 @@
 
     <script>
 
+        let user = JSON.parse(sessionStorage.getItem("staff"));
+
         var config = {
         method: 'get',
         url: 'http://127.0.0.1:5000/positions',
@@ -157,12 +127,16 @@
             el: '#app',
             data: {
                 positions: [],
-                positionName: ""
+                positionName: "",
+                role: 0
             },
             mounted: function(){
                 axios(config)
                 .then(function (response) {
                     vm.positions.splice(0, 0, response.data.data["positions"]); 
+                    if(sessionStorage.getItem('staff')){
+                        vm.role = user.role;
+                    }
                 })
             },
             methods: {
@@ -176,13 +150,30 @@
                     sessionStorage.setItem("position2", JSON.stringify(vm.positionName)); //sessionStorage will have staff obj and position obj
                     window.location.replace("update_positions.html");
                 }
+            },
+            watch: {
             }
             })
     </script>
 
     <script>
-        
+        if (sessionStorage.getItem('staff')) {
+            var user = JSON.parse(sessionStorage.getItem('staff'));
+            var usertype = user.role;
+            if (usertype==1 | usertype==3) { // if Manager or HR
+                let link = document.createElement('a');
+                link.setAttribute('class', 'nav-link');
+                link.setAttribute('href', 'view_staff_learning_journey.html');
+                link.appendChild(document.createTextNode('View My Staff'));
+                document.getElementById('checkuser').appendChild(link);
+            }
+        }
+        function clearSession() {
+            sessionStorage.clear();
+            window.location.replace('role_toggle.html');
+        }
     </script>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
