@@ -82,7 +82,7 @@
                                             <h4 class="card-title">{{positions[0][index+1] && positions[0][index+1]['Position_Name']}}</h4>
                                             <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
                                             <span v-if="role==1||role==3">
-                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
+                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(positions[0][index+1])">Edit</button>
                                             </span>
                                         </div>
                                     </div>
@@ -92,9 +92,9 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <h4 class="card-title">{{positions[0][index+2] && positions[0][index+2]['Position_Name']}}</h4>
-                                            <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+1])">Create Learning Journey</button>
+                                            <button :value="position" type="button" class="btn btn-primary" @click="sendPosition(positions[0][index+2])">Create Learning Journey</button>
                                             <span v-if="role==1||role==3">
-                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(position)">Edit</button>
+                                                <button :value="position" type="button" class="btn btn-danger" @click="sendPosition2(positions[0][index+2])">Edit</button>
                                             </span>
                                         </div>
                                     </div>
