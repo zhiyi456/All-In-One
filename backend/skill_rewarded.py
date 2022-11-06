@@ -91,6 +91,43 @@ def create_new_skill_rewarded():
                     "New_Skill_Rewarded": data
                 },
                 "message": "An error occurred while creating the skill_rewarded"})
+    return jsonify(
+        {
+            "code": 201,
+            "data": skill_rewarded.json()
+        }
+    ), 201
+
+                
+@app.route("/delete_skill_rewarded", methods=['POST']) # create skillset 
+def delete_skill_rewarded():
+
+    data = request.get_json()
+    try:
+        res = Skill_Rewarded.query.filter_by(Course_ID=data["Course_ID"], Skill_Name=data["Skill_Name"]).delete()
+        db.session.commit()
+        if res:
+            return jsonify(
+                {
+                    "code": 200,
+                    "message": "Skill is no longer associated with the course."
+                }
+            ), 200
+    except Exception as e:
+        print(e,'================================================')
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "Skillset to Delete": data
+                },
+                "message": "An error occurred while deleting the skillset."
+            }
+        ), 500
+
+
+
+
 
 @app.route("/update_skill_rewarded", methods=['POST']) # create skillset 
 def update_skill_rewarded():
