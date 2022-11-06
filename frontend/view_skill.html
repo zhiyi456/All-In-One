@@ -17,7 +17,6 @@
   </head>
   <body>
 
-    <!-- Nav Bar COPY THE SCRIPT BELOW ALSO -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
 		<a class="navbar-brand" href="homepage.html">Learning Journey Planning System</a>
 		<div class="navbar-nav">
@@ -40,6 +39,7 @@
 			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
 	</nav>
+    
 	<script>
 		if (sessionStorage.getItem('staff')) {
 			var user = JSON.parse(sessionStorage.getItem('staff'));
@@ -147,6 +147,24 @@
             }
             })
     </script>
+
+<script>
+    if (sessionStorage.getItem('staff')) {
+        var user = JSON.parse(sessionStorage.getItem('staff'));
+        var usertype = user.role;
+        if (usertype==1 | usertype==3) { // if Manager or HR
+            let link = document.createElement('a');
+            link.setAttribute('class', 'nav-link');
+            link.setAttribute('href', 'view_staff_learning_journey.html');
+            link.appendChild(document.createTextNode('View My Staff'));
+            document.getElementById('checkuser').appendChild(link);
+        }
+    }
+    function clearSession() {
+        sessionStorage.clear();
+        window.location.replace('role_toggle.html');
+    }
+</script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
