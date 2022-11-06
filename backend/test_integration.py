@@ -909,6 +909,7 @@ class TestSkillRewarded(TestApp):
                 }
         ).data)
 
+
     def test_view_course_by_non_existing_skill_name(self):
         db.session.add(Skill_Rewarded('Python','FIN001'))
         db.session.add(Skill_Rewarded('Tableau','COR001'))
@@ -1090,6 +1091,44 @@ class TestSkillSet(TestApp):
                 }
                 ]
             }
+            }
+        ).data)
+
+    def test_update_skillset_same_skill(self):
+        db.session.add(Skill_Set('Python','Data Analyst'))
+        db.session.add(Skill_Set('R','Data Analyst'))
+        db.session.add(Skill_Set('Public Speaking','Human Resource'))
+        db.session.commit()
+
+        request_body = {
+                        "Skill_Name": 'Python', 
+                        "Positions_Add": ['Head of Securities'],
+                        'Positions_Delete': []
+                        }
+
+        response = self.client.post("/update_skillset_same_skill",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        print(response.data)
+        self.maxDiff = None
+        response1 = self.client.get("/skill_set")
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+            {
+                "code":201,
+                "message":"skills successfully updated!",
+                "new skills":[
+                    {
+                    "Position_Name":"Data Analyst",
+                    "Skill_Name":"Python",
+                    "Skill_Set_ID":1
+                    },
+                    {
+                    "Position_Name":"Head of Securities",
+                    "Skill_Name":"Python",
+                    "Skill_Set_ID":4
+                    }
+                ]
             }
         ).data)
 
