@@ -58,6 +58,9 @@
                                 <div class="card-body">
                                     <h4 class="card-title">{{course.Course_Name}}</h4>
                                     <p class="card-text">{{course.Course_Desc}}</p>
+                                    <span v-if="role==1">
+                                        <button :value="course" type="button" class="btn btn-danger" @click="sendCourse(course)">Edit Course Skills</button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -72,6 +75,8 @@
 
     <script>
 
+        var user = JSON.parse(sessionStorage.getItem("staff"));
+
         var config = {
         method: 'get',
         url: 'http://127.0.0.1:5000/course',
@@ -82,21 +87,31 @@
         var vm = new Vue({
             el: '#app',
             data: {
-                courses: []
+                courses: [],
+                role: 0
             },
             mounted: function(){
                 axios(config)
                 .then(function (response) {
                     vm.courses.splice(0, 0, response.data.data["courses"]) 
-                    console.log(vm.courses);
+                    if(sessionStorage.getItem("staff")){
+                        vm.role = user.role;
+                    }                    
                 })
+            },
+            methods: {
+                sendCourse: function(course){
+                    sessionStorage.setItem("course", JSON.stringify(course));
+                    console.log(sessionStorage);
+                    window.location.replace("update_skill_to_course.html");
+                }
             }
             })
     </script>
 
     <script>
         if (sessionStorage.getItem('staff')) {
-            var user = JSON.parse(sessionStorage.getItem('staff'));
+            let user = JSON.parse(sessionStorage.getItem('staff'));
             var usertype = user.role;
             if (usertype==1 | usertype==3) { // if Manager or HR
                 let link = document.createElement('a');
