@@ -45,58 +45,61 @@
     <!--Page Content-->
 
     <div id="app">
-        <div id="jumbotron-skill" class="jumbotron jumbotron-fluid text-center">
+        <section class="pt-5 pb-5">
             <div class="container">
-              <h2 class="display-4">Skills</h2>
-            </div>
-        </div>
-        
-        <div class="container py-5">
-            <div class="row d-flex justify-content-center">
-                <div class ="col-6">
-                    <div class="input-group mb-3">
-                        <input v-model="Submitted_Skill_Name_Enquiry" type="text" class="form-control" placeholder="Search" aria-label="search" aria-describedby="search-bar">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-outline-secondary" type="button" @click="searchSkills()">🔍︎</button>
+                <div class="col-6">
+                    <h3 class="mb-3">Skills</h3>
+                </div>
+                
+                <div class="container py-1">
+                    <div class="row">
+                        <div class ="col-6">
+                            <div class="input-group mb-3">
+                                <input v-model="Submitted_Skill_Name_Enquiry" type="text" class="form-control" placeholder="Search" aria-label="search" aria-describedby="search-bar">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary" type="button" @click="searchSkills()">🔍︎</button>
+                                </div>
+                            </div>
                         </div>
-                      </div>
+                    </div>
+                </div>
+                <div id="search-results" class="container-fluid border border-info p-4">
+                    <div class="row">
+                        <button v-if="usertype == 1" class="btn btn-primary float-right ml-4 mb-2" @click="createNewSkill()">(ADMIN) Add a new skill</button>
+                    </div>
+        
+                    <div class="row ml-2">
+                        <h3 class="text-center">
+                            Available Skills:
+                        </h3>
+                    </div>
+        
+                    <div class="row">
+                        <ul class="list-group list-group-flush">
+                            <div v-for="skill_name in search_results">
+                                <li class="list-group-item" >
+                                    <button
+                                    type="button"
+                                    class="btn btn-link float-left ml-4"
+                                    :value="skill_name"
+                                    @click="sendSkill(skill_name)">
+                                        {{ skill_name }}
+                                    </button>
+                                    <button 
+                                    v-if="usertype == 1" 
+                                    class="btn btn-danger float-right ml-4"
+                                    @click="deleteSkill(skill_name)">
+                                        Delete
+                                    </button>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+        
 
-        <div id="search-results" class="container-fluid border border-info p-4">
-            <div class="row">
-                <button v-if="usertype == 1" class="btn btn-primary float-right ml-4 mb-2" @click="createNewSkill()">(ADMIN) Add a new skill</button>
-            </div>
-
-            <div class="row ml-2">
-                <h3 class="text-center">
-                    Available Skills:
-                </h3>
-            </div>
-
-            <div class="row">
-                <ul class="list-group list-group-flush">
-                    <div v-for="skill_name in search_results">
-                        <li class="list-group-item" >
-                            <button
-                            type="button"
-                            class="btn btn-link float-left ml-4"
-                            :value="skill_name"
-                            @click="sendSkill(skill_name)">
-                                {{ skill_name }}
-                            </button>
-                            <button 
-                            v-if="usertype == 1" 
-                            class="btn btn-danger float-right ml-4"
-                            @click="deleteSkill(skill_name)">
-                                Delete
-                            </button>
-                        </li>
-                    </div>
-                </ul>
-            </div>
-        </div>
     </div>
 
     <script>
