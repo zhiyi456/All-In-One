@@ -924,6 +924,41 @@ class TestSkillRewarded(TestApp):
             }
         ).data)
     
+    def test_update_skill_rewarded_same_skill(self):
+        db.session.add(Skill_Rewarded('Python','FIN001'))
+        db.session.add(Skill_Rewarded('Tableau','COR001'))
+        db.session.add(Skill_Rewarded('R','COR001'))
+        db.session.commit()
+        request_body = {
+                        'Skill_Name': 'Python',
+                        'Courses_Add': ['COR001'],
+                        'Courses_Delete':[]
+                    }
+
+        response = self.client.post("/update_skill_rewarded_same_skill",
+                                    data=json.dumps(request_body),
+                                    content_type='application/json')
+        #print(response.data)
+        self.maxDiff = None
+        #print(response.data)
+        self.assertEqual(response.data, jsonify(
+        {
+            "code": 201,
+            "message":"skill_rewarded successfully updated!",
+            "new skills": [
+                {
+                    "Skill_Rewarded_ID": 1, 
+                    "Skill_Name": 'Python', 
+                    "Course_ID": 'FIN001'
+                },
+                {
+                    "Skill_Rewarded_ID": 4, 
+                    "Skill_Name": 'Python', 
+                    "Course_ID": 'COR001'
+                }
+                ]
+        }
+        ).data)
 
 
 from skill_set import Skill_Set
