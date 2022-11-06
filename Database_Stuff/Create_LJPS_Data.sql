@@ -57,7 +57,8 @@ CREATE TABLE `Learning_Journey` (
 INSERT INTO `Positions` (`Position_Name`) VALUES
 ('Data Analyst'),
 ('Human Resource'),
-('Head of Security');
+('Head of Security'),
+('Financial Analyst');
 
 INSERT INTO `Skill` (`Skill_Name`) VALUES
 ('Python'),
@@ -103,7 +104,19 @@ INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
 ('Team Building', 'MGT004'),
 ('Public Speaking', 'MGT001');
 
+
 INSERT INTO `Learning_Journey` (`Staff_ID`, `Position_Name`, `Skill_Name`, `Course_ID`) VALUES
 (130001,'Data Analyst', 'Python', 'FIN001'),
 (130001,'Human Resource', 'Public Speaking', 'MGT001'),
-(130002,'Data Analyst', 'Python', 'FIN001');
+(130002,'Data Analyst', 'Python', 'FIN001'),
+(140002, 'Head of Security', 'Interpersonal Skills', 'MGT001'),
+(140002, 'Head of Security', 'Team Building', 'COR004'),
+(170166, 'Financial Analyst', 'OCSP Certification', 'MGT001'),
+(170233, 'Financial Analyst', 'CISSP Certification', 'MGT001'),
+(170215, 'Financial Analyst', 'Python', 'tch009'),
+(170216, 'Financial Analyst', 'Python', 'tch009'),
+(170216, 'Financial Analyst', 'Advanced Python', 'tch006'),
+(160008, 'Human Resource', 'Team Building', 'COR004'),
+(160075, 'Human Resource', 'Interpersonal Skills', 'MGT001'),
+(160075, 'Human Resource', 'Team Building', 'COR004'),
+(160143, 'Human Resource', 'Team Building', 'MGT004');
