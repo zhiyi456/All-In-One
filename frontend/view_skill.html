@@ -19,10 +19,10 @@
 
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light custombg">
-		<a class="navbar-brand" href="#">Learning Journey Planning System</a>
+		<a class="navbar-brand" href="homepage.html">Learning Journey Planning System</a>
 		<div class="navbar-nav">
 			<div class="nav-item active">
-				<a class="nav-link" href="#">Home</a>
+				<a class="nav-link" href="homepage.html">Home</a>
 			</div>
 			<div class="navbar-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="browseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,24 +30,16 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="browseDropdown">
 					<a class="dropdown-item" href="view_courses.html">Courses</a>
-					<a class="dropdown-item" href="view_roles.html">Roles</a>
-					<a class="dropdown-item" href="#">Skills</a>
+					<a class="dropdown-item" href="view_positions.html">Positions</a>
+					<a class="dropdown-item" href="search_skill.html">Skills</a>
 				</div>
 			</div>
-			<div class="navbar-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					User Type
-				</a>
-				<div class="dropdown-menu" aria-labelledby="userDropdown">
-					<a class="dropdown-item" href="#">Learner</a>
-					<a class="dropdown-item" href="#">Human Resouces</a>
-				</div>
-			</div>
+            <div class="nav-item active" id="checkuser"></div>
 		</div>
 		<div class="navbar-item ml-auto">
-			<a class="nav-link" href="#">Logout</a>
+			<a class="nav-link" href="#" onclick="clearSession()">Logout</a>
 		</div>
-	  </nav>
+	</nav>
 
 
     <!--Positions Display-->
@@ -65,7 +57,7 @@
                 <h3 class="col-8">
                     Courses that award {{Skill_Name}}:
                 </h3>
-                <div class="col-4" v-if=" role == 'hr' || role == 'manager' ">
+                <div class="col-4" v-if="usertype == 1">
                     <button type="button" class="btn btn-primary" @click="editSkill()">
                         (Admin) Edit
                     </button>
@@ -82,7 +74,12 @@
     </div>
 
     <script>
-        var session_skill_name = sessionStorage.getItem("skill_name") //TO-DO: make dynamic pull from session
+        var session_skill_name = sessionStorage.getItem("skill_name")
+
+        function clearSession() {
+			sessionStorage.clear();
+			window.location.replace('role_toggle.html');
+		}
         
         var config = {
         method: 'get', //get courses by skill name
@@ -97,8 +94,10 @@
                 Skill_Name : session_skill_name,
                 courses : [],
                 // role: "staff"
-                role: "hr"
+                // role: "hr"
                 // role: "manager"
+                usertype: null
+
             },
             methods: {
                 editSkill: function() {
@@ -118,6 +117,15 @@
                     }
                     console.log(vm.courses)
                 })
+                // get user type
+                if (sessionStorage.getItem('staff')) {
+                    console.log('======= getting user type ======')
+                    let user = JSON.parse(sessionStorage.getItem('staff'));
+                    // this.dept = user.dept;
+                    this.usertype = user.role;
+                    console.log(this.usertype)
+                    // this.userid = user.staff_id;
+                }
             }
             })
     </script>
