@@ -108,6 +108,7 @@
         mounted: function(){
           if(sessionStorage.getItem("position")){
               let position = JSON.parse(sessionStorage.getItem("position"));
+              console.log(position);
               this.positionName = position.Position_Name
               axios({
               method: 'get',
