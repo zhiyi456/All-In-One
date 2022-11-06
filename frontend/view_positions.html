@@ -114,7 +114,7 @@
 
     <script>
 
-        let user = JSON.parse(sessionStorage.getItem("staff"));
+        var user = JSON.parse(sessionStorage.getItem("staff"));
 
         var config = {
         method: 'get',
@@ -158,7 +158,6 @@
 
     <script>
         if (sessionStorage.getItem('staff')) {
-            var user = JSON.parse(sessionStorage.getItem('staff'));
             var usertype = user.role;
             if (usertype==1 | usertype==3) { // if Manager or HR
                 let link = document.createElement('a');
