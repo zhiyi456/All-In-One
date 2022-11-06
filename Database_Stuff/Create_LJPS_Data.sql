@@ -76,13 +76,14 @@ INSERT INTO `Skill_Set` (`Position_Name`, `Skill_Name`) VALUES
 ('Data Analyst', 'Python'),
 ('Data Analyst', 'R'),
 ('Data Analyst', 'Tableau'),
-('Head of Security', 'Interpersonal Skills'),
 ('Head of Security', 'Martial Arts'),
 ('Head of Security', 'CISSP Certification'),
 ('Head of Security', 'OCSP Certification'),
 ('Human Resource', 'Interpersonal Skills'),
 ('Human Resource', 'Team Building'),
-('Human Resource', 'Public Speaking');
+('Human Resource', 'Public Speaking'),
+('Financial Analyst', 'Python'),
+('Financial Analyst', 'Advanced Python');
 
 INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
 ("Python", 'FIN001'),
@@ -102,21 +103,34 @@ INSERT INTO `Skill_Rewarded` (`Skill_Name`, `Course_ID`) VALUES
 ('OCSP Certification', 'tch003'),
 ('Team Building', 'COR004'),
 ('Team Building', 'MGT004'),
-('Public Speaking', 'MGT001');
-
+('Public Speaking', 'MGT001'),
+('Public Speaking', 'COR006');
 
 INSERT INTO `Learning_Journey` (`Staff_ID`, `Position_Name`, `Skill_Name`, `Course_ID`) VALUES
 (130001,'Data Analyst', 'Python', 'FIN001'),
-(130001,'Human Resource', 'Public Speaking', 'MGT001'),
-(130002,'Data Analyst', 'Python', 'FIN001'),
-(140002, 'Head of Security', 'Interpersonal Skills', 'MGT001'),
-(140002, 'Head of Security', 'Team Building', 'COR004'),
-(170166, 'Financial Analyst', 'OCSP Certification', 'MGT001'),
-(170233, 'Financial Analyst', 'CISSP Certification', 'MGT001'),
-(170215, 'Financial Analyst', 'Python', 'tch009'),
+(130001, 'Data Analyst', 'R', 'tch004'),
+(130001, 'Data Analyst', 'Tableau', 'COR001'),
+(130001, 'Human Resource', 'Team Building', 'MGT004'),
+(130001, 'Human Resource', 'Interpersonal Skills', 'MGT001'),
+(130001, 'Human Resource', 'Public Speaking', 'COR006'),
+(130002,'Data Analyst', 'Python', 'tch009'),
+(130002, 'Data Analyst', 'R', 'tch004'),
+(130002, 'Data Analyst', 'Tableau', 'COR001'),
+(140002, 'Head of Security', 'Martial Arts', 'MGT001'),
+(140002, 'Head of Security', 'CISSP Certification', 'COR002'),
+(140002, 'Head of Security', 'OCSP Certification', 'tch003'),
+(170233, 'Financial Analyst', 'Python', 'FIN001'),
+(170233, 'Financial Analyst', 'Advanced Python', 'tch006'),
 (170216, 'Financial Analyst', 'Python', 'tch009'),
-(170216, 'Financial Analyst', 'Advanced Python', 'tch006'),
+(170216, 'Financial Analyst', 'Advanced Python', 'tch008'),
+(170166, 'Financial Analyst', 'Python', 'tch006'),
+(170166, 'Financial Analyst', 'Advanced Python', 'tch008'),
 (160008, 'Human Resource', 'Team Building', 'COR004'),
+(160008, 'Human Resource', 'Interpersonal Skills', 'SAL004'),
+(160008, 'Human Resource', 'Public Speaking', 'MGT001'),
+(160075, 'Human Resource', 'Team Building', 'MGT004'),
 (160075, 'Human Resource', 'Interpersonal Skills', 'MGT001'),
-(160075, 'Human Resource', 'Team Building', 'COR004'),
-(160143, 'Human Resource', 'Team Building', 'MGT004');
+(160075, 'Human Resource', 'Public Speaking', 'COR006'),
+(160143, 'Human Resource', 'Team Building', 'MGT004'),
+(160143, 'Human Resource', 'Interpersonal Skills', 'SAL004'),
+(160143, 'Human Resource', 'Public Speaking', 'COR006');
