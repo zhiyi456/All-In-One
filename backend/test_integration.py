@@ -1062,9 +1062,9 @@ class TestSkillSet(TestApp):
                                     content_type='application/json')
         #print(response.data)
         self.maxDiff = None
-        response = self.client.get("/skill_set")
+        response1 = self.client.get("/skill_set")
         #print(response.data)
-        self.assertEqual(response.data, jsonify(
+        self.assertEqual(response1.data, jsonify(
             {
             "code": 200,
             "data": {
