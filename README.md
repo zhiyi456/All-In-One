@@ -67,9 +67,35 @@ If you do not have python or python version is below 3.3, install the latest ver
    2. Choose according to the user role you want to access, to use the different functions available to the different roles.
 
 
+### Alternative method of Setting up and Testing the app
+
+    ### Setting up the HTTP Server and Testing the app
+
+   1. Run this command in your terminal
+    ``` sh
+    npm install http-server -g
+    ```
+
+   2. Run this in your terminal
+   ```sh
+   http-server --cors
+   ```
+
+   3. Split terminal and run this in another terminal
+   ```sh
+    cd backend
+   ```
+   ```sh
+   python app.py
+   ```
+
+   4. Use your favourite brower and type the link below:
+   ```sh
+   http://127.0.0.1:8080/frontend/role_toggle.html
+   ```
+
+
 ## Linter Badge
 [![GitHub Super-Linter](https://github.com/alimsihui/All-In-One/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-
-
 
 
