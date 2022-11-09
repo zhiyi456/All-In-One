@@ -38,15 +38,18 @@ If you do not have python or python version is below 3.3, install the latest ver
    - For SQL Workbench:
       - On the SCHEMAS tab on the left, right click on 'course'
       - Table Data Import Wizard
-      - Import the course.csv (inside Raw_Data folder)
-      - Done then make sure u can see course table populated now
-      - then repeat for each csv IN THIS EXACT ORDER: role --> staff --> registration
+      - Import the courses.csv (inside Raw_Data folder)
+      - Click on the course table and verify that it is populated now
+      - Repeat the above steps for each table IN THIS EXACT ORDER: role --> staff --> registration
 
    - For phpmyadmin:
-      - Go to is212_all_in_one, click on individual tables and click import.
-      - Import the respective csv file (inside Raw_Data folder) to the respective table IN THIS EXACT ORDER: course --> role --> staff -->      registration
-      - When importing individual raw data, under each Partial Import, set the Skip this number of queries (for SQL) starting from the first one: 1
-      - Check if the table is populated correctly
+      - From the database list, click on is212_all_in_one, click on 'course' table
+      - click import on the navbar, you should see that it says ' Importing into the table "course" '
+      - Import the courses.csv file (inside Raw_Data folder)
+      - Under Partial Import tab, set the field 'Skip this number of queries (for SQL) starting from the first one' to 1
+      - Click 'Go' to execute the import
+      - Click on the course table and verify that it is populated now
+      - Repeat the above steps for each table IN THIS EXACT ORDER: role --> staff --> registration
 
 4. Import Create_LJPS_Data.sql
 
