@@ -60,6 +60,10 @@ If you do not have python or python version is below 3.3, install the latest ver
    ```sh
    python -m http.server 8008 --bind 127.0.0.1
    ```
+   2. Create another terminal and run the following command
+   ```sh
+   python backend/app.py
+   ```
 
 ### Testing the app
 
