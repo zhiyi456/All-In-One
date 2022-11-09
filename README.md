@@ -31,7 +31,7 @@ If you do not have python or python version is below 3.3, install the latest ver
    pip install -r requirements.txt
 
 ### Setting up the Database
-1. Import Import_LMS_Data.sql (either through phpmyadmin or SQL Workbench or any sql database)
+1. Import Import_LMS_Data.sql (either through phpmyadmin or SQL Workbench or any SQL management tool)
 
 2. Go to SQL Workbench or Import through phpmyadmin
 
