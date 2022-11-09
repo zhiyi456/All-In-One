@@ -43,9 +43,9 @@ If you do not have python or python version is below 3.3, install the latest ver
       - then repeat for each csv IN THIS EXACT ORDER: role --> staff --> registration
 
    - For phpadmin:
+      - Go to is212_all_in_one, click on individual tables and click import.
+      - Import the respective csv file (inside Raw_Data folder) to the respective table IN THIS EXACT ORDER: course --> role --> staff -->      registration
       - When importing individual raw data, under each Partial Import, set the Skip this number of queries (for SQL) starting from the first one: 1
-      - Import the respective csv file (inside Raw_Data folder) to the respective table
-      - Repeat for each csv IN THIS EXACT ORDER: course --> role --> staff --> registration
       - Check if the table is populated correctly
 
 4. Import Create_LJPS_Data.sql
