@@ -64,7 +64,7 @@ If you do not have python or python version is below 3.3, install the latest ver
    ```sh
    127.0.0.1:8008/frontend/role_toggle.html
    ```
-   2. Choose according to the user role u want to access to the different functions available to the different roles.
+   2. Choose according to the user role you want to access, to use the different functions available to the different roles.
 
 
 ## Linter Badge
