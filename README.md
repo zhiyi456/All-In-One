@@ -74,7 +74,7 @@ If you do not have python or python version is below 3.3, install the latest ver
    2. Choose according to the user role you want to access, to use the different functions available to the different roles.
 
 
-### Alternative method of Setting up and Testing the app
+### Alternative method of Setting up and Testing the app if you receive a CORS-error
 
     ### Setting up the HTTP Server and Testing the app
 
