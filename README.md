@@ -11,7 +11,7 @@ SPM Project
    python --version
    ``` 
    
-If you do no have python or python version is below 3.3, install the latest version [here](https://www.python.org/downloads/)
+If you do not have python or python version is below 3.3, install the latest version [here](https://www.python.org/downloads/)
 
 
 ### Setting up virtual environment 
@@ -36,17 +36,17 @@ If you do no have python or python version is below 3.3, install the latest vers
 2. Go to SQL Workbench or Import through phpmyadmin
 
 3. For SQL Workbench:
-    ⋅⋅1. On the SCHEMAS tab on the left, right click on 'course'
-    ⋅⋅2. Table Data Import Wizard
-    ⋅⋅3. Import the course.csv (inside Raw_Data folder)
-    ⋅⋅4. Done then make sure u can see course table populated now
-    ⋅⋅5. then repeat for each csv IN THIS EXACT ORDER: role --> staff --> registration
+    ⋅⋅ 1. On the SCHEMAS tab on the left, right click on 'course'
+    ⋅⋅ 2. Table Data Import Wizard
+    ⋅⋅ 3. Import the course.csv (inside Raw_Data folder)
+    ⋅⋅ 4. Done then make sure u can see course table populated now
+    ⋅⋅ 5. then repeat for each csv IN THIS EXACT ORDER: role --> staff --> registration
 
 3. For phpadmin:
-    ⋅⋅1. When importing individual raw data, under each Partial Import, set the Skip this number of queries (for SQL) starting from the first one: 1
-    ⋅⋅2. Import the respective csv file (inside Raw_Data folder) to the respective table
-    ⋅⋅3. Repeat for each csv IN THIS EXACT ORDER: course --> role --> staff --> registration
-    ⋅⋅4. Check if the table is populated correctly
+    ⋅⋅ 1. When importing individual raw data, under each Partial Import, set the Skip this number of queries (for SQL) starting from the first one: 1
+    ⋅⋅ 2. Import the respective csv file (inside Raw_Data folder) to the respective table
+    ⋅⋅ 3. Repeat for each csv IN THIS EXACT ORDER: course --> role --> staff --> registration
+    ⋅⋅ 4. Check if the table is populated correctly
 
 4. Import Create_LJPS_Data.sql
 
