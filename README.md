@@ -1,11 +1,18 @@
 # All-In-One
-SPM Project
+Software Project Management Project
 
+## About the Project
+Adopt SCRUM process throughout the project duration. 
+1. Used Jira to manage product and sprint backlogs.
+2. Crafting User Stories with clear user needs and acceptance criteria.
+3. Google Docs is used to collect meeting minutes from our stand ups, sprint review and sprint retrospective.
+4. System Design - C4 Model
+5. Adopt test-driven development and CI pipeline is used during code integration.
 
 ## Getting Started
 
 
-### Setting up development environemnt 
+### Setting up development environment 
 1. Check your python version    
    ```sh 
    python --version
